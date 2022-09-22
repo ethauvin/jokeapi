@@ -37,5 +37,6 @@ package net.thauvin.erik.jokeapi
  */
 enum class Type(val value: String) {
     SINGLE("single"),
-    TWOPART("twopart")
+    TWOPART("twopart"),
+    ALL("${SINGLE.value},${TWOPART.value}")
 }

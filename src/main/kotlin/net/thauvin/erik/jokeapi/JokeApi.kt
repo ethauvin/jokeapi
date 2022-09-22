@@ -45,7 +45,7 @@ import java.util.stream.Collectors
 class JokeApi {
     companion object {
         private const val API_URL = "https://v2.jokeapi.dev/joke/"
-        val logger: Logger = Logger.getLogger(JokeApi::class.java.simpleName)
+        val logger: Logger by lazy { Logger.getLogger(JokeApi::class.java.simpleName) }
 
         @JvmStatic
         @JvmOverloads
@@ -54,7 +54,7 @@ class JokeApi {
             categories: Set<Category> = setOf(Category.ANY),
             language: Language = Language.ENGLISH,
             flags: Set<Flag> = emptySet(),
-            type: Set<Type> = emptySet(),
+            type: Type = Type.ALL,
             format: Format = Format.JSON,
             search: String = "",
             idRange: IdRange = IdRange(),
@@ -88,8 +88,8 @@ class JokeApi {
             }
 
             // Type
-            if (type.isNotEmpty()) {
-                urlParams.add("type=" + type.stream().map(Type::value).collect(Collectors.joining(",")))
+            if (type != Type.ALL) {
+                urlParams.add("type=${type.value}")
             }
 
             // Format
@@ -136,13 +136,12 @@ class JokeApi {
         }
 
         @Throws(JokeException::class, IOException::class)
-        private fun fetchUrl(url: String) : String {
+        private fun fetchUrl(url: String): String {
             logger.log(Level.FINE, url)
 
             val connection = URL(url).openConnection() as HttpURLConnection
             connection.setRequestProperty(
-                "User-Agent",
-                "Mozilla/5.0 (Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0"
+                "User-Agent", "Mozilla/5.0 (Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0"
             )
 
             if (connection.responseCode in 200..399) {
@@ -154,24 +153,19 @@ class JokeApi {
             } else {
                 when (connection.responseCode) {
                     400 -> throw IOException(
-                        "400: Bad Request",
-                        IOException(
-                            "The request you have sent to JokeAPI is formatted incorrectly and cannot be" +
-                                    " processed"
+                        "400: Bad Request", IOException(
+                            "The request you have sent to JokeAPI is formatted incorrectly and cannot be processed"
                         )
                     )
 
                     403 -> throw IOException(
-                        "4o3: Forbidden",
-                        IOException(
-                            "You have been added to the blacklist due to malicious behavior and are not allowed" +
-                                    " to send requests to JokeAPI anymore"
+                        "4o3: Forbidden", IOException(
+                            "You have been added to the blacklist due to malicious behavior and are not allowed" + " to send requests to JokeAPI anymore"
                         )
                     )
 
                     404 -> throw IOException(
-                        "404: Not Found",
-                        IOException("The URL you have requested couldn't be found")
+                        "404: Not Found", IOException("The URL you have requested couldn't be found")
                     )
 
                     413 -> throw IOException(
@@ -180,26 +174,20 @@ class JokeApi {
                     )
 
                     428 -> throw IOException(
-                        "429: Too Many Requests",
-                        IOException(
-                            "You have exceeded the limit of 120 requests per minute and have to wait a bit" +
-                                    " until you are allowed to send requests again"
+                        "429: Too Many Requests", IOException(
+                            "You have exceeded the limit of 120 requests per minute and have to wait a bit" + " until you are allowed to send requests again"
                         )
                     )
 
                     500 -> throw IOException(
-                        "500: Internal Server Error",
-                        IOException(
-                            "There was a general internal error within JokeAPI. You can get more info from" +
-                                    " the properties in the response text"
+                        "500: Internal Server Error", IOException(
+                            "There was a general internal error within JokeAPI. You can get more info from" + " the properties in the response text"
                         )
                     )
 
                     523 -> throw IOException(
-                        "523: Origin Unreachable",
-                        IOException(
-                            "The server is temporarily offline due to maintenance or a dynamic IP update." +
-                                    " Please be patient in this case."
+                        "523: Origin Unreachable", IOException(
+                            "The server is temporarily offline due to maintenance or a dynamic IP update." + " Please be patient in this case."
                         )
                     )
 
@@ -215,7 +203,7 @@ class JokeApi {
             categories: Set<Category> = setOf(Category.ANY),
             language: Language = Language.ENGLISH,
             flags: Set<Flag> = emptySet(),
-            type: Set<Type> = emptySet(),
+            type: Type = Type.ALL,
             search: String = "",
             idRange: IdRange = IdRange(),
             safe: Boolean = false
@@ -244,12 +232,13 @@ class JokeApi {
                     jokes.addAll(json.getString("joke").split("\n"))
                 }
                 val enabledFlags = mutableSetOf<Flag>()
-                val flagObject = json.getJSONObject("flags")
-                for (flag in Flag.values()) {
-                    if (flag != Flag.ALL && flagObject.getBoolean(flag.value)) {
-                        enabledFlags.add(flag)
+                val jsonFlags = json.getJSONObject("flags")
+                Flag.values().filter { it != Flag.ALL }.forEach {
+                    if (jsonFlags.has(it.value) && jsonFlags.getBoolean(it.value)) {
+                        enabledFlags.add(it)
                     }
                 }
+
                 return Joke(
                     error = false,
                     category = Category.valueOf(json.getString("category").uppercase()),
