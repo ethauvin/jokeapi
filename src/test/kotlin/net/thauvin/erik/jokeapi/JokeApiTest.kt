@@ -41,124 +41,143 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
 internal class JokeApiTest {
     @Test
-    fun apiTxtCallTest() {
+    fun `API call with TXT`() {
         val response = apiCall(format = Format.TEXT)
         logger.log(Level.FINE, response)
         assertAll("plain text",
-            { assertTrue(response.isNotEmpty(), "should be not empty") },
-            { assertFalse(response.startsWith("Error "), "should not be an error") }
+            { assertTrue(response.isNotEmpty()) { "should be not empty" } },
+            { assertFalse(response.startsWith("Error ")) { "should not be an error" } }
         )
     }
 
     @Test
-    fun apiTxtErrorCallTest() {
+    fun `API Call with invalid ID Range`() {
         val response = apiCall(format = Format.TXT, idRange = IdRange(0, 30000))
         logger.log(Level.FINE, response)
-        assertTrue(response.startsWith("Error "), "should be an error")
+        assertTrue(response.startsWith("Error ")) { "should be an error" }
     }
 
     @Test
-    fun apiXmlCallTest() {
+    fun `API Call with XML`() {
         val response = apiCall(format = Format.XML)
         logger.log(Level.FINE, response)
-        assertTrue(response.startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>"), "should be xml")
+        assertTrue(response.startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")) { "should be xml" }
     }
 
     @Test
-    fun apiYamlCallTest() {
+    fun `API Call with YAML`() {
         val response = apiCall(format = Format.YAML)
         logger.log(Level.FINE, response)
-        assertTrue(response.startsWith("error: false"), "should be xml")
+        assertTrue(response.startsWith("error: false")) { "should be yaml" }
     }
 
     @Test
-    fun jokeExceptionTest() {
-        try {
-            getJoke(categories = setOf(Category.CHRISTMAS), search = "man")
-        } catch (e: JokeException) {
-            assertAll("exception validation",
-                { assertEquals(106, e.code, "code should be valid") },
-                { assertTrue(e.error, "should be an error") },
-                { assertFalse(e.internalError, "should not be internal error") },
-                { assertEquals("No matching joke found", e.message, "message should match") },
-                { assertEquals(1, e.causedBy.size, "causedby size should be 1") },
-                { assertTrue(e.additionalInfo.isNotEmpty(), "additional info should not be empty") },
-                { assertTrue(e.timestamp > 0, "timestamp should be > 0") }
-            )
-        }
-    }
-
-    @Test
-    fun getJokeTest() {
+    fun `Get Joke`() {
         val joke = getJoke()
         logger.log(Level.FINE, joke.toString())
         assertAll("no param",
-            { assertFalse(joke.error, "error should be false") },
-            { assertTrue(joke.joke.isNotEmpty(), "joke should not be empty") },
-            { assertTrue(joke.type == Type.TWOPART || joke.type == Type.SINGLE, "type should validate") },
-            { assertTrue(joke.id >= 0, "id should be >= 0") },
-            { assertEquals(Language.EN, joke.language, "language should be english") }
+            { assertFalse(joke.error) { "error should be false" } },
+            { assertTrue(joke.joke.isNotEmpty()) { "joke should not be empty" } },
+            { assertTrue(joke.type == Type.TWOPART || joke.type == Type.SINGLE) { "type should validate" } },
+            { assertTrue(joke.id >= 0) { "id should be >= 0" } },
+            { assertEquals(Language.EN, joke.language) { "language should be english" } }
         )
     }
 
     @Test
-    fun getJokeIdTest() {
+    fun `Get Joke with ID`() {
         val id = 172
         val joke = getJoke(idRange = IdRange(id))
         logger.log(Level.FINE, joke.toString())
         assertAll("joke by id",
-            { assertTrue(joke.flags.contains(Flag.NSFW) && joke.flags.contains(Flag.EXPLICIT), "nsfw & explicit") },
-            { assertEquals(172, joke.id, "id is $id") },
-            { assertEquals(Category.PUN, joke.category, "category should be pun") }
+            { assertTrue(joke.flags.contains(Flag.NSFW) && joke.flags.contains(Flag.EXPLICIT)) { "nsfw & explicit" } },
+            { assertEquals(172, joke.id) { "id is $id" } },
+            { assertEquals(Category.PUN, joke.category) { "category should be pun" } }
         )
     }
 
     @Test
-    fun getJokeIdRangeTest() {
+    fun `Get Joke with ID Range`() {
         val idRange = IdRange(1, 100)
         val joke = getJoke(idRange = idRange)
         logger.log(Level.FINE, joke.toString())
-        assertTrue(joke.id >= idRange.start && joke.id <= idRange.end, "id should be in range")
+        assertTrue(joke.id >= idRange.start && joke.id <= idRange.end) { "id should be in range" }
     }
 
     @Test
-    fun getSafeJokeTest() {
+    fun `Get Joke with each Categories`() {
+        Category.values().filter { it != Category.ANY }.forEach {
+            val joke = getJoke(categories = setOf(it))
+            assertEquals(it.value, joke.category.value) { "category should be ${it.value}" }
+
+        }
+    }
+
+    @Test
+    fun `Get Joke with each Languages`() {
+        Language.values().forEach {
+            val joke = getJoke(language = it)
+            assertEquals(it.value, joke.language.value) { "language should be ${it.value}" }
+        }
+    }
+
+    @Test
+    fun `Get Safe Joke`() {
         val joke = getJoke(safe = true)
         logger.log(Level.FINE, joke.toString())
         assertAll("safe joke",
-            { assertTrue(joke.safe, "should be safe") },
-            { assertTrue(joke.flags.isEmpty(), "flags should be empty") }
+            { assertTrue(joke.safe) { "should be safe" } },
+            { assertTrue(joke.flags.isEmpty()) { "flags should be empty" } }
         )
     }
 
     @Test
-    fun getSingleJokeTest() {
-        val joke = getJoke(type = setOf(Type.SINGLE))
+    fun `Get Single Joke`() {
+        val joke = getJoke(type = Type.SINGLE)
         logger.log(Level.FINE, joke.toString())
-        assertEquals(Type.SINGLE, joke.type, "type should be single")
+        assertEquals(Type.SINGLE, joke.type) { "type should be single" }
     }
 
     @Test
-    fun getTwoPartJokeTest() {
-        val joke = getJoke(type = setOf(Type.TWOPART))
+    fun `Get Two-Parts Joke`() {
+        val joke = getJoke(type = Type.TWOPART)
         logger.log(Level.FINE, joke.toString())
         assertAll("two-part joke",
-            { assertEquals(Type.TWOPART, joke.type, "type should be two-part") },
-            { assertTrue(joke.joke.size > 1, "should have multiple lines") }
+            { assertEquals(Type.TWOPART, joke.type) { "type should be two-part" } },
+            { assertTrue(joke.joke.size > 1) { "should have multiple lines" } }
         )
     }
 
     @Test
-    fun getJokeSearchTest() {
+    fun `Get Joke using Search`() {
         val id = 1
         val joke = getJoke(search = "man", categories = setOf(Category.PROGRAMMING), idRange = IdRange(id), safe = true)
         logger.log(Level.FINE, joke.toString())
-        assertEquals(id, joke.id, "id should be 1")
+        assertEquals(id, joke.id) { "id should be 1" }
+    }
+
+    @Test
+    fun `Validate Joke Exception`() {
+        val e = assertThrows<JokeException> {
+            getJoke(categories = setOf(Category.CHRISTMAS), search = "foo")
+        }
+        logger.log(Level.FINE, e.debug())
+        assertAll("exception validation",
+            { assertEquals(106, e.code) { "code should be valid" } },
+            { assertTrue(e.error) { "should be an error" } },
+            { assertFalse(e.internalError) { "should not be internal error" } },
+            { assertEquals("No matching joke found", e.message) { "message should match" } },
+            { assertEquals(1, e.causedBy.size) { "causedBy size should be 1" } },
+            { assertTrue(e.causedBy[0].startsWith("No jokes")) { "causedBy should start with no jokes" } },
+            { assertTrue(e.additionalInfo.isNotEmpty()) { "additional info should not be empty" } },
+            { assertTrue(e.timestamp > 0) { "timestamp should be > 0" } }
+        )
     }
 
     companion object {

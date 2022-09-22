@@ -40,5 +40,5 @@ data class Joke(
     val flags: Set<Flag>,
     val id: Int,
     val safe: Boolean,
-    val language: Language?
+    val language: Language
 )

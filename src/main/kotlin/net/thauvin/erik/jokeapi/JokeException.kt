@@ -45,4 +45,10 @@ class JokeException @JvmOverloads constructor(
     companion object {
         private const val serialVersionUID = 1L
     }
+
+    fun debug(): String {
+        return "JokeException(message=$message, error=$error, internalError=$internalError, code=$code, causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
+    }
+
+
 }
