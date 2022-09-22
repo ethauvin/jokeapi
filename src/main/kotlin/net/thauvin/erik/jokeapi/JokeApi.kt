@@ -206,7 +206,8 @@ class JokeApi {
             type: Type = Type.ALL,
             search: String = "",
             idRange: IdRange = IdRange(),
-            safe: Boolean = false
+            safe: Boolean = false,
+            splitNewLine: Boolean = true
         ): Joke {
             val json =
                 JSONObject(apiCall(categories, language, flags, type, search = search, idRange = idRange, safe = safe))
@@ -229,7 +230,11 @@ class JokeApi {
                     jokes.add(json.getString("setup"))
                     jokes.add(json.getString(("delivery")))
                 } else {
-                    jokes.addAll(json.getString("joke").split("\n"))
+                    if (splitNewLine) {
+                        jokes.addAll(json.getString("joke").split("\n"))
+                    } else {
+                        jokes.add(json.getString("joke"))
+                    }
                 }
                 val enabledFlags = mutableSetOf<Flag>()
                 val jsonFlags = json.getJSONObject("flags")

@@ -128,6 +128,14 @@ internal class JokeApiTest {
     }
 
     @Test
+    fun `Get Joke with Newline`() {
+        val joke =
+            getJoke(categories = setOf(Category.DARK), type = Type.SINGLE, idRange = IdRange(178), splitNewLine = false)
+        logger.log(Level.FINE, joke.toString())
+        assertEquals(1, joke.joke.size) { "should be a oneliner" }
+    }
+
+    @Test
     fun `Get Safe Joke`() {
         val joke = getJoke(safe = true)
         logger.log(Level.FINE, joke.toString())
