@@ -60,7 +60,7 @@ internal class JokeApiTest {
     @Test
     fun `Get Joke`() {
         val joke = getJoke()
-        logger.log(Level.FINE, joke.toString())
+        logger.fine(joke.toString())
         assertAll("no param",
             { assertFalse(joke.error) { "error should be false" } },
             { assertTrue(joke.joke.isNotEmpty()) { "joke should not be empty" } },
@@ -70,10 +70,23 @@ internal class JokeApiTest {
     }
 
     @Test
+    fun `Get Joke with all Blacklist Flags`() {
+        val joke = getJoke(flags = setOf(Flag.ALL))
+        assertAll("joke with all flags", { assertTrue(joke.flags.isEmpty()) { "flags should be empty." } })
+    }
+
+    @Test
+    fun `Get Joke with no Blacklist Flags`() {
+        val noFlags = Flag.values().filter { it != Flag.ALL }.toSet()
+        val joke = getJoke(flags = noFlags)
+        assertAll("joke with no flags", { assertTrue(joke.flags.isEmpty()) { "flags should be empty." } })
+    }
+
+    @Test
     fun `Get Joke with ID`() {
         val id = 172
         val joke = getJoke(idRange = IdRange(id))
-        logger.log(Level.FINE, joke.toString())
+        logger.fine(joke.toString())
         assertAll("joke by id",
             { assertTrue(joke.flags.contains(Flag.NSFW) && joke.flags.contains(Flag.EXPLICIT)) { "nsfw & explicit" } },
             { assertEquals(172, joke.id) { "id is $id" } },
@@ -84,8 +97,24 @@ internal class JokeApiTest {
     fun `Get Joke with ID Range`() {
         val idRange = IdRange(1, 100)
         val joke = getJoke(idRange = idRange)
-        logger.log(Level.FINE, joke.toString())
+        logger.fine(joke.toString())
         assertTrue(joke.id >= idRange.start && joke.id <= idRange.end) { "id should be in range" }
+    }
+
+    @Test
+    fun `Get Joke with invalid ID Range`() {
+        val joke = getJoke(idRange = IdRange(100, 1))
+        logger.fine(joke.toString())
+        assertFalse(joke.error) { "should not be an error" }
+    }
+
+    @Test
+    fun `Get Joke with max ID Range`() {
+        val e = assertThrows<JokeException> { getJoke(idRange = IdRange(1, 30000)) }
+        assertAll("joke with max ID range",
+            { assertTrue(e.error) { "should be an error" } },
+            { assertTrue(e.additionalInfo.contains("ID range")) { "should contain ID range" } }
+        )
     }
 
     @Test
@@ -107,16 +136,19 @@ internal class JokeApiTest {
 
     @Test
     fun `Get Joke with Newline`() {
-        val joke =
-            getJoke(categories = setOf(Category.DARK), type = Type.SINGLE, idRange = IdRange(178), splitNewLine = false)
-        logger.log(Level.FINE, joke.toString())
-        assertEquals(1, joke.joke.size) { "should be a oneliner" }
+        val joke = getJoke(
+            categories = setOf(Category.DARK),
+            type = Type.SINGLE,
+            idRange = IdRange(178),
+            splitNewLine = false
+        )
+        assertTrue(joke.joke.toString().contains("\n")) { "should contain newline" }
     }
 
     @Test
     fun `Get Safe Joke`() {
         val joke = getJoke(safe = true)
-        logger.log(Level.FINE, joke.toString())
+        logger.fine(joke.toString())
         assertAll("safe joke",
             { assertTrue(joke.safe) { "should be safe" } },
             { assertTrue(joke.flags.isEmpty()) { "flags should be empty" } })
@@ -125,14 +157,14 @@ internal class JokeApiTest {
     @Test
     fun `Get Single Joke`() {
         val joke = getJoke(type = Type.SINGLE)
-        logger.log(Level.FINE, joke.toString())
+        logger.fine(joke.toString())
         assertEquals(Type.SINGLE, joke.type) { "type should be single" }
     }
 
     @Test
     fun `Get Two-Parts Joke`() {
         val joke = getJoke(type = Type.TWOPART)
-        logger.log(Level.FINE, joke.toString())
+        logger.fine(joke.toString())
         assertAll("two-part joke",
             { assertEquals(Type.TWOPART, joke.type) { "type should be two-part" } },
             { assertTrue(joke.joke.size > 1) { "should have multiple lines" } })
@@ -142,38 +174,40 @@ internal class JokeApiTest {
     fun `Get Joke using Search`() {
         val id = 1
         val joke = getJoke(search = "man", categories = setOf(Category.PROGRAMMING), idRange = IdRange(id), safe = true)
-        logger.log(Level.FINE, joke.toString())
-        assertEquals(id, joke.id) { "id should be 1" }
+        logger.fine(joke.toString())
+        assertEquals(id, joke.id) { "id should be $id" }
     }
 
     @Test
     fun `Get Raw Joke with TXT`() {
         val response = getRawJoke(format = Format.TEXT)
-        logger.log(Level.FINE, response)
         assertAll("plain text",
             { assertTrue(response.isNotEmpty()) { "should be not empty" } },
             { assertFalse(response.startsWith("Error ")) { "should not be an error" } })
     }
 
     @Test
-    fun `Get Raw Joke with invalid ID Range`() {
-        val response = getRawJoke(format = Format.TXT, idRange = IdRange(0, 30000))
-        logger.log(Level.FINE, response)
-        assertTrue(response.startsWith("Error ")) { "should be an error" }
+    fun `Get Raw Joke with invalid Amount`() {
+        val response = getRawJoke(amount = 100)
+        assertFalse(response.contains("\"amount\":")) { "should not have amount" }
     }
 
     @Test
     fun `Get Raw Joke with XML`() {
         val response = getRawJoke(format = Format.XML)
-        logger.log(Level.FINE, response)
         assertTrue(response.startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")) { "should be xml" }
     }
 
     @Test
     fun `Get Raw Joke with YAML`() {
         val response = getRawJoke(format = Format.YAML)
-        logger.log(Level.FINE, response)
         assertTrue(response.startsWith("error: false")) { "should be yaml" }
+    }
+
+    @Test
+    fun `Get Raw Jokes`() {
+        val response = getRawJoke(amount = 2)
+        assertTrue(response.contains("\"amount\": 2")) { "amount should be 2" }
     }
 
     @Test
@@ -193,7 +227,7 @@ internal class JokeApiTest {
         val e = assertThrows<JokeException> {
             getJoke(categories = setOf(Category.CHRISTMAS), search = "foo")
         }
-        logger.log(Level.FINE, e.debug())
+        logger.fine(e.debug())
         assertAll("JokeException validation",
             { assertEquals(106, e.code) { "code should be valid" } },
             { assertTrue(e.error) { "should be an error" } },
@@ -211,7 +245,7 @@ internal class JokeApiTest {
         val e = assertThrows<HttpErrorException> {
             fetchUrl("https://httpstat.us/$input")
         }
-        assertAll("JokeException validation",
+        assertAll("HttpErrorException validation",
             { assertEquals(input, e.statusCode) { "status code should be $input" } },
             { assertTrue(e.message!!.isNotEmpty()) { "message for $input should not be empty" } },
             { assertTrue(e.cause!!.message!!.isNotEmpty()) { "cause of $input should not be empty" } })

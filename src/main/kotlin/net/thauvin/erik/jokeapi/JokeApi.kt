@@ -119,12 +119,16 @@ class JokeApi {
                     urlParams.add("idRange=${idRange.start}")
                 } else if (idRange.end > idRange.start) {
                     urlParams.add("idRange=${idRange.start}-${idRange.end}")
+                } else if (logger.isLoggable(Level.WARNING)) {
+                    logger.warning("Invalid ID Range: ${idRange.start}, ${idRange.end}")
                 }
             }
 
             // Amount
             if (amount in 2..10) {
                 urlParams.add("amount=${amount}")
+            } else if (amount != 1 && logger.isLoggable(Level.WARNING)) {
+                logger.warning("Invalid Amount: $amount")
             }
 
             // Safe
@@ -148,7 +152,9 @@ class JokeApi {
 
         @Throws(HttpErrorException::class, IOException::class)
         internal fun fetchUrl(url: String): String {
-            logger.log(Level.FINE, url)
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(url)
+            }
 
             val connection = URL(url).openConnection() as HttpURLConnection
             connection.setRequestProperty(
@@ -158,7 +164,7 @@ class JokeApi {
             if (connection.responseCode in 200..399) {
                 val body = connection.inputStream.bufferedReader().readText()
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.log(Level.FINE, body)
+                    logger.fine(body)
                 }
                 return body
             } else {
@@ -282,7 +288,6 @@ class JokeApi {
                         enabledFlags.add(it)
                     }
                 }
-
                 return Joke(
                     error = false,
                     category = Category.valueOf(json.getString("category").uppercase()),
