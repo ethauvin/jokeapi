@@ -32,6 +32,15 @@
 
 package net.thauvin.erik.jokeapi
 
+import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
+import net.thauvin.erik.jokeapi.exceptions.JokeException
+import net.thauvin.erik.jokeapi.models.Category
+import net.thauvin.erik.jokeapi.models.Flag
+import net.thauvin.erik.jokeapi.models.Format
+import net.thauvin.erik.jokeapi.models.IdRange
+import net.thauvin.erik.jokeapi.models.Joke
+import net.thauvin.erik.jokeapi.models.Language
+import net.thauvin.erik.jokeapi.models.Type
 import org.json.JSONObject
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -45,12 +54,14 @@ import java.util.stream.Collectors
 class JokeApi {
     companion object {
         private const val API_URL = "https://v2.jokeapi.dev/joke/"
+
+        @JvmStatic
         val logger: Logger by lazy { Logger.getLogger(JokeApi::class.java.simpleName) }
 
         @JvmStatic
         @JvmOverloads
-        @Throws(IOException::class)
-        fun apiCall(
+        @Throws(HttpErrorException::class, IOException::class)
+        fun getRawJoke(
             categories: Set<Category> = setOf(Category.ANY),
             language: Language = Language.ENGLISH,
             flags: Set<Flag> = emptySet(),
@@ -135,8 +146,8 @@ class JokeApi {
             return fetchUrl(urlBuilder.toString())
         }
 
-        @Throws(JokeException::class, IOException::class)
-        private fun fetchUrl(url: String): String {
+        @Throws(HttpErrorException::class, IOException::class)
+        internal fun fetchUrl(url: String): String {
             logger.log(Level.FINE, url)
 
             val connection = URL(url).openConnection() as HttpURLConnection
@@ -151,54 +162,72 @@ class JokeApi {
                 }
                 return body
             } else {
-                when (connection.responseCode) {
-                    400 -> throw IOException(
-                        "400: Bad Request", IOException(
-                            "The request you have sent to JokeAPI is formatted incorrectly and cannot be processed"
-                        )
-                    )
-
-                    403 -> throw IOException(
-                        "4o3: Forbidden", IOException(
-                            "You have been added to the blacklist due to malicious behavior and are not allowed" + " to send requests to JokeAPI anymore"
-                        )
-                    )
-
-                    404 -> throw IOException(
-                        "404: Not Found", IOException("The URL you have requested couldn't be found")
-                    )
-
-                    413 -> throw IOException(
-                        "413: Payload Too Large",
-                        IOException("The payload data sent to the server exceeds the maximum size of 5120 bytes")
-                    )
-
-                    428 -> throw IOException(
-                        "429: Too Many Requests", IOException(
-                            "You have exceeded the limit of 120 requests per minute and have to wait a bit" + " until you are allowed to send requests again"
-                        )
-                    )
-
-                    500 -> throw IOException(
-                        "500: Internal Server Error", IOException(
-                            "There was a general internal error within JokeAPI. You can get more info from" + " the properties in the response text"
-                        )
-                    )
-
-                    523 -> throw IOException(
-                        "523: Origin Unreachable", IOException(
-                            "The server is temporarily offline due to maintenance or a dynamic IP update." + " Please be patient in this case."
-                        )
-                    )
-
-                    else -> throw IOException("${connection.responseCode}: Unknown Error")
-                }
+                throw httpError(connection.responseCode)
             }
+        }
+
+        private fun httpError(responseCode: Int): HttpErrorException {
+            val httpException: HttpErrorException
+            when (responseCode) {
+                400 -> httpException = HttpErrorException(
+                    responseCode, "Bad Request", IOException(
+                        "The request you have sent to JokeAPI is formatted incorrectly and cannot be processed."
+                    )
+                )
+
+                403 -> httpException = HttpErrorException(
+                    responseCode, "Forbidden", IOException(
+                        "You have been added to the blacklist due to malicious behavior and are not allowed"
+                                + " to send requests to JokeAPI anymore."
+                    )
+                )
+
+                404 -> httpException = HttpErrorException(
+                    responseCode, "Not Found", IOException("The URL you have requested couldn't be found.")
+                )
+
+                413 -> httpException = HttpErrorException(
+                    responseCode,
+                    "URI Too Long",
+                    IOException("The URL exceeds the maximum length of 250 characters.")
+                )
+
+                414 -> httpException = HttpErrorException(
+                    responseCode,
+                    "Payload Too Large",
+                    IOException("The payload data sent to the server exceeds the maximum size of 5120 bytes.")
+                )
+
+                429 -> httpException = HttpErrorException(
+                    responseCode, "Too Many Requests", IOException(
+                        "You have exceeded the limit of 120 requests per minute and have to wait a bit" +
+                                " until you are allowed to send requests again."
+                    )
+                )
+
+                500 -> httpException = HttpErrorException(
+                    responseCode, "Internal Server Error", IOException(
+                        "There was a general internal error within JokeAPI. You can get more info from" +
+                                " the properties in the response text."
+                    )
+                )
+
+                523 -> httpException = HttpErrorException(
+                    responseCode, "Origin Unreachable", IOException(
+                        "The server is temporarily offline due to maintenance or a dynamic IP update." +
+                                " Please be patient in this case."
+                    )
+                )
+
+                else -> httpException = HttpErrorException(responseCode, "Unknown HTTP Error")
+            }
+
+            return httpException
         }
 
         @JvmStatic
         @JvmOverloads
-        @Throws(JokeException::class, IOException::class)
+        @Throws(JokeException::class, HttpErrorException::class, IOException::class)
         fun getJoke(
             categories: Set<Category> = setOf(Category.ANY),
             language: Language = Language.ENGLISH,
@@ -210,7 +239,17 @@ class JokeApi {
             splitNewLine: Boolean = true
         ): Joke {
             val json =
-                JSONObject(apiCall(categories, language, flags, type, search = search, idRange = idRange, safe = safe))
+                JSONObject(
+                    getRawJoke(
+                        categories,
+                        language,
+                        flags,
+                        type,
+                        search = search,
+                        idRange = idRange,
+                        safe = safe
+                    )
+                )
             if (json.getBoolean("error")) {
                 val causedBy = json.getJSONArray("causedBy")
                 val causes = MutableList<String>(causedBy.length()) { i -> causedBy.getString(i) }

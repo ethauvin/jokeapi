@@ -1,5 +1,5 @@
 /*
- * Format.kt
+ * JokeException.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -30,11 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.exceptions
 
-/**
- * Response formats.
- */
-enum class Format(val value: String) {
-    JSON("json"), XML("xml"), YAML("yaml"), TEXT("txt"), TXT(TEXT.value)
+class JokeException @JvmOverloads constructor(
+    val error: Boolean,
+    val internalError: Boolean,
+    val code: Int,
+    message: String,
+    val causedBy: List<String>,
+    val additionalInfo: String,
+    val timestamp: Long,
+    cause: Throwable? = null
+) : Exception(message, cause) {
+    companion object {
+        private const val serialVersionUID = 1L
+    }
+
+    fun debug(): String {
+        return "JokeException(message=$message, error=$error, internalError=$internalError, code=$code," +
+                " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
+    }
 }

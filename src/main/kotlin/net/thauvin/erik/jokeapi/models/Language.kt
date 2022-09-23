@@ -1,5 +1,5 @@
 /*
- * Type.kt
+ * Language.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -30,13 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.models
 
 /**
- * Joke types.
+ * Supported languages.
  */
-enum class Type(val value: String) {
-    SINGLE("single"),
-    TWOPART("twopart"),
-    ALL("${SINGLE.value},${TWOPART.value}")
+enum class Language(val value: String) {
+    ENGLISH("en"),
+    EN(ENGLISH.value),
+    CZECH("cs"),
+    CS(CZECH.value),
+    GERMAN("de"),
+    DE(GERMAN.value),
+    SPANISH("es"),
+    ES(SPANISH.value),
+    FRENCH("fr"),
+    FR(FRENCH.value),
+    PORTUGUESE("pt"),
+    PT(PORTUGUESE.value)
 }

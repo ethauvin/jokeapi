@@ -1,5 +1,5 @@
 /*
- * Joke.kt
+ * IdRange.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -30,15 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.models
 
-data class Joke(
-    val error: Boolean,
-    val category: Category,
-    val type: Type,
-    val joke: Set<String>,
-    val flags: Set<Flag>,
-    val id: Int,
-    val safe: Boolean,
-    val language: Language
-)
+data class IdRange(val start: Int = -1, val end: Int = -1)

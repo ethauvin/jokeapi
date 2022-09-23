@@ -2,10 +2,9 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexMethod:JokeApi.kt$JokeApi.Companion$@JvmStatic @JvmOverloads @Throws(IOException::class) fun apiCall( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Set&lt;Type> = emptySet(), format: Format = Format.JSON, search: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, ): String</ID>
-    <ID>LongMethod:JokeApi.kt$JokeApi.Companion$@Throws(JokeException::class, IOException::class) private fun fetchUrl(url: String) : String</ID>
-    <ID>LongParameterList:JokeApi.kt$JokeApi.Companion$( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Set&lt;Type> = emptySet(), format: Format = Format.JSON, search: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, )</ID>
-    <ID>LongParameterList:JokeApi.kt$JokeApi.Companion$( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Set&lt;Type> = emptySet(), search: String = "", idRange: IdRange = IdRange(), safe: Boolean = false )</ID>
+    <ID>ComplexMethod:JokeApi.kt$JokeApi.Companion$@JvmStatic @JvmOverloads @Throws(HttpErrorException::class, IOException::class) fun getRawJoke( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, search: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, ): String</ID>
+    <ID>LongParameterList:JokeApi.kt$JokeApi.Companion$( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, search: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, )</ID>
+    <ID>LongParameterList:JokeApi.kt$JokeApi.Companion$( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, search: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, splitNewLine: Boolean = true )</ID>
     <ID>LongParameterList:JokeException.kt$JokeException$( val error: Boolean, val internalError: Boolean, val code: Int, message: String, val causedBy: List&lt;String>, val additionalInfo: String, val timestamp: Long, cause: Throwable? = null )</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$10</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$200</ID>
@@ -14,10 +13,10 @@
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$403</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$404</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$413</ID>
-    <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$428</ID>
+    <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$414</ID>
+    <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$429</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$500</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$523</ID>
-    <ID>ThrowsCount:JokeApi.kt$JokeApi.Companion$@Throws(JokeException::class, IOException::class) private fun fetchUrl(url: String) : String</ID>
     <ID>UtilityClassWithPublicConstructor:JokeApi.kt$JokeApi</ID>
   </CurrentIssues>
 </SmellBaseline>

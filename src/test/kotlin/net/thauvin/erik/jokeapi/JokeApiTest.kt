@@ -32,9 +32,18 @@
 
 package net.thauvin.erik.jokeapi
 
-import net.thauvin.erik.jokeapi.JokeApi.Companion.apiCall
+import net.thauvin.erik.jokeapi.JokeApi.Companion.fetchUrl
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
+import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
+import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
+import net.thauvin.erik.jokeapi.exceptions.JokeException
+import net.thauvin.erik.jokeapi.models.Category
+import net.thauvin.erik.jokeapi.models.Flag
+import net.thauvin.erik.jokeapi.models.Format
+import net.thauvin.erik.jokeapi.models.IdRange
+import net.thauvin.erik.jokeapi.models.Language
+import net.thauvin.erik.jokeapi.models.Type
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -42,41 +51,12 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
 internal class JokeApiTest {
-    @Test
-    fun `API call with TXT`() {
-        val response = apiCall(format = Format.TEXT)
-        logger.log(Level.FINE, response)
-        assertAll("plain text",
-            { assertTrue(response.isNotEmpty()) { "should be not empty" } },
-            { assertFalse(response.startsWith("Error ")) { "should not be an error" } }
-        )
-    }
-
-    @Test
-    fun `API Call with invalid ID Range`() {
-        val response = apiCall(format = Format.TXT, idRange = IdRange(0, 30000))
-        logger.log(Level.FINE, response)
-        assertTrue(response.startsWith("Error ")) { "should be an error" }
-    }
-
-    @Test
-    fun `API Call with XML`() {
-        val response = apiCall(format = Format.XML)
-        logger.log(Level.FINE, response)
-        assertTrue(response.startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")) { "should be xml" }
-    }
-
-    @Test
-    fun `API Call with YAML`() {
-        val response = apiCall(format = Format.YAML)
-        logger.log(Level.FINE, response)
-        assertTrue(response.startsWith("error: false")) { "should be yaml" }
-    }
-
     @Test
     fun `Get Joke`() {
         val joke = getJoke()
@@ -86,8 +66,7 @@ internal class JokeApiTest {
             { assertTrue(joke.joke.isNotEmpty()) { "joke should not be empty" } },
             { assertTrue(joke.type == Type.TWOPART || joke.type == Type.SINGLE) { "type should validate" } },
             { assertTrue(joke.id >= 0) { "id should be >= 0" } },
-            { assertEquals(Language.EN, joke.language) { "language should be english" } }
-        )
+            { assertEquals(Language.EN, joke.language) { "language should be english" } })
     }
 
     @Test
@@ -98,8 +77,7 @@ internal class JokeApiTest {
         assertAll("joke by id",
             { assertTrue(joke.flags.contains(Flag.NSFW) && joke.flags.contains(Flag.EXPLICIT)) { "nsfw & explicit" } },
             { assertEquals(172, joke.id) { "id is $id" } },
-            { assertEquals(Category.PUN, joke.category) { "category should be pun" } }
-        )
+            { assertEquals(Category.PUN, joke.category) { "category should be pun" } })
     }
 
     @Test
@@ -141,8 +119,7 @@ internal class JokeApiTest {
         logger.log(Level.FINE, joke.toString())
         assertAll("safe joke",
             { assertTrue(joke.safe) { "should be safe" } },
-            { assertTrue(joke.flags.isEmpty()) { "flags should be empty" } }
-        )
+            { assertTrue(joke.flags.isEmpty()) { "flags should be empty" } })
     }
 
     @Test
@@ -158,8 +135,7 @@ internal class JokeApiTest {
         logger.log(Level.FINE, joke.toString())
         assertAll("two-part joke",
             { assertEquals(Type.TWOPART, joke.type) { "type should be two-part" } },
-            { assertTrue(joke.joke.size > 1) { "should have multiple lines" } }
-        )
+            { assertTrue(joke.joke.size > 1) { "should have multiple lines" } })
     }
 
     @Test
@@ -171,12 +147,54 @@ internal class JokeApiTest {
     }
 
     @Test
+    fun `Get Raw Joke with TXT`() {
+        val response = getRawJoke(format = Format.TEXT)
+        logger.log(Level.FINE, response)
+        assertAll("plain text",
+            { assertTrue(response.isNotEmpty()) { "should be not empty" } },
+            { assertFalse(response.startsWith("Error ")) { "should not be an error" } })
+    }
+
+    @Test
+    fun `Get Raw Joke with invalid ID Range`() {
+        val response = getRawJoke(format = Format.TXT, idRange = IdRange(0, 30000))
+        logger.log(Level.FINE, response)
+        assertTrue(response.startsWith("Error ")) { "should be an error" }
+    }
+
+    @Test
+    fun `Get Raw Joke with XML`() {
+        val response = getRawJoke(format = Format.XML)
+        logger.log(Level.FINE, response)
+        assertTrue(response.startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")) { "should be xml" }
+    }
+
+    @Test
+    fun `Get Raw Joke with YAML`() {
+        val response = getRawJoke(format = Format.YAML)
+        logger.log(Level.FINE, response)
+        assertTrue(response.startsWith("error: false")) { "should be yaml" }
+    }
+
+    @Test
+    fun `Fetch Invalid URL`() {
+        val statusCode = 999
+        val e = assertThrows<HttpErrorException> {
+            fetchUrl("https://httpstat.us/$statusCode")
+        }
+        assertAll("JokeException validation",
+            { assertEquals(statusCode, e.statusCode) { "status code should be $statusCode" } },
+            { assertTrue(e.message!!.isNotEmpty()) { "message should not be empty" } },
+            { assertTrue(e.cause == null) { "cause should be null" } })
+    }
+
+    @Test
     fun `Validate Joke Exception`() {
         val e = assertThrows<JokeException> {
             getJoke(categories = setOf(Category.CHRISTMAS), search = "foo")
         }
         logger.log(Level.FINE, e.debug())
-        assertAll("exception validation",
+        assertAll("JokeException validation",
             { assertEquals(106, e.code) { "code should be valid" } },
             { assertTrue(e.error) { "should be an error" } },
             { assertFalse(e.internalError) { "should not be internal error" } },
@@ -184,9 +202,21 @@ internal class JokeApiTest {
             { assertEquals(1, e.causedBy.size) { "causedBy size should be 1" } },
             { assertTrue(e.causedBy[0].startsWith("No jokes")) { "causedBy should start with no jokes" } },
             { assertTrue(e.additionalInfo.isNotEmpty()) { "additional info should not be empty" } },
-            { assertTrue(e.timestamp > 0) { "timestamp should be > 0" } }
-        )
+            { assertTrue(e.timestamp > 0) { "timestamp should be > 0" } })
     }
+
+    @ParameterizedTest
+    @ValueSource(ints = [400, 404, 403, 413, 414, 429, 500, 523])
+    fun `Validate HTTP Error Exceptions`(input: Int) {
+        val e = assertThrows<HttpErrorException> {
+            fetchUrl("https://httpstat.us/$input")
+        }
+        assertAll("JokeException validation",
+            { assertEquals(input, e.statusCode) { "status code should be $input" } },
+            { assertTrue(e.message!!.isNotEmpty()) { "message for $input should not be empty" } },
+            { assertTrue(e.cause!!.message!!.isNotEmpty()) { "cause of $input should not be empty" } })
+    }
+
 
     companion object {
         @JvmStatic

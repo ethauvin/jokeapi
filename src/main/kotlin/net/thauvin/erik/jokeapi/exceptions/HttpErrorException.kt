@@ -1,5 +1,5 @@
 /*
- * JokeException.kt
+ * HttpErrorException.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -30,25 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.exceptions
 
-class JokeException @JvmOverloads constructor(
-    val error: Boolean,
-    val internalError: Boolean,
-    val code: Int,
+import java.io.IOException
+
+class HttpErrorException @JvmOverloads constructor(
+    val statusCode: Int,
     message: String,
-    val causedBy: List<String>,
-    val additionalInfo: String,
-    val timestamp: Long,
     cause: Throwable? = null
-) : Exception(message, cause) {
+) : IOException(message, cause) {
     companion object {
         private const val serialVersionUID = 1L
     }
-
-    fun debug(): String {
-        return "JokeException(message=$message, error=$error, internalError=$internalError, code=$code, causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
-    }
-
-
 }

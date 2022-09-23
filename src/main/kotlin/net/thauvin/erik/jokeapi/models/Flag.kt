@@ -1,5 +1,5 @@
 /*
- * Category.kt
+ * Flag.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -30,25 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.models
 
 /**
- * Categories and aliases.
+ * Blacklist flags.
  */
-enum class Category(val value: String) {
-    ANY("Any"),
-    CHRISTMAS("Christmas"),
-    DARK("Dark"),
-
-    MISC("Misc"),
-    MISCELLANEOUS(MISC.value),
-
-    PROGRAMMING("Programming"),
-    CODING(PROGRAMMING.value),
-    DEVELOPMENT(PROGRAMMING.value),
-
-    PUN("Pun"),
-
-    SPOOKY("Spooky"),
-    HALLOWEEN(SPOOKY.value)
+enum class Flag(val value: String) {
+    NSFW("nsfw"),
+    RELIGIOUS("religious"),
+    POLITICAL("political"),
+    RACIST("racist"),
+    SEXIST("sexist"),
+    EXPLICIT("explicit"),
+    ALL("${NSFW.value},${RELIGIOUS.value},${POLITICAL.value},${RACIST.value},${SEXIST.value},${EXPLICIT.value}"),
 }

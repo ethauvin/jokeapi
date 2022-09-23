@@ -1,5 +1,5 @@
 /*
- * Flag.kt
+ * Type.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -30,17 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.models
 
 /**
- * Blacklist flags.
+ * Joke types.
  */
-enum class Flag(val value: String) {
-    NSFW("nsfw"),
-    RELIGIOUS("religious"),
-    POLITICAL("political"),
-    RACIST("racist"),
-    SEXIST("sexist"),
-    EXPLICIT("explicit"),
-    ALL("${NSFW.value},${RELIGIOUS.value},${POLITICAL.value},${RACIST.value},${SEXIST.value},${EXPLICIT.value}"),
+enum class Type(val value: String) {
+    SINGLE("single"),
+    TWOPART("twopart"),
+    ALL("${SINGLE.value},${TWOPART.value}")
 }

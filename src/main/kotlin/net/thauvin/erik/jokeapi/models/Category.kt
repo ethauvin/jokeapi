@@ -1,5 +1,5 @@
 /*
- * Language.kt
+ * Category.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -30,22 +30,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.models
 
 /**
- * Supported languages.
+ * Categories and aliases.
  */
-enum class Language(val value: String) {
-    ENGLISH("en"),
-    EN(ENGLISH.value),
-    CZECH("cs"),
-    CS(CZECH.value),
-    GERMAN("de"),
-    DE(GERMAN.value),
-    SPANISH("es"),
-    ES(SPANISH.value),
-    FRENCH("fr"),
-    FR(FRENCH.value),
-    PORTUGUESE("pt"),
-    PT(PORTUGUESE.value)
+enum class Category(val value: String) {
+    ANY("Any"),
+    CHRISTMAS("Christmas"),
+    DARK("Dark"),
+
+    MISC("Misc"),
+    MISCELLANEOUS(MISC.value),
+
+    PROGRAMMING("Programming"),
+    CODING(PROGRAMMING.value),
+    DEVELOPMENT(PROGRAMMING.value),
+
+    PUN("Pun"),
+
+    SPOOKY("Spooky"),
+    HALLOWEEN(SPOOKY.value)
 }
