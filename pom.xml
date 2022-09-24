@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.thauvin.erik</groupId>
+  <artifactId>jokeapi</artifactId>
+  <version>0.9-SNAPSHOT</version>
+  <name>jokeapi</name>
+  <description>Kotlin/Java Wrapper for Sv443's JokeApi</description>
+  <url>https://github.com/ethauvin/jokeapi</url>
+  <licenses>
+    <license>
+      <name>BSD 3-Clause</name>
+      <url>https://opensource.org/licenses/BSD-3-Clause</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>ethauvin</id>
+      <name>Erik C. Thauvin</name>
+      <email>erik@thauvin.net</email>
+      <url>https://erik.thauvin.net/</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/ethauvin/jokeapi.git</connection>
+    <developerConnection>scm:git:git@github.com:ethauvin/jokeapi.git</developerConnection>
+    <url>https://github.com/ethauvin/jokeapi</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/ethauvin/jokeapi/issues</url>
+  </issueManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-bom</artifactId>
+        <version>1.7.10</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>1.7.10</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20220320</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
