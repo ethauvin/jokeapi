@@ -11,7 +11,7 @@ val joke = getJoke()
 val safe = getJoke(safe = true)
 val pun = getJoke(category = Category.PUN)
 ```
-The parameters match the [joke endpoint](/https://v2.jokeapi.dev/#joke-endpoint).
+The parameters match the [joke endpoint](https://v2.jokeapi.dev/#joke-endpoint).
 
 A `Joke` class instance is returned:
 
@@ -53,7 +53,7 @@ class HttpErrorException(
     cause: Throwable? = null
 ) : IOException(message, cause)
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/Exceptions.kt)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ExceptionsTest.kt)...
 
 ## Gradle, Maven, etc.
 To use with [Gradle](https://gradle.org/), include the following dependency in your build file:
@@ -112,7 +112,7 @@ println(lang)
 error: false
 code: "fr"
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/Exceptions.kt)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt)...
 
 
 

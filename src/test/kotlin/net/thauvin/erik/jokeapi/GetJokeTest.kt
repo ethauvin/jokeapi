@@ -1,5 +1,5 @@
 /*
- * JokeApiTest.kt
+ * GetJokeTest.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
