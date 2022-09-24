@@ -1,5 +1,5 @@
 /*
- * Joke.kt
+ * Parameter.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -32,13 +32,17 @@
 
 package net.thauvin.erik.jokeapi.models
 
-data class Joke(
-    val error: Boolean,
-    val category: Category,
-    val type: Type,
-    val joke: List<String>,
-    val flags: Set<Flag>,
-    val id: Int,
-    val safe: Boolean,
-    val language: Language
-)
+object Parameter {
+    const val AMOUNT = "amount"
+    const val CONTAINS = "contains"
+    const val FLAGS = "blacklistFlags"
+    const val FORMAT = "format"
+    const val RANGE = "idRange"
+    const val LANG = "lang"
+    const val SAFE = "safe-mode"
+    const val TYPE = "type"
+
+    const val BLACKLIST_FLAGS = FLAGS
+    const val ID_RANGE = RANGE
+    const val SAFE_MODE = SAFE
+}

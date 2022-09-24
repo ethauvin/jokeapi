@@ -11,6 +11,7 @@ val joke = getJoke()
 val safe = getJoke(safe = true)
 val pun = getJoke(category = Category.PUN)
 ```
+The parameters match the [joke endpoint](/https://v2.jokeapi.dev/#joke-endpoint).
 
 A `Joke` class instance is returned:
 
@@ -19,13 +20,14 @@ data class Joke(
     val error: Boolean,
     val category: Category,
     val type: Type,
-    val joke: Set<String>,
+    val joke: List<String>,
     val flags: Set<Flag>,
     val id: Int,
     val safe: Boolean,
     val language: Language
 )
 ```
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt)...
 
 If an error occurs, a `JokeException` is thrown:
 
@@ -51,6 +53,7 @@ class HttpErrorException(
     cause: Throwable? = null
 ) : IOException(message, cause)
 ```
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/Exceptions.kt)...
 
 ## Gradle, Maven, etc.
 To use with [Gradle](https://gradle.org/), include the following dependency in your build file:
@@ -89,6 +92,28 @@ safe: true
 lang: "en"
 
 ```
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokeTest.kt)...
+
+## Extending
+
+A generic `apiCall()` function is available to access other [JokeAPI endpoints](https://v2.jokeapi.dev/#endpoints). 
+
+For example to retrieve the French [language code](https://v2.jokeapi.dev/#langcode-endpoint):
+
+```kotlin
+val lang = apiCall(
+    endPoint = "langcode",
+    path = "french",
+    params = mapOf(Parameter.FORMAT to Format.YAML.value)
+)
+println(lang)
+```
+```yaml
+error: false
+code: "fr"
+```
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/Exceptions.kt)...
+
 
 
 

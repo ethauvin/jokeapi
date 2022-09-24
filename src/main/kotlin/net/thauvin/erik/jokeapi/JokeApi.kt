@@ -40,6 +40,7 @@ import net.thauvin.erik.jokeapi.models.Format
 import net.thauvin.erik.jokeapi.models.IdRange
 import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
+import net.thauvin.erik.jokeapi.models.Parameter
 import net.thauvin.erik.jokeapi.models.Type
 import org.json.JSONObject
 import java.io.IOException
@@ -53,10 +54,41 @@ import java.util.stream.Collectors
 
 class JokeApi {
     companion object {
-        private const val API_URL = "https://v2.jokeapi.dev/joke/"
+        private const val API_URL = "https://v2.jokeapi.dev/"
+        private const val JOKE_ENDPOINT = "joke"
 
         @JvmStatic
         val logger: Logger by lazy { Logger.getLogger(JokeApi::class.java.simpleName) }
+
+        @JvmStatic
+        @JvmOverloads
+        @Throws(HttpErrorException::class, IOException::class)
+        fun apiCall(endPoint: String, path: String = "", params: Map<String, String> = emptyMap()): String {
+            val urlBuilder = StringBuilder("$API_URL$endPoint")
+
+            if (path.isNotEmpty()) {
+                if (!urlBuilder.endsWith(('/'))) {
+                    urlBuilder.append('/')
+                }
+                urlBuilder.append(path)
+            }
+
+            if (params.isNotEmpty()) {
+                urlBuilder.append('?')
+                val it = params.iterator()
+                while (it.hasNext()) {
+                    val param = it.next()
+                    urlBuilder.append(param.key)
+                    if (param.value.isNotEmpty()) {
+                        urlBuilder.append("=${param.value}")
+                    }
+                    if (it.hasNext()) {
+                        urlBuilder.append("&")
+                    }
+                }
+            }
+            return fetchUrl(urlBuilder.toString())
+        }
 
         @JvmStatic
         @JvmOverloads
@@ -72,53 +104,50 @@ class JokeApi {
             amount: Int = 1,
             safe: Boolean = false,
         ): String {
-            val urlBuilder = StringBuilder(API_URL)
-            val urlParams = mutableListOf<String>()
+            val params = mutableMapOf<String, String>()
 
-            // Category
-            if (!categories.contains(Category.ANY)) {
-                urlBuilder.append(categories.stream().map(Category::value).collect(Collectors.joining(",")))
+            // Categories
+            val path = if (!categories.contains(Category.ANY)) {
+                categories.stream().map(Category::value).collect(Collectors.joining(","))
             } else {
-                urlBuilder.append(Category.ANY.value)
+                Category.ANY.value
             }
 
             // Language
             if (language != Language.ENGLISH) {
-                urlParams.add("lang=${language.value}")
+                params[Parameter.LANG] = language.value
             }
 
             // Flags
             if (flags.isNotEmpty()) {
                 if (flags.contains(Flag.ALL)) {
-                    urlParams.add("blacklistFlags=${Flag.ALL.value}")
+                    params[Parameter.FLAGS] = Flag.ALL.value
                 } else {
-                    urlParams.add(
-                        "blacklistFlags=" + flags.stream().map(Flag::value).collect(Collectors.joining(","))
-                    )
+                    params[Parameter.FLAGS] = flags.stream().map(Flag::value).collect(Collectors.joining(","))
                 }
             }
 
             // Type
             if (type != Type.ALL) {
-                urlParams.add("type=${type.value}")
+                params[Parameter.TYPE] = type.value
             }
 
             // Format
             if (format != Format.JSON) {
-                urlParams.add("format=${format.value}")
+                params[Parameter.FORMAT] = format.value
             }
 
             // Contains
             if (search.isNotBlank()) {
-                urlParams.add("contains=${URLEncoder.encode(search, StandardCharsets.UTF_8)}")
+                params[Parameter.CONTAINS] = URLEncoder.encode(search, StandardCharsets.UTF_8).replace("+", "%20")
             }
 
             // Range
             if (idRange.start >= 0) {
                 if (idRange.end == -1 || idRange.start == idRange.end) {
-                    urlParams.add("idRange=${idRange.start}")
+                    params[Parameter.RANGE] = idRange.start.toString()
                 } else if (idRange.end > idRange.start) {
-                    urlParams.add("idRange=${idRange.start}-${idRange.end}")
+                    params[Parameter.RANGE] = "${idRange.start}-${idRange.end}"
                 } else if (logger.isLoggable(Level.WARNING)) {
                     logger.warning("Invalid ID Range: ${idRange.start}, ${idRange.end}")
                 }
@@ -126,28 +155,17 @@ class JokeApi {
 
             // Amount
             if (amount in 2..10) {
-                urlParams.add("amount=${amount}")
+                params[Parameter.AMOUNT] = amount.toString()
             } else if (amount != 1 && logger.isLoggable(Level.WARNING)) {
                 logger.warning("Invalid Amount: $amount")
             }
 
             // Safe
             if (safe) {
-                urlParams.add("safe-mode")
+                params[Parameter.SAFE] = ""
             }
 
-            if (urlParams.isNotEmpty()) {
-                urlBuilder.append('?')
-                val it = urlParams.iterator()
-                while (it.hasNext()) {
-                    urlBuilder.append(it.next())
-                    if (it.hasNext()) {
-                        urlBuilder.append("&")
-                    }
-                }
-            }
-
-            return fetchUrl(urlBuilder.toString())
+            return apiCall(JOKE_ENDPOINT, path, params)
         }
 
         @Throws(HttpErrorException::class, IOException::class)
@@ -270,7 +288,7 @@ class JokeApi {
                     timestamp = json.getLong("timestamp")
                 )
             } else {
-                val jokes = mutableSetOf<String>()
+                val jokes = mutableListOf<String>()
                 if (json.has("setup")) {
                     jokes.add(json.getString("setup"))
                     jokes.add(json.getString(("delivery")))
@@ -291,12 +309,12 @@ class JokeApi {
                 return Joke(
                     error = false,
                     category = Category.valueOf(json.getString("category").uppercase()),
-                    type = Type.valueOf(json.getString("type").uppercase()),
+                    type = Type.valueOf(json.getString(Parameter.TYPE).uppercase()),
                     joke = jokes,
                     flags = enabledFlags,
                     safe = json.getBoolean("safe"),
                     id = json.getInt("id"),
-                    language = Language.valueOf(json.getString("lang").uppercase())
+                    language = Language.valueOf(json.getString(Parameter.LANG).uppercase())
                 )
             }
         }
