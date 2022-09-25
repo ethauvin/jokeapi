@@ -80,7 +80,10 @@ class JokeApi {
                     val param = it.next()
                     urlBuilder.append(param.key)
                     if (param.value.isNotEmpty()) {
-                        urlBuilder.append("=${param.value}")
+                        urlBuilder.append("=").append(
+                            URLEncoder.encode(param.value, StandardCharsets.UTF_8).replace("+", "%20")
+                                .replace("*", "%2A").replace("%7E", "~")
+                        )
                     }
                     if (it.hasNext()) {
                         urlBuilder.append("&")
@@ -139,7 +142,7 @@ class JokeApi {
 
             // Contains
             if (search.isNotBlank()) {
-                params[Parameter.CONTAINS] = URLEncoder.encode(search, StandardCharsets.UTF_8).replace("+", "%20")
+                params[Parameter.CONTAINS] = search
             }
 
             // Range
@@ -211,9 +214,7 @@ class JokeApi {
                 )
 
                 413 -> httpException = HttpErrorException(
-                    responseCode,
-                    "URI Too Long",
-                    IOException("The URL exceeds the maximum length of 250 characters.")
+                    responseCode, "URI Too Long", IOException("The URL exceeds the maximum length of 250 characters.")
                 )
 
                 414 -> httpException = HttpErrorException(
@@ -224,22 +225,22 @@ class JokeApi {
 
                 429 -> httpException = HttpErrorException(
                     responseCode, "Too Many Requests", IOException(
-                        "You have exceeded the limit of 120 requests per minute and have to wait a bit" +
-                                " until you are allowed to send requests again."
+                        "You have exceeded the limit of 120 requests per minute and have to wait a bit"
+                                + " until you are allowed to send requests again."
                     )
                 )
 
                 500 -> httpException = HttpErrorException(
                     responseCode, "Internal Server Error", IOException(
-                        "There was a general internal error within JokeAPI. You can get more info from" +
-                                " the properties in the response text."
+                        "There was a general internal error within JokeAPI. You can get more info from"
+                                + " the properties in the response text."
                     )
                 )
 
                 523 -> httpException = HttpErrorException(
                     responseCode, "Origin Unreachable", IOException(
-                        "The server is temporarily offline due to maintenance or a dynamic IP update." +
-                                " Please be patient in this case."
+                        "The server is temporarily offline due to maintenance or a dynamic IP update."
+                                + " Please be patient in this case."
                     )
                 )
 
@@ -262,18 +263,11 @@ class JokeApi {
             safe: Boolean = false,
             splitNewLine: Boolean = true
         ): Joke {
-            val json =
-                JSONObject(
-                    getRawJoke(
-                        categories,
-                        language,
-                        flags,
-                        type,
-                        search = search,
-                        idRange = idRange,
-                        safe = safe
-                    )
+            val json = JSONObject(
+                getRawJoke(
+                    categories, language, flags, type, search = search, idRange = idRange, safe = safe
                 )
+            )
             if (json.getBoolean("error")) {
                 val causedBy = json.getJSONArray("causedBy")
                 val causes = MutableList<String>(causedBy.length()) { i -> causedBy.getString(i) }
