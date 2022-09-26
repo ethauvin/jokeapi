@@ -32,10 +32,8 @@
 
 package net.thauvin.erik.jokeapi
 
-import net.thauvin.erik.jokeapi.JokeApi.Companion.fetchUrl
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
-import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
 import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.Category
 import net.thauvin.erik.jokeapi.models.Flag

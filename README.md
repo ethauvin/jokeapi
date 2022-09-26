@@ -99,6 +99,21 @@ lang: "en"
 ```
 - View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokeTest.kt)...
 
+## Java
+
+To make it easier to use the library with Java, a configuration builder is also available:
+
+```java
+var config = new JokeConfig.Builder()
+        .type(Type.SINGLE)
+        .safe(true)
+        .build();
+var joke = JokeApi.getJoke(config);
+for (String j : joke.getJoke()) {
+    System.out.println(j);
+}
+```
+
 ## Extending
 
 A generic `apiCall()` function is available to access other [JokeAPI endpoints](https://v2.jokeapi.dev/#endpoints). 

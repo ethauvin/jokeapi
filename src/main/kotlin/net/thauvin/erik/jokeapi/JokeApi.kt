@@ -94,7 +94,6 @@ class JokeApi {
         }
 
         @JvmStatic
-        @JvmOverloads
         @Throws(HttpErrorException::class, IOException::class)
         fun getRawJoke(
             categories: Set<Category> = setOf(Category.ANY),
@@ -169,6 +168,22 @@ class JokeApi {
             }
 
             return apiCall(JOKE_ENDPOINT, path, params)
+        }
+
+        @JvmStatic
+        @Throws(HttpErrorException::class, IOException::class)
+        fun getRawJoke(config: JokeConfig): String {
+            return getRawJoke(
+                categories = config.categories,
+                language = config.language,
+                flags = config.flags,
+                type = config.type,
+                format = config.format,
+                search = config.search,
+                idRange = config.idRange,
+                amount = config.amount,
+                safe = config.safe
+            )
         }
 
         @Throws(HttpErrorException::class, IOException::class)
@@ -251,7 +266,6 @@ class JokeApi {
         }
 
         @JvmStatic
-        @JvmOverloads
         @Throws(JokeException::class, HttpErrorException::class, IOException::class)
         fun getJoke(
             categories: Set<Category> = setOf(Category.ANY),
@@ -311,6 +325,21 @@ class JokeApi {
                     language = Language.valueOf(json.getString(Parameter.LANG).uppercase())
                 )
             }
+        }
+
+        @JvmStatic
+        @Throws(JokeException::class, HttpErrorException::class, IOException::class)
+        fun getJoke(config: JokeConfig): Joke {
+            return getJoke(
+                categories = config.categories,
+                language = config.language,
+                flags = config.flags,
+                type = config.type,
+                search = config.search,
+                idRange = config.idRange,
+                safe = config.safe,
+                splitNewLine = config.splitNewLine
+            )
         }
     }
 }
