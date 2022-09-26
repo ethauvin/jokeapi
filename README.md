@@ -1,7 +1,7 @@
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://opensource.org/licenses/BSD-3-Clause) <!-- [![Release](https://img.shields.io/github/release/ethauvin/jokeapi.svg)](https://github.com/ethauvin/jokeapi/releases/latest) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.thauvin.erik/jokeapi/badge.svg?color=blue)](https://maven-badges.herokuapp.com/maven-central/net.thauvin.erik/jokeapi) --> [![Nexus Snapshot](https://img.shields.io/nexus/s/net.thauvin.erik/jokeapi?server=https%3A%2F%2Foss.sonatype.org%2F)](https://oss.sonatype.org/content/repositories/snapshots/net/thauvin/erik/jokeapi/)
 
 <!-- [![Known Vulnerabilities](https://snyk.io/test/github/ethauvin/jokeapi/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/ethauvin/jokeapi?targetFile=pom.xml) -->
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ethauvin_jokeapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=ethauvin_jokeapi) [![GitHub CI](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml/badge.svg)](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml) <!-- [![CircleCI](https://circleci.com/gh/ethauvin/jokeapi/tree/master.svg?style=shield)](https://circleci.com/gh/ethauvin/jokeapi/tree/master) -->
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ethauvin_jokeapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=ethauvin_jokeapi) [![GitHub CI](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml/badge.svg)](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml) [![CircleCI](https://circleci.com/gh/ethauvin/jokeapi/tree/master.svg?style=shield)](https://circleci.com/gh/ethauvin/jokeapi/tree/master)
 
 # JokeAPI for Kotlin/Java
 
@@ -109,7 +109,7 @@ var config = new JokeConfig.Builder()
         .safe(true)
         .build();
 var joke = JokeApi.getJoke(config);
-for (String j : joke.getJoke()) {
+for (var j : joke.getJoke()) {
     System.out.println(j);
 }
 ```
