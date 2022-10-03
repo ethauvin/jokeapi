@@ -32,6 +32,9 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.size
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
@@ -48,6 +51,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
+import kotlin.test.assertContains
 
 class JokeConfigTest {
     @Test
@@ -65,12 +69,13 @@ class JokeConfigTest {
         val joke = getJoke(config)
         logger.fine(joke.toString())
         assertAll("Two-Parts Joke",
-            { assertEquals(Type.TWOPART, joke.type, "type should be two-part") },
-            { assertEquals(joke.category, Category.PROGRAMMING) { "category should be ${Category.PROGRAMMING}" } },
-            { assertEquals(joke.joke.size, 2, "should have two lines") },
-            { assertEquals(joke.language, Language.EN, "language should be english") },
-            { assertTrue(joke.flags.isEmpty(), "flags should empty") },
-            { assertTrue(joke.id in id - 2..id + 2) { "id should be $id +- 2" } })
+            { assertEquals(Type.TWOPART, joke.type, "config.type") },
+            { assertEquals(joke.category, Category.PROGRAMMING) { "config.category" } },
+            { assertThat(joke.joke, "config.joke").size().isEqualTo(2) },
+            { assertEquals(joke.language, Language.EN, "config.language") },
+            { assertTrue(joke.flags.isEmpty(), "config.flags.isEmpty") },
+            { assertContains(IntRange(id - 2, id + 2), joke.id, "config.id") }
+        )
     }
 
     @Test
@@ -83,9 +88,7 @@ class JokeConfigTest {
             safe(true)
         }.build()
         val joke = getRawJoke(config)
-        assertTrue(
-            joke.contains("----------------------------------------------"), "should contain -- delimiter"
-        )
+        assertContains(joke, "----------------------------------------------", false, "config.amount(2)")
     }
 
     companion object {

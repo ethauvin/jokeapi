@@ -32,50 +32,53 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.assertThat
+import assertk.assertions.doesNotContain
+import assertk.assertions.isNotEmpty
+import assertk.assertions.startsWith
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.models.Format
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
+import kotlin.test.assertContains
 
 internal class GetRawJokeTest {
     @Test
     fun `Get Raw Joke with TXT`() {
         val response = getRawJoke(format = Format.TEXT)
         assertAll("Plain Text",
-            { assertTrue(response.isNotEmpty(), "should be not empty") },
-            { assertFalse(response.startsWith("Error "), "should not be an error") })
+            { assertThat(response, "getRawJoke(txt)").isNotEmpty() },
+            { assertFalse(response.startsWith("Error "), "getRawJoke(txt)") }
+        )
     }
 
     @Test
     fun `Get Raw Joke with invalid Amount`() {
         val response = getRawJoke(amount = 100)
-        assertFalse(response.contains("\"amount\":"), "should not have amount")
+        assertThat(response, "getRawJoke(100)").doesNotContain("\"amount\":")
     }
 
     @Test
     fun `Get Raw Joke with XML`() {
         val response = getRawJoke(format = Format.XML)
-        assertTrue(
-            response.startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>"), "should be xml"
-        )
+        assertThat(response, "getRawJoke(xml)").startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
     }
 
     @Test
     fun `Get Raw Joke with YAML`() {
         val response = getRawJoke(format = Format.YAML)
-        assertTrue(response.startsWith("error: false"), "should be yaml")
+        assertThat(response, "getRawJoke(yaml)").startsWith("error: false")
     }
 
     @Test
     fun `Get Raw Jokes`() {
         val response = getRawJoke(amount = 2)
-        assertTrue(response.contains("\"amount\": 2"), "amount should be 2")
+        assertContains(response, "\"amount\": 2", false, "getRawJoke(2)")
     }
 
     companion object {

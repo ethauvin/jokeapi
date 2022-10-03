@@ -32,6 +32,15 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.isEmpty
+import assertk.assertions.isGreaterThan
+import assertk.assertions.isGreaterThanOrEqualTo
+import assertk.assertions.isIn
+import assertk.assertions.isNotEmpty
+import assertk.assertions.size
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.exceptions.JokeException
@@ -49,6 +58,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
+import kotlin.test.assertContains
 
 internal class GetJokeTest {
     @Test
@@ -56,24 +66,24 @@ internal class GetJokeTest {
         val joke = getJoke()
         logger.fine(joke.toString())
         assertAll("No Param Joke",
-            { assertFalse(joke.error, "error should be false") },
-            { assertTrue(joke.joke.isNotEmpty(), "joke should not be empty") },
-            { assertTrue(joke.type == Type.TWOPART || joke.type == Type.SINGLE, "type should validate") },
-            { assertTrue(joke.id >= 0, "id should be >= 0") },
-            { assertEquals(Language.EN, joke.language, "language should be english") })
+            { assertFalse(joke.error, "getJoke().error") },
+            { assertThat(joke.joke, "getJoke().joke").isNotEmpty() },
+            { assertThat(joke.type, "getJoke().type").isIn(Type.SINGLE, Type.TWOPART) },
+            { assertThat(joke.id, "getJoke().id").isGreaterThanOrEqualTo(0) },
+            { assertEquals(Language.EN, joke.language, "getJoke().language") })
     }
 
     @Test
     fun `Get Joke without Blacklist Flags`() {
         val joke = getJoke(flags = setOf(Flag.ALL))
-        assertTrue(joke.flags.isEmpty(), "flags should be empty.")
+        assertThat(joke.flags, "getJoke(flags=ALL)").isEmpty()
     }
 
     @Test
     fun `Get Joke without any Blacklist Flags`() {
         val allFlags = Flag.values().filter { it != Flag.ALL }.toSet()
         val joke = getJoke(flags = allFlags)
-        assertTrue(joke.flags.isEmpty(), "flags should be empty.")
+        assertThat(joke.flags, "getJoke(all flags)").isEmpty()
     }
 
     @Test
@@ -82,9 +92,15 @@ internal class GetJokeTest {
         val joke = getJoke(idRange = IdRange(id))
         logger.fine(joke.toString())
         assertAll("Joke by ID",
-            { assertTrue(joke.flags.contains(Flag.NSFW) && joke.flags.contains(Flag.EXPLICIT), "nsfw & explicit") },
-            { assertEquals(172, joke.id) { "id is $id" } },
-            { assertEquals(Category.PUN, joke.category, "category should be pun") })
+            {
+                assertThat(joke.flags, "getJoke($id).flags").all {
+                    contains(Flag.EXPLICIT)
+                    contains(Flag.NSFW)
+                }
+            },
+            { assertEquals(172, joke.id) { "getJoke($id).id" } },
+            { assertEquals(Category.PUN, joke.category) { "getJoke($id).category" } }
+        )
     }
 
     @Test
@@ -92,31 +108,34 @@ internal class GetJokeTest {
         val idRange = IdRange(1, 100)
         val joke = getJoke(idRange = idRange)
         logger.fine(joke.toString())
-        assertTrue(joke.id >= idRange.start && joke.id <= idRange.end, "id should be in range")
+        assertContains(IntRange(idRange.start, idRange.end), joke.id, "getJoke(${idRange})")
     }
 
     @Test
     fun `Get Joke with invalid ID Range`() {
-        val joke = getJoke(idRange = IdRange(100, 1))
+        val idRange = IdRange(100, 1)
+        val joke = getJoke(idRange = idRange)
         logger.fine(joke.toString())
-        assertFalse(joke.error, "should not be an error")
+        assertFalse(joke.error) { "getJoke(${idRange}.error" }
     }
 
     @Test
     fun `Get Joke with max ID Range`() {
-        val e = assertThrows<JokeException> { getJoke(idRange = IdRange(1, 30000)) }
+        val idRange = IdRange(1, 30000)
+        val e = assertThrows<JokeException> { getJoke(idRange = idRange) }
         assertAll("Joke w/ max ID Range",
-            { assertTrue(e.error, "should be an error") },
-            { assertTrue(e.additionalInfo.contains("ID range"), "should contain ID range") })
+            { assertTrue(e.error, "getJoke{${idRange}).error") },
+            { assertContains(e.additionalInfo, "ID range", false, "getJoke{${idRange}).additionalInfo") })
     }
 
     @Test
     fun `Get Joke with two Categories`() {
         val joke = getJoke(categories = setOf(Category.PROGRAMMING, Category.MISC))
         logger.fine(joke.toString())
-        assertTrue(joke.category == Category.PROGRAMMING || joke.category == Category.MISC) {
-            "category should be ${Category.PROGRAMMING.value} or ${Category.MISC.value}"
-        }
+        assertThat(joke.category, "getJoke(${Category.PROGRAMMING},${Category.MISC})").isIn(
+            Category.PROGRAMMING,
+            Category.MISC
+        )
     }
 
     @Test
@@ -124,7 +143,7 @@ internal class GetJokeTest {
         Category.values().filter { it != Category.ANY }.forEach {
             val joke = getJoke(categories = setOf(it))
             logger.fine(joke.toString())
-            assertEquals(it.value, joke.category.value) { "category should be ${it.value}" }
+            assertEquals(it.value, joke.category.value) { "getJoke($it).category" }
         }
     }
 
@@ -132,7 +151,7 @@ internal class GetJokeTest {
     fun `Get Joke with each Languages`() {
         Language.values().forEach {
             val joke = getJoke(language = it)
-            assertEquals(it.value, joke.language.value) { "language should be ${it.value}" }
+            assertEquals(it.value, joke.language.value) { "getJoke(${it}).language" }
         }
     }
 
@@ -141,7 +160,7 @@ internal class GetJokeTest {
         val joke = getJoke(
             categories = setOf(Category.DARK), type = Type.SINGLE, idRange = IdRange(178), splitNewLine = false
         )
-        assertTrue(joke.joke.toString().contains("\n"), "should contain newline")
+        assertContains(joke.joke.toString(), "\n", false, "getJoke(splitNewLine=false)")
     }
 
     @Test
@@ -149,15 +168,15 @@ internal class GetJokeTest {
         val joke = getJoke(safe = true)
         logger.fine(joke.toString())
         assertAll("Safe Joke",
-            { assertTrue(joke.safe, "should be safe") },
-            { assertTrue(joke.flags.isEmpty(), "flags should be empty") })
+            { assertTrue(joke.safe, "getJoke(safe).safe") },
+            { assertThat(joke.flags, "getJoke(safe).flags").isEmpty() })
     }
 
     @Test
     fun `Get Single Joke`() {
         val joke = getJoke(type = Type.SINGLE)
         logger.fine(joke.toString())
-        assertEquals(Type.SINGLE, joke.type, "type should be single")
+        assertEquals(Type.SINGLE, joke.type) { "getJoke(${Type.SINGLE}).type" }
     }
 
     @Test
@@ -165,8 +184,9 @@ internal class GetJokeTest {
         val joke = getJoke(type = Type.TWOPART)
         logger.fine(joke.toString())
         assertAll("Two-Parts Joke",
-            { assertEquals(Type.TWOPART, joke.type, "type should be two-part") },
-            { assertTrue(joke.joke.size > 1, "should have multiple lines") })
+            { assertEquals(Type.TWOPART, joke.type) { "getJoke(${Type.TWOPART}).type" } },
+            { assertThat(joke.joke, "getJoke(${Type.TWOPART}).joke").size().isGreaterThan(1) }
+        )
     }
 
     @Test
@@ -175,7 +195,7 @@ internal class GetJokeTest {
         val joke =
             getJoke(search = "his wife", categories = setOf(Category.PROGRAMMING), idRange = IdRange(id), safe = true)
         logger.fine(joke.toString())
-        assertEquals(id, joke.id) { "id should be $id" }
+        assertEquals(id, joke.id) { "getJoke(his wife).id" }
     }
 
     companion object {

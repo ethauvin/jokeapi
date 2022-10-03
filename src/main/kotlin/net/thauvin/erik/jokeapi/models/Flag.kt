@@ -42,5 +42,5 @@ enum class Flag(val value: String) {
     RACIST("racist"),
     SEXIST("sexist"),
     EXPLICIT("explicit"),
-    ALL("${NSFW.value},${RELIGIOUS.value},${POLITICAL.value},${RACIST.value},${SEXIST.value},${EXPLICIT.value}"),
+    ALL("${NSFW.value},${RELIGIOUS.value},${POLITICAL.value},${RACIST.value},${SEXIST.value},${EXPLICIT.value}")
 }

@@ -32,19 +32,21 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.assertThat
+import assertk.assertions.isGreaterThan
+import assertk.assertions.startsWith
 import net.thauvin.erik.jokeapi.JokeApi.Companion.apiCall
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.models.Format
-import net.thauvin.erik.jokeapi.models.Language
 import net.thauvin.erik.jokeapi.models.Parameter
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
+import kotlin.test.assertContains
 
 internal class ApiCallTest {
     @Test
@@ -53,9 +55,9 @@ internal class ApiCallTest {
         val response = apiCall(endPoint = "flags")
         val json = JSONObject(response)
         assertAll("Validate JSON",
-            { assertFalse(json.getBoolean("error"), "should not be an error") },
-            { assertTrue(json.getJSONArray("flags").length() > 0, "should have flags") },
-            { assertTrue(json.getLong("timestamp") > 0, "should have a timestamp") })
+            { assertFalse(json.getBoolean("error"), "apiCall(flags).error") },
+            { assertThat(json.getJSONArray("flags").length(), "apiCall(flags).flags").isGreaterThan(0) },
+            { assertThat(json.getLong("timestamp"), "apiCall(flags).timestamp").isGreaterThan(0) })
     }
 
     @Test
@@ -65,14 +67,14 @@ internal class ApiCallTest {
             endPoint = "langcode", path = "french",
             params = mapOf(Parameter.FORMAT to Format.YAML.value)
         )
-        assertTrue(lang.contains("code: \"fr\"")) { "should contain ${Language.FR.value}" }
+        assertContains(lang, "code: \"fr\"", false, "apiCall(langcode, french, yaml)")
     }
 
     @Test
     fun `Get Ping Response`() {
         // See https://v2.jokeapi.dev/#ping-endpoint
         val ping = apiCall(endPoint = "ping", params = mapOf(Parameter.FORMAT to Format.TXT.value))
-        assertTrue(ping.startsWith("Pong!"), "should return pong")
+        assertThat(ping, "apiCall(ping, txt)").startsWith("Pong!")
     }
 
     companion object {

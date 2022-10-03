@@ -63,6 +63,11 @@ class HttpErrorException(
 To use with [Gradle](https://gradle.org/), include the following dependency in your build file:
 
 ```gradle
+repositories {
+    mavenCentral()
+    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+}
+
 dependencies {
     implementation("net.thauvin.erik:jokeapi:0.9-SNAPSHOT")
 }

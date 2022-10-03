@@ -32,6 +32,14 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.assertThat
+import assertk.assertions.index
+import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThan
+import assertk.assertions.isNotEmpty
+import assertk.assertions.isNull
+import assertk.assertions.size
+import assertk.assertions.startsWith
 import net.thauvin.erik.jokeapi.JokeApi.Companion.fetchUrl
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
@@ -52,45 +60,51 @@ import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
 internal class ExceptionsTest {
+    private val httpStat = "https://httpstat.us"
+
     @Test
     fun `Validate Joke Exception`() {
         val e = assertThrows<JokeException> {
             getJoke(categories = setOf(Category.CHRISTMAS), search = "foo")
         }
         logger.fine(e.debug())
-        assertAll("JokeException Validation",
-            { assertEquals(106, e.code, "code should be valid") },
-            { assertTrue(e.error, "should be an error") },
-            { assertFalse(e.internalError, "should not be internal error") },
-            { assertEquals("No matching joke found", e.message, "message should match") },
-            { assertEquals(1, e.causedBy.size, "causedBy size should be 1") },
-            { assertTrue(e.causedBy[0].startsWith("No jokes"), "causedBy should start with no jokes") },
-            { assertTrue(e.additionalInfo.isNotEmpty(), "additional info should not be empty") },
-            { assertTrue(e.timestamp > 0, "timestamp should be > 0") })
+        assertAll(
+            "JokeException Validation",
+            { assertEquals(106, e.code) { "getJoke(${Category.CHRISTMAS}, foo).code" } },
+            { assertTrue(e.error) { "getJoke(${Category.CHRISTMAS}, foo).error" } },
+            { assertFalse(e.internalError) { "getJoke(${Category.CHRISTMAS}, foo).internalError" } },
+            { assertEquals("No matching joke found", e.message) { "getJoke(${Category.CHRISTMAS}, foo).message" } },
+            { assertThat(e.causedBy, "getJoke(${Category.CHRISTMAS}, foo).causedBy").size().isEqualTo(1) },
+            { assertThat(e.causedBy, "getJoke(${Category.CHRISTMAS}, foo).causedBy").index(0).startsWith("No jokes") },
+            { assertThat(e.additionalInfo, "getJoke(${Category.CHRISTMAS}, foo).additionalInfo").isNotEmpty() },
+            { assertThat(e.timestamp, "getJoke(${Category.CHRISTMAS}, foo).timestamp").isGreaterThan(0) },
+        )
     }
 
     @ParameterizedTest(name = "HTTP Status Code: {0}")
     @ValueSource(ints = [400, 404, 403, 413, 414, 429, 500, 523])
     fun `Validate HTTP Error Exceptions`(input: Int) {
         val e = assertThrows<HttpErrorException> {
-            fetchUrl("https://httpstat.us/$input")
+            fetchUrl("$httpStat/$input")
         }
         assertAll("HttpErrorException Validation",
-            { assertEquals(input, e.statusCode) { "status code should be $input" } },
-            { assertTrue(e.message!!.isNotEmpty()) { "message for $input should not be empty" } },
-            { assertTrue(e.cause!!.message!!.isNotEmpty()) { "cause of $input should not be empty" } })
+            { assertEquals(input, e.statusCode) { "fetchUrl($httpStat/$input).statusCode" } },
+            { assertThat(e.message!!, "fetchUrl($httpStat/$input).message").isNotEmpty() },
+            { assertThat(e.cause!!.message!!, "fetchUrl($httpStat/$input).cause.message").isNotEmpty() }
+        )
     }
 
     @Test
     fun `Fetch Invalid URL`() {
         val statusCode = 999
         val e = assertThrows<HttpErrorException> {
-            fetchUrl("https://httpstat.us/$statusCode")
+            fetchUrl("$httpStat/$statusCode")
         }
         Assertions.assertAll("JokeException Validation",
-            { assertEquals(statusCode, e.statusCode) { "status code should be $statusCode" } },
-            { assertTrue(e.message!!.isNotEmpty(), "message should not be empty") },
-            { assertTrue(e.cause == null, "cause should be null") })
+            { assertEquals(statusCode, e.statusCode) { "fetchUrl($httpStat/$statusCode).statusCode" } },
+            { assertThat(e.message!!, "fetchUrl($httpStat/$statusCode).message").isNotEmpty() },
+            { assertThat(e.cause, "fetchUrl($httpStat/$statusCode).statusCode.cause").isNull() }
+        )
     }
 
     companion object {
