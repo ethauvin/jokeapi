@@ -34,12 +34,18 @@ package net.thauvin.erik.jokeapi
 
 import assertk.all
 import assertk.assertThat
+import assertk.assertions.any
 import assertk.assertions.contains
+import assertk.assertions.isBetween
 import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isIn
 import assertk.assertions.isNotEmpty
+import assertk.assertions.isTrue
+import assertk.assertions.prop
 import assertk.assertions.size
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
@@ -47,43 +53,40 @@ import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.Category
 import net.thauvin.erik.jokeapi.models.Flag
 import net.thauvin.erik.jokeapi.models.IdRange
+import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
 import net.thauvin.erik.jokeapi.models.Type
-import org.junit.jupiter.api.Assertions.assertAll
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
-import kotlin.test.assertContains
 
 internal class GetJokeTest {
     @Test
     fun `Get Joke`() {
         val joke = getJoke()
         logger.fine(joke.toString())
-        assertAll("No Param Joke",
-            { assertFalse(joke.error, "getJoke().error") },
-            { assertThat(joke.joke, "getJoke().joke").isNotEmpty() },
-            { assertThat(joke.type, "getJoke().type").isIn(Type.SINGLE, Type.TWOPART) },
-            { assertThat(joke.id, "getJoke().id").isGreaterThanOrEqualTo(0) },
-            { assertEquals(Language.EN, joke.language, "getJoke().language") })
+        assertThat(joke, "getJoke()").all {
+            prop(Joke::error).isFalse()
+            prop(Joke::joke).isNotEmpty()
+            prop(Joke::type).isIn(Type.SINGLE, Type.TWOPART)
+            prop(Joke::id).isGreaterThanOrEqualTo(0)
+            prop(Joke::language).isEqualTo(Language.EN)
+        }
     }
 
     @Test
     fun `Get Joke without Blacklist Flags`() {
         val joke = getJoke(flags = setOf(Flag.ALL))
-        assertThat(joke.flags, "getJoke(flags=ALL)").isEmpty()
+        assertThat(joke::flags).isEmpty()
     }
 
     @Test
     fun `Get Joke without any Blacklist Flags`() {
         val allFlags = Flag.values().filter { it != Flag.ALL }.toSet()
         val joke = getJoke(flags = allFlags)
-        assertThat(joke.flags, "getJoke(all flags)").isEmpty()
+        assertThat(joke::flags).isEmpty()
     }
 
     @Test
@@ -91,16 +94,14 @@ internal class GetJokeTest {
         val id = 172
         val joke = getJoke(idRange = IdRange(id))
         logger.fine(joke.toString())
-        assertAll("Joke by ID",
-            {
-                assertThat(joke.flags, "getJoke($id).flags").all {
-                    contains(Flag.EXPLICIT)
-                    contains(Flag.NSFW)
-                }
-            },
-            { assertEquals(172, joke.id) { "getJoke($id).id" } },
-            { assertEquals(Category.PUN, joke.category) { "getJoke($id).category" } }
-        )
+        assertThat(joke, "getJoke($id)").all {
+            prop(Joke::flags).all {
+                contains(Flag.EXPLICIT)
+                contains(Flag.NSFW)
+            }
+            prop(Joke::id).isEqualTo(172)
+            prop(Joke::category).isEqualTo(Category.PUN)
+        }
     }
 
     @Test
@@ -108,7 +109,7 @@ internal class GetJokeTest {
         val idRange = IdRange(1, 100)
         val joke = getJoke(idRange = idRange)
         logger.fine(joke.toString())
-        assertContains(IntRange(idRange.start, idRange.end), joke.id, "getJoke(${idRange})")
+        assertThat(joke::id).isBetween(idRange.start, idRange.end)
     }
 
     @Test
@@ -116,16 +117,17 @@ internal class GetJokeTest {
         val idRange = IdRange(100, 1)
         val joke = getJoke(idRange = idRange)
         logger.fine(joke.toString())
-        assertFalse(joke.error) { "getJoke(${idRange}.error" }
+        assertThat(joke::error).isFalse()
     }
 
     @Test
     fun `Get Joke with max ID Range`() {
         val idRange = IdRange(1, 30000)
         val e = assertThrows<JokeException> { getJoke(idRange = idRange) }
-        assertAll("Joke w/ max ID Range",
-            { assertTrue(e.error, "getJoke{${idRange}).error") },
-            { assertContains(e.additionalInfo, "ID range", false, "getJoke{${idRange}).additionalInfo") })
+        assertThat(e, "getJoke{${idRange})").all {
+            prop(JokeException::error).isTrue()
+            prop(JokeException::additionalInfo).contains("ID range")
+        }
     }
 
     @Test
@@ -143,7 +145,7 @@ internal class GetJokeTest {
         Category.values().filter { it != Category.ANY }.forEach {
             val joke = getJoke(categories = setOf(it))
             logger.fine(joke.toString())
-            assertEquals(it.value, joke.category.value) { "getJoke($it).category" }
+            assertThat(joke::category, "getJoke($it)").prop(Category::value).isEqualTo(it.value)
         }
     }
 
@@ -151,7 +153,7 @@ internal class GetJokeTest {
     fun `Get Joke with each Languages`() {
         Language.values().forEach {
             val joke = getJoke(language = it)
-            assertEquals(it.value, joke.language.value) { "getJoke(${it}).language" }
+            assertThat(joke::language, "getJoke($it)").prop(Language::value).isEqualTo(it.value)
         }
     }
 
@@ -160,42 +162,51 @@ internal class GetJokeTest {
         val joke = getJoke(
             categories = setOf(Category.DARK), type = Type.SINGLE, idRange = IdRange(178), splitNewLine = false
         )
-        assertContains(joke.joke.toString(), "\n", false, "getJoke(splitNewLine=false)")
+        assertThat(joke::joke, "getJoke(splitNewLine=false)").any {
+            it.contains("\n")
+        }
     }
 
     @Test
     fun `Get Safe Joke`() {
         val joke = getJoke(safe = true)
         logger.fine(joke.toString())
-        assertAll("Safe Joke",
-            { assertTrue(joke.safe, "getJoke(safe).safe") },
-            { assertThat(joke.flags, "getJoke(safe).flags").isEmpty() })
+        assertThat(joke, "getJoke(safe)").all {
+            prop(Joke::safe).isTrue()
+            prop(Joke::flags).isEmpty()
+        }
     }
 
     @Test
     fun `Get Single Joke`() {
         val joke = getJoke(type = Type.SINGLE)
         logger.fine(joke.toString())
-        assertEquals(Type.SINGLE, joke.type) { "getJoke(${Type.SINGLE}).type" }
+        assertThat(joke::type).assertThat(Type.SINGLE)
     }
 
     @Test
     fun `Get Two-Parts Joke`() {
         val joke = getJoke(type = Type.TWOPART)
         logger.fine(joke.toString())
-        assertAll("Two-Parts Joke",
-            { assertEquals(Type.TWOPART, joke.type) { "getJoke(${Type.TWOPART}).type" } },
-            { assertThat(joke.joke, "getJoke(${Type.TWOPART}).joke").size().isGreaterThan(1) }
-        )
+        assertThat(joke, "getJoke(${Type.TWOPART})").all {
+            prop(Joke::type).isEqualTo(Type.TWOPART)
+            prop(Joke::joke).size().isGreaterThan(1)
+        }
     }
 
     @Test
     fun `Get Joke using Search`() {
         val id = 265
+        val search = "his wife"
         val joke =
-            getJoke(search = "his wife", categories = setOf(Category.PROGRAMMING), idRange = IdRange(id), safe = true)
+            getJoke(search = search, categories = setOf(Category.PROGRAMMING), idRange = IdRange(id), safe = true)
         logger.fine(joke.toString())
-        assertEquals(id, joke.id) { "getJoke(his wife).id" }
+        assertThat(joke, "getJoke($search)").all {
+            prop(Joke::id).isEqualTo(id)
+            prop(Joke::joke).any {
+                it.contains(search)
+            }
+        }
     }
 
     companion object {

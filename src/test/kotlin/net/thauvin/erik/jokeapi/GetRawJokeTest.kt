@@ -32,6 +32,7 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.doesNotContain
 import assertk.assertions.isNotEmpty
@@ -39,10 +40,8 @@ import assertk.assertions.startsWith
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.models.Format
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import kotlin.test.assertContains
@@ -51,10 +50,10 @@ internal class GetRawJokeTest {
     @Test
     fun `Get Raw Joke with TXT`() {
         val response = getRawJoke(format = Format.TEXT)
-        assertAll("Plain Text",
-            { assertThat(response, "getRawJoke(txt)").isNotEmpty() },
-            { assertFalse(response.startsWith("Error "), "getRawJoke(txt)") }
-        )
+        assertThat(response, "getRawJoke(txt)").all {
+            isNotEmpty()
+            doesNotContain("Error")
+        }
     }
 
     @Test

@@ -32,8 +32,12 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.all
 import assertk.assertThat
+import assertk.assertions.isBetween
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.prop
 import assertk.assertions.size
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJoke
@@ -42,11 +46,9 @@ import net.thauvin.erik.jokeapi.models.Category
 import net.thauvin.erik.jokeapi.models.Flag
 import net.thauvin.erik.jokeapi.models.Format
 import net.thauvin.erik.jokeapi.models.IdRange
+import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
 import net.thauvin.erik.jokeapi.models.Type
-import org.junit.jupiter.api.Assertions.assertAll
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.util.logging.ConsoleHandler
@@ -68,14 +70,14 @@ class JokeConfigTest {
         }.build()
         val joke = getJoke(config)
         logger.fine(joke.toString())
-        assertAll("Two-Parts Joke",
-            { assertEquals(Type.TWOPART, joke.type, "config.type") },
-            { assertEquals(joke.category, Category.PROGRAMMING) { "config.category" } },
-            { assertThat(joke.joke, "config.joke").size().isEqualTo(2) },
-            { assertEquals(joke.language, Language.EN, "config.language") },
-            { assertTrue(joke.flags.isEmpty(), "config.flags.isEmpty") },
-            { assertContains(IntRange(id - 2, id + 2), joke.id, "config.id") }
-        )
+        assertThat(joke, "config").all {
+            prop(Joke::type).isEqualTo(Type.TWOPART)
+            prop(Joke::category).isEqualTo(Category.PROGRAMMING)
+            prop(Joke::joke).size().isEqualTo(2)
+            prop(Joke::language).isEqualTo(Language.EN)
+            prop(Joke::flags).isEmpty()
+            prop(Joke::id).isBetween(id - 2, id + 2)
+        }
     }
 
     @Test
