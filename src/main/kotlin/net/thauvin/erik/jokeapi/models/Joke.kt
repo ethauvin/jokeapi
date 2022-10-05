@@ -32,6 +32,9 @@
 
 package net.thauvin.erik.jokeapi.models
 
+/**
+ * Used to store a joke's data.
+ */
 data class Joke(
     val error: Boolean,
     val category: Category,

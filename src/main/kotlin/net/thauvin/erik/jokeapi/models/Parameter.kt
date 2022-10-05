@@ -32,6 +32,11 @@
 
 package net.thauvin.erik.jokeapi.models
 
+/**
+ * The URL Parameters.
+ *
+ * Sse the [JokeAPI Documentation](https://jokeapi.dev/#url-parameters) for more details.
+ */
 object Parameter {
     const val AMOUNT = "amount"
     const val CONTAINS = "contains"
@@ -45,4 +50,5 @@ object Parameter {
     const val BLACKLIST_FLAGS = FLAGS
     const val ID_RANGE = RANGE
     const val SAFE_MODE = SAFE
+    const val SEARCH = CONTAINS
 }

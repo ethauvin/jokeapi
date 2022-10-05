@@ -32,6 +32,11 @@
 
 package net.thauvin.erik.jokeapi.exceptions
 
+/**
+ * Thrown whenever an error occurs.
+ *
+ * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
+ */
 class JokeException @JvmOverloads constructor(
     val error: Boolean,
     val internalError: Boolean,

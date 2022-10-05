@@ -33,7 +33,9 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * Response formats.
+ * The supported response formats.
+ *
+ * Sse the [JokeAPI Documentation](https://jokeapi.dev/#format-param) for more details.
  */
 enum class Format(val value: String) {
     JSON("json"), XML("xml"), YAML("yaml"), TEXT("txt"), TXT(TEXT.value)

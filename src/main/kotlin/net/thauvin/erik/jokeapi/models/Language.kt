@@ -33,19 +33,26 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * Supported languages.
+ * The supported languages.
+ *
+ * Sse the [JokeAPI Documentation](https://jokeapi.dev/#lang) for more details.
  */
 enum class Language(val value: String) {
     ENGLISH("en"),
     EN(ENGLISH.value),
+
     CZECH("cs"),
     CS(CZECH.value),
+    
     GERMAN("de"),
     DE(GERMAN.value),
+    
     SPANISH("es"),
     ES(SPANISH.value),
+    
     FRENCH("fr"),
     FR(FRENCH.value),
+    
     PORTUGUESE("pt"),
     PT(PORTUGUESE.value)
 }

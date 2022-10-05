@@ -33,7 +33,9 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * Blacklist flags.
+ * The supported blacklist flags, use [ALL] to prevent all.
+ *
+ * Sse the [JokeAPI Documentation](https://jokeapi.dev/#flags-param) for more details.
  */
 enum class Flag(val value: String) {
     NSFW("nsfw"),

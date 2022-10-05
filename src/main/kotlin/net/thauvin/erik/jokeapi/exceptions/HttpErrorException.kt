@@ -34,6 +34,11 @@ package net.thauvin.erik.jokeapi.exceptions
 
 import java.io.IOException
 
+/**
+ * Thrown whenever a server error occurs.
+ *
+ * Sse the [JokeAPI Documentation](https://jokeapi.dev/#status-codes) for more details.
+ */
 class HttpErrorException @JvmOverloads constructor(
     val statusCode: Int,
     message: String,

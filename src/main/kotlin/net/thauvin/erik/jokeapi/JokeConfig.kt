@@ -39,6 +39,11 @@ import net.thauvin.erik.jokeapi.models.IdRange
 import net.thauvin.erik.jokeapi.models.Language
 import net.thauvin.erik.jokeapi.models.Type
 
+/**
+ * Joke Configuration.
+ *
+ * Use the [Builder] to create a new configuration.
+ */
 class JokeConfig private constructor(
     val categories: Set<Category>,
     val language: Language,
@@ -51,6 +56,13 @@ class JokeConfig private constructor(
     val safe: Boolean,
     val splitNewLine: Boolean,
 ) {
+    /**
+     * Use to [build] a new configuration.
+     *
+     * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+     *
+     * @param splitNewLine Split newline within joke.
+     */
     data class Builder(
         var categories: Set<Category> = setOf(Category.ANY),
         var language: Language = Language.ENGLISH,

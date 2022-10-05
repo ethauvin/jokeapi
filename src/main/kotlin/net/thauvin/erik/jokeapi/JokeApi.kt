@@ -52,6 +52,9 @@ import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.stream.Collectors
 
+/**
+ * Implements the [JokeAPI](https://jokeapi.dev/).
+ */
 class JokeApi {
     companion object {
         private const val API_URL = "https://v2.jokeapi.dev/"
@@ -60,6 +63,11 @@ class JokeApi {
         @JvmStatic
         val logger: Logger by lazy { Logger.getLogger(JokeApi::class.java.simpleName) }
 
+        /**
+         * Use to make a direct API call.
+         *
+         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#endpoints) for more details.
+         */
         @JvmStatic
         @JvmOverloads
         @Throws(HttpErrorException::class, IOException::class)
@@ -93,6 +101,11 @@ class JokeApi {
             return fetchUrl(urlBuilder.toString())
         }
 
+        /**
+         * Use to retrieve a joke.
+         *
+         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+         */
         @JvmStatic
         @Throws(HttpErrorException::class, IOException::class)
         fun getRawJoke(
@@ -170,6 +183,11 @@ class JokeApi {
             return apiCall(JOKE_ENDPOINT, path, params)
         }
 
+        /**
+         * Use to retrieve a joke using a [configuration][JokeConfig].
+         *
+         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+         */
         @JvmStatic
         @Throws(HttpErrorException::class, IOException::class)
         fun getRawJoke(config: JokeConfig): String {
@@ -194,7 +212,7 @@ class JokeApi {
 
             val connection = URL(url).openConnection() as HttpURLConnection
             connection.setRequestProperty(
-                "User-Agent", "Mozilla/5.0 (Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0"
+                "User-Agent", "Mozilla/5.0 (Linux x86_64; rv:105.0) Gecko/20100101 Firefox/105.0"
             )
 
             if (connection.responseCode in 200..399) {
@@ -265,6 +283,13 @@ class JokeApi {
             return httpException
         }
 
+        /**
+         * Use to retrieve a [Joke].
+         *
+         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+         *
+         * @param splitNewLine Split newline within joke.
+         */
         @JvmStatic
         @Throws(JokeException::class, HttpErrorException::class, IOException::class)
         fun getJoke(
@@ -327,6 +352,11 @@ class JokeApi {
             }
         }
 
+        /**
+         * Use to retrieve a [Joke] using a [configuration][JokeConfig].
+         *
+         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+         */
         @JvmStatic
         @Throws(JokeException::class, HttpErrorException::class, IOException::class)
         fun getJoke(config: JokeConfig): Joke {
