@@ -33,8 +33,6 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * Used to specify a joke's ID or range of IDs.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#idrange-param) for more details.
+ * Specifies a joke [ID or range of IDs](https://jokeapi.dev/#idrange-param).
  */
 data class IdRange(val start: Int = -1, val end: Int = -1)

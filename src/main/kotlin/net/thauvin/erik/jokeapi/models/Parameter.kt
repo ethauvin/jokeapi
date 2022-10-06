@@ -33,9 +33,7 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * The URL Parameters.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#url-parameters) for more details.
+ * The available [URL Parameters](https://jokeapi.dev/#url-parameters).
  */
 object Parameter {
     const val AMOUNT = "amount"

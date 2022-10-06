@@ -57,11 +57,11 @@ class JokeConfig private constructor(
     val splitNewLine: Boolean,
 ) {
     /**
-     * Use to [build] a new configuration.
+     * [Builds][build] a new configuration.
      *
      * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
      *
-     * @param splitNewLine Split newline within joke.
+     * @param splitNewLine Split newline within [Type.SINGLE] joke.
      */
     data class Builder(
         var categories: Set<Category> = setOf(Category.ANY),

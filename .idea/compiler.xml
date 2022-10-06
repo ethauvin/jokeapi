@@ -2,6 +2,9 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
+      <module name="examples" target="18" />
+      <module name="examples.main" target="18" />
+      <module name="examples.test" target="18" />
       <module name="jokeapi-examples.app" target="18" />
       <module name="jokeapi-examples.app.main" target="18" />
       <module name="jokeapi-examples.app.test" target="18" />

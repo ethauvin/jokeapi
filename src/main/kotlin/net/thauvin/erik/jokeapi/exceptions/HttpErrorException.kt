@@ -35,7 +35,7 @@ package net.thauvin.erik.jokeapi.exceptions
 import java.io.IOException
 
 /**
- * Thrown whenever a server error occurs.
+ * Signals that a server error has occurred.
  *
  * Sse the [JokeAPI Documentation](https://jokeapi.dev/#status-codes) for more details.
  */

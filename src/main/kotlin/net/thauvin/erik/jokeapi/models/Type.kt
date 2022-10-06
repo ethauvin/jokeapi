@@ -33,9 +33,7 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * The supported joke types, use [ALL] for all.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#type-param) for more details.
+ * The supported [types](https://jokeapi.dev/#type-param), use [ALL] for all.
  */
 enum class Type(val value: String) {
     SINGLE("single"),

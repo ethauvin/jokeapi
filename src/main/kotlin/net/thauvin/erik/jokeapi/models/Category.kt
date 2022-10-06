@@ -33,9 +33,7 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * The supported joke categories and aliases, use [ANY] for all.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#categories) for more details.
+ * The supported [categories and aliases](https://jokeapi.dev/#categories), use [ANY] for all.
  */
 enum class Category(val value: String) {
     ANY("Any"),

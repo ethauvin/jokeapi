@@ -33,7 +33,7 @@
 package net.thauvin.erik.jokeapi.exceptions
 
 /**
- * Thrown whenever an error occurs.
+ * Signals that an error has occurred.
  *
  * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
  */

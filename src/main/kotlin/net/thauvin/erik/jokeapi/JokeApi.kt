@@ -64,7 +64,7 @@ class JokeApi {
         val logger: Logger by lazy { Logger.getLogger(JokeApi::class.java.simpleName) }
 
         /**
-         * Use to make a direct API call.
+         * Makes a direct API call.
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#endpoints) for more details.
          */
@@ -102,9 +102,10 @@ class JokeApi {
         }
 
         /**
-         * Use to retrieve a joke.
+         * Retrieves one or more jokes.
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+         * @see [getJoke]
          */
         @JvmStatic
         @Throws(HttpErrorException::class, IOException::class)
@@ -184,7 +185,7 @@ class JokeApi {
         }
 
         /**
-         * Use to retrieve a joke using a [configuration][JokeConfig].
+         * Retrieves ond or more jokes using a [configuration][JokeConfig].
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
          */
@@ -284,11 +285,12 @@ class JokeApi {
         }
 
         /**
-         * Use to retrieve a [Joke].
+         * Retrieves a [Joke] instance.
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
          *
-         * @param splitNewLine Split newline within joke.
+         * @param splitNewLine Split newline within [Type.SINGLE] joke.
+         * @see [getRawJoke]
          */
         @JvmStatic
         @Throws(JokeException::class, HttpErrorException::class, IOException::class)
@@ -353,7 +355,7 @@ class JokeApi {
         }
 
         /**
-         * Use to retrieve a [Joke] using a [configuration][JokeConfig].
+         * Retrieves a [Joke] instance using a [configuration][JokeConfig].
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
          */
