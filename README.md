@@ -21,7 +21,6 @@ A `Joke` class instance is returned:
 
 ```kotlin
 data class Joke(
-    val error: Boolean,
     val category: Category,
     val type: Type,
     val joke: List<String>,
@@ -33,11 +32,23 @@ data class Joke(
 ```
 - View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt)...
 
+To retrieve multiple jokes:
+
+```kotlin
+val frenchJokes = getJokes(amount = 2, type = Type.TWOPART, language = Language.FR)
+frenchJokes.forEach {
+    println(it.joke.joinToString("\n"))
+    println("-".repeat(46))
+}
+```
+
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokesTest.kt)...
+
+
 If an error occurs, a `JokeException` is thrown:
 
 ```kotlin
 class JokeException(
-    val error: Boolean,
     val internalError: Boolean,
     val code: Int,
     message: String,
@@ -75,13 +86,13 @@ dependencies {
 
 Instructions for using with Maven, Ivy, etc. can be found on Maven Central.
 
-## Raw Joke
+## Raw Jokes
 
-You can also retrieve a raw joke in all [supported formats](https://jokeapi.dev/#format-param).
+You can also retrieve one or more raw (unprocessed) jokes in all [supported formats](https://jokeapi.dev/#format-param).
 
 For example for YAML:
 ```kotlin
-var joke = getRawJoke(format = Format.YAML, idRange = IdRange(22))
+var joke = getRawJokes(format = Format.YAML, idRange = IdRange(22))
 println(joke)
 ```
 ```yaml

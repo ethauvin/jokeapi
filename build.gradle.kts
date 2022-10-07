@@ -15,7 +15,7 @@ plugins {
     kotlin("jvm") version "1.7.20"
 }
 
-description = "Kotlin/Java Wrapper for Sv443's JokeApi"
+description = "Kotlin/Java Wrapper for Sv443's JokeAPI"
 group = "net.thauvin.erik"
 version = "0.9-SNAPSHOT"
 

@@ -32,6 +32,7 @@
 
 package net.thauvin.erik.jokeapi
 
+import net.thauvin.erik.jokeapi.JokeConfig.Builder
 import net.thauvin.erik.jokeapi.models.Category
 import net.thauvin.erik.jokeapi.models.Flag
 import net.thauvin.erik.jokeapi.models.Format
@@ -73,7 +74,7 @@ class JokeConfig private constructor(
         var idRange: IdRange = IdRange(),
         var amount: Int = 1,
         var safe: Boolean = false,
-        var splitNewLine: Boolean = true
+        var splitNewLine: Boolean = false
     ) {
         fun categories(categories: Set<Category>) = apply { this.categories = categories }
         fun language(language: Language) = apply { this.language = language }

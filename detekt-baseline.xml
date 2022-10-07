@@ -2,12 +2,12 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexMethod:JokeApi.kt$JokeApi.Companion$@JvmStatic @Throws(HttpErrorException::class, IOException::class) fun getRawJoke( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, search: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, ): String</ID>
+    <ID>ComplexMethod:JokeApi.kt$JokeApi.Companion$@JvmStatic @Throws(HttpErrorException::class, IOException::class, IllegalArgumentException::class) fun getRawJokes( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, search: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, ): String</ID>
+    <ID>LongParameterList:JokeApi.kt$JokeApi.Companion$( amount: Int, categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, search: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, splitNewLine: Boolean = false )</ID>
     <ID>LongParameterList:JokeApi.kt$JokeApi.Companion$( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, search: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, )</ID>
-    <ID>LongParameterList:JokeApi.kt$JokeApi.Companion$( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, search: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, splitNewLine: Boolean = true )</ID>
+    <ID>LongParameterList:JokeApi.kt$JokeApi.Companion$( categories: Set&lt;Category> = setOf(Category.ANY), language: Language = Language.ENGLISH, flags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, search: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, splitNewLine: Boolean = false )</ID>
     <ID>LongParameterList:JokeConfig.kt$JokeConfig$( val categories: Set&lt;Category>, val language: Language, val flags: Set&lt;Flag>, val type: Type, val format: Format, val search: String, val idRange: IdRange, val amount: Int = 1, val safe: Boolean, val splitNewLine: Boolean, )</ID>
-    <ID>LongParameterList:JokeException.kt$JokeException$( val error: Boolean, val internalError: Boolean, val code: Int, message: String, val causedBy: List&lt;String>, val additionalInfo: String, val timestamp: Long, cause: Throwable? = null )</ID>
-    <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$10</ID>
+    <ID>LongParameterList:JokeException.kt$JokeException$( val internalError: Boolean, val code: Int, message: String, val causedBy: List&lt;String>, val additionalInfo: String, val timestamp: Long, cause: Throwable? = null )</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$200</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$399</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$400</ID>
@@ -18,6 +18,7 @@
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$429</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$500</ID>
     <ID>MagicNumber:JokeApi.kt$JokeApi.Companion$523</ID>
+    <ID>TooManyFunctions:JokeApi.kt$JokeApi$Companion</ID>
     <ID>TooManyFunctions:JokeConfig.kt$JokeConfig$Builder</ID>
     <ID>UtilityClassWithPublicConstructor:JokeApi.kt$JokeApi</ID>
   </CurrentIssues>

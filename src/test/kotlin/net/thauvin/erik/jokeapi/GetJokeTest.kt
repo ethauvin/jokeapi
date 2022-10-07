@@ -36,14 +36,16 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.any
 import assertk.assertions.contains
+import assertk.assertions.containsNone
+import assertk.assertions.each
 import assertk.assertions.isBetween
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isIn
 import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.size
@@ -68,7 +70,6 @@ internal class GetJokeTest {
         val joke = getJoke()
         logger.fine(joke.toString())
         assertThat(joke, "getJoke()").all {
-            prop(Joke::error).isFalse()
             prop(Joke::joke).isNotEmpty()
             prop(Joke::type).isIn(Type.SINGLE, Type.TWOPART)
             prop(Joke::id).isGreaterThanOrEqualTo(0)
@@ -115,9 +116,8 @@ internal class GetJokeTest {
     @Test
     fun `Get Joke with invalid ID Range`() {
         val idRange = IdRange(100, 1)
-        val joke = getJoke(idRange = idRange)
-        logger.fine(joke.toString())
-        assertThat(joke::error).isFalse()
+        val e = assertThrows<IllegalArgumentException> { getJoke(idRange = idRange, language = Language.DE) }
+        assertThat(e::message).isNotNull().contains("100, 1")
     }
 
     @Test
@@ -125,7 +125,6 @@ internal class GetJokeTest {
         val idRange = IdRange(1, 30000)
         val e = assertThrows<JokeException> { getJoke(idRange = idRange) }
         assertThat(e, "getJoke{${idRange})").all {
-            prop(JokeException::error).isTrue()
             prop(JokeException::additionalInfo).contains("ID range")
         }
     }
@@ -153,17 +152,22 @@ internal class GetJokeTest {
     fun `Get Joke with each Languages`() {
         Language.values().forEach {
             val joke = getJoke(language = it)
+            logger.fine(joke.toString())
             assertThat(joke::language, "getJoke($it)").prop(Language::value).isEqualTo(it.value)
         }
     }
 
     @Test
-    fun `Get Joke with Newline`() {
+    fun `Get Joke with Split Newline`() {
         val joke = getJoke(
-            categories = setOf(Category.DARK), type = Type.SINGLE, idRange = IdRange(178), splitNewLine = false
+            categories = setOf(Category.DARK), type = Type.SINGLE, idRange = IdRange(178), splitNewLine = true
         )
-        assertThat(joke::joke, "getJoke(splitNewLine=false)").any {
-            it.contains("\n")
+        logger.fine(joke.toString())
+        assertThat(joke::joke, "getJoke(splitNewLine=true)").all {
+            size().isEqualTo(2)
+            each {
+                containsNone("\n")
+            }
         }
     }
 

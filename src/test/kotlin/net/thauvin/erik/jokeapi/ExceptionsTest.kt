@@ -41,7 +41,6 @@ import assertk.assertions.isGreaterThan
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
-import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.size
 import assertk.assertions.startsWith
@@ -70,7 +69,6 @@ internal class ExceptionsTest {
         logger.fine(e.debug())
         assertThat(e, "getJoke(${Category.CHRISTMAS},foo)").all {
             prop(JokeException::code).isEqualTo(106)
-            prop(JokeException::error).isTrue()
             prop(JokeException::internalError).isFalse()
             prop(JokeException::message).isEqualTo("No matching joke found")
             prop(JokeException::causedBy).size().isEqualTo(1)

@@ -1,5 +1,5 @@
 /*
- * GetRawJokeTest.kt
+ * GetJokeTest.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -34,50 +34,63 @@ package net.thauvin.erik.jokeapi
 
 import assertk.all
 import assertk.assertThat
-import assertk.assertions.doesNotContain
-import assertk.assertions.isNotEmpty
-import assertk.assertions.startsWith
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJoke
+import assertk.assertions.contains
+import assertk.assertions.each
+import assertk.assertions.index
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThanOrEqualTo
+import assertk.assertions.isNotNull
+import assertk.assertions.isTrue
+import assertk.assertions.prop
+import assertk.assertions.size
+import net.thauvin.erik.jokeapi.JokeApi.Companion.getJokes
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
-import net.thauvin.erik.jokeapi.models.Format
+import net.thauvin.erik.jokeapi.models.Joke
+import net.thauvin.erik.jokeapi.models.Language
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
-import kotlin.test.assertContains
 
-internal class GetRawJokeTest {
+internal class GetJokesTest {
     @Test
-    fun `Get Raw Joke with TXT`() {
-        val response = getRawJoke(format = Format.TEXT)
-        assertThat(response, "getRawJoke(txt)").all {
-            isNotEmpty()
-            doesNotContain("Error")
+    fun `Get Multiple Jokes`() {
+        val amount = 2
+        val jokes = getJokes(amount = amount, safe = true, language = Language.FR)
+        assertThat(jokes, "jokes").all {
+            size().isEqualTo(amount)
+            each {
+                it.prop(Joke::id).isGreaterThanOrEqualTo(0)
+                it.prop(Joke::safe).isTrue()
+                it.prop(Joke::flags).isEmpty()
+                it.prop(Joke::language).isEqualTo(Language.FR)
+            }
         }
     }
 
     @Test
-    fun `Get Raw Joke with invalid Amount`() {
-        val response = getRawJoke(amount = 100)
-        assertThat(response, "getRawJoke(100)").doesNotContain("\"amount\":")
+    fun `Get Jokes with Invalid Amount`() {
+        val e = assertThrows<IllegalArgumentException> { getJokes(amount = -1) }
+        assertThat(e::message).isNotNull().contains("-1")
     }
 
     @Test
-    fun `Get Raw Joke with XML`() {
-        val response = getRawJoke(format = Format.XML)
-        assertThat(response, "getRawJoke(xml)").startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
-    }
-
-    @Test
-    fun `Get Raw Joke with YAML`() {
-        val response = getRawJoke(format = Format.YAML)
-        assertThat(response, "getRawJoke(yaml)").startsWith("error: false")
-    }
-
-    @Test
-    fun `Get Raw Jokes`() {
-        val response = getRawJoke(amount = 2)
-        assertContains(response, "\"amount\": 2", false, "getRawJoke(2)")
+    fun `Get One Joke as Multiple`() {
+        val jokes = getJokes(amount = 1, safe = true)
+        jokes.forEach {
+            println(it.joke.joinToString("\n"))
+            println("-".repeat(46))
+        }
+        assertThat(jokes, "jokes").all {
+            size().isEqualTo(1)
+            index(0).all {
+                prop(Joke::id).isGreaterThanOrEqualTo(0)
+                prop(Joke::flags).isEmpty()
+                prop(Joke::safe).isTrue()
+            }
+        }
     }
 
     companion object {

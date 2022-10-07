@@ -53,7 +53,7 @@ import java.util.logging.Logger
 import java.util.stream.Collectors
 
 /**
- * Implements the [JokeAPI](https://jokeapi.dev/).
+ * Implements the [Sv443's JokeAPI](https://jokeapi.dev/).
  */
 class JokeApi {
     companion object {
@@ -102,14 +102,14 @@ class JokeApi {
         }
 
         /**
-         * Retrieves one or more jokes.
+         * Returns one or more jokes.
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
          * @see [getJoke]
          */
         @JvmStatic
-        @Throws(HttpErrorException::class, IOException::class)
-        fun getRawJoke(
+        @Throws(HttpErrorException::class, IOException::class, IllegalArgumentException::class)
+        fun getRawJokes(
             categories: Set<Category> = setOf(Category.ANY),
             language: Language = Language.ENGLISH,
             flags: Set<Flag> = emptySet(),
@@ -164,16 +164,16 @@ class JokeApi {
                     params[Parameter.RANGE] = idRange.start.toString()
                 } else if (idRange.end > idRange.start) {
                     params[Parameter.RANGE] = "${idRange.start}-${idRange.end}"
-                } else if (logger.isLoggable(Level.WARNING)) {
-                    logger.warning("Invalid ID Range: ${idRange.start}, ${idRange.end}")
+                } else {
+                    throw IllegalArgumentException("Invalid ID Range: ${idRange.start}, ${idRange.end}")
                 }
             }
 
             // Amount
-            if (amount in 2..10) {
+            if (amount > 1) {
                 params[Parameter.AMOUNT] = amount.toString()
-            } else if (amount != 1 && logger.isLoggable(Level.WARNING)) {
-                logger.warning("Invalid Amount: $amount")
+            } else if (amount <= 0) {
+                throw IllegalArgumentException("Invalid Amount: $amount")
             }
 
             // Safe
@@ -185,14 +185,14 @@ class JokeApi {
         }
 
         /**
-         * Retrieves ond or more jokes using a [configuration][JokeConfig].
+         * Returns one or more jokes using a [configuration][JokeConfig].
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
          */
         @JvmStatic
-        @Throws(HttpErrorException::class, IOException::class)
-        fun getRawJoke(config: JokeConfig): String {
-            return getRawJoke(
+        @Throws(HttpErrorException::class, IOException::class, IllegalArgumentException::class)
+        fun getRawJokes(config: JokeConfig): String {
+            return getRawJokes(
                 categories = config.categories,
                 language = config.language,
                 flags = config.flags,
@@ -285,15 +285,15 @@ class JokeApi {
         }
 
         /**
-         * Retrieves a [Joke] instance.
+         * Returns a [Joke] instance.
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
          *
          * @param splitNewLine Split newline within [Type.SINGLE] joke.
-         * @see [getRawJoke]
+         * @see [getRawJokes]
          */
         @JvmStatic
-        @Throws(JokeException::class, HttpErrorException::class, IOException::class)
+        @Throws(JokeException::class, HttpErrorException::class, IOException::class, IllegalArgumentException::class)
         fun getJoke(
             categories: Set<Category> = setOf(Category.ANY),
             language: Language = Language.ENGLISH,
@@ -302,65 +302,79 @@ class JokeApi {
             search: String = "",
             idRange: IdRange = IdRange(),
             safe: Boolean = false,
-            splitNewLine: Boolean = true
+            splitNewLine: Boolean = false
         ): Joke {
             val json = JSONObject(
-                getRawJoke(
-                    categories, language, flags, type, search = search, idRange = idRange, safe = safe
+                getRawJokes(
+                    categories = categories,
+                    language = language,
+                    flags = flags,
+                    type = type,
+                    search = search,
+                    idRange = idRange,
+                    safe = safe
                 )
             )
             if (json.getBoolean("error")) {
-                val causedBy = json.getJSONArray("causedBy")
-                val causes = MutableList<String>(causedBy.length()) { i -> causedBy.getString(i) }
-
-                throw JokeException(
-                    error = true,
-                    internalError = json.getBoolean("internalError"),
-                    code = json.getInt("code"),
-                    message = json.getString("message"),
-                    causedBy = causes,
-                    additionalInfo = json.getString("additionalInfo"),
-                    timestamp = json.getLong("timestamp")
-                )
+                throw parseError(json)
             } else {
-                val jokes = mutableListOf<String>()
-                if (json.has("setup")) {
-                    jokes.add(json.getString("setup"))
-                    jokes.add(json.getString(("delivery")))
-                } else {
-                    if (splitNewLine) {
-                        jokes.addAll(json.getString("joke").split("\n"))
-                    } else {
-                        jokes.add(json.getString("joke"))
-                    }
-                }
-                val enabledFlags = mutableSetOf<Flag>()
-                val jsonFlags = json.getJSONObject("flags")
-                Flag.values().filter { it != Flag.ALL }.forEach {
-                    if (jsonFlags.has(it.value) && jsonFlags.getBoolean(it.value)) {
-                        enabledFlags.add(it)
-                    }
-                }
-                return Joke(
-                    error = false,
-                    category = Category.valueOf(json.getString("category").uppercase()),
-                    type = Type.valueOf(json.getString(Parameter.TYPE).uppercase()),
-                    joke = jokes,
-                    flags = enabledFlags,
-                    safe = json.getBoolean("safe"),
-                    id = json.getInt("id"),
-                    language = Language.valueOf(json.getString(Parameter.LANG).uppercase())
-                )
+                return parseJoke(json, splitNewLine)
             }
         }
 
         /**
-         * Retrieves a [Joke] instance using a [configuration][JokeConfig].
+         * Returns an array of [Joke] instances.
+         *
+         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+         *
+         * @param amount The required amount of jokes to return.
+         * @param splitNewLine Split newline within [Type.SINGLE] joke.
+         * @see [getRawJokes]
+         */
+        @JvmStatic
+        @Throws(JokeException::class, HttpErrorException::class, IOException::class, IllegalArgumentException::class)
+        fun getJokes(
+            amount: Int,
+            categories: Set<Category> = setOf(Category.ANY),
+            language: Language = Language.ENGLISH,
+            flags: Set<Flag> = emptySet(),
+            type: Type = Type.ALL,
+            search: String = "",
+            idRange: IdRange = IdRange(),
+            safe: Boolean = false,
+            splitNewLine: Boolean = false
+        ): Array<Joke> {
+            val json = JSONObject(
+                getRawJokes(
+                    categories = categories,
+                    language = language,
+                    flags = flags,
+                    type = type,
+                    search = search,
+                    idRange = idRange,
+                    amount = amount,
+                    safe = safe
+                )
+            )
+            if (json.getBoolean("error")) {
+                throw parseError(json)
+            } else {
+                return if (json.has("amount")) {
+                    val jokes = json.getJSONArray("jokes")
+                    Array(jokes.length()) { i -> parseJoke(jokes.getJSONObject(i), splitNewLine) }
+                } else {
+                    arrayOf(parseJoke(json, splitNewLine))
+                }
+            }
+        }
+
+        /**
+         * Retrieve a [Joke] instance using a [configuration][JokeConfig].
          *
          * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
          */
         @JvmStatic
-        @Throws(JokeException::class, HttpErrorException::class, IOException::class)
+        @Throws(JokeException::class, HttpErrorException::class, IOException::class, IllegalArgumentException::class)
         fun getJoke(config: JokeConfig): Joke {
             return getJoke(
                 categories = config.categories,
@@ -371,6 +385,70 @@ class JokeApi {
                 idRange = config.idRange,
                 safe = config.safe,
                 splitNewLine = config.splitNewLine
+            )
+        }
+
+        /**
+         * Returns an array of [Joke] instances using a [configuration][JokeConfig].
+         *
+         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+         */
+        @JvmStatic
+        @Throws(JokeException::class, HttpErrorException::class, IOException::class, IllegalArgumentException::class)
+        fun getJokes(config: JokeConfig): Array<Joke> {
+            return getJokes(
+                categories = config.categories,
+                language = config.language,
+                flags = config.flags,
+                type = config.type,
+                search = config.search,
+                idRange = config.idRange,
+                amount = config.amount,
+                safe = config.safe,
+                splitNewLine = config.splitNewLine
+            )
+        }
+
+        private fun parseError(json: JSONObject): JokeException {
+            val causedBy = json.getJSONArray("causedBy")
+            val causes = List<String>(causedBy.length()) { i -> causedBy.getString(i) }
+            return JokeException(
+                internalError = json.getBoolean("internalError"),
+                code = json.getInt("code"),
+                message = json.getString("message"),
+                causedBy = causes,
+                additionalInfo = json.getString("additionalInfo"),
+                timestamp = json.getLong("timestamp")
+            )
+        }
+
+        private fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
+            val jokes = mutableListOf<String>()
+            if (json.has("setup")) {
+                jokes.add(json.getString("setup"))
+                jokes.add(json.getString(("delivery")))
+            } else {
+                if (splitNewLine) {
+                    jokes.addAll(json.getString("joke").split("\n"))
+                } else {
+                    jokes.add(json.getString("joke"))
+                }
+            }
+            val enabledFlags = mutableSetOf<Flag>()
+            val jsonFlags = json.getJSONObject("flags")
+            Flag.values().filter { it != Flag.ALL }.forEach {
+                if (jsonFlags.has(it.value) && jsonFlags.getBoolean(it.value)) {
+                    enabledFlags.add(it)
+                }
+            }
+            return Joke(
+                category = Category.valueOf(json.getString("category").uppercase()),
+                type = Type.valueOf(json.getString(Parameter.TYPE).uppercase()),
+                joke = jokes,
+                flags = enabledFlags,
+                safe = json.getBoolean("safe"),
+                id = json.getInt("id"),
+                language = Language.valueOf(json.getString(Parameter.LANG).uppercase())
             )
         }
     }

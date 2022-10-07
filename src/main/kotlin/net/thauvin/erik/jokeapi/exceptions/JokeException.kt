@@ -38,7 +38,6 @@ package net.thauvin.erik.jokeapi.exceptions
  * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
  */
 class JokeException @JvmOverloads constructor(
-    val error: Boolean,
     val internalError: Boolean,
     val code: Int,
     message: String,
@@ -52,7 +51,7 @@ class JokeException @JvmOverloads constructor(
     }
 
     fun debug(): String {
-        return "JokeException(message=$message, error=$error, internalError=$internalError, code=$code," +
+        return "JokeException(message=$message, internalError=$internalError, code=$code," +
                 " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
     }
 }

@@ -41,16 +41,16 @@ enum class Language(val value: String) {
 
     CZECH("cs"),
     CS(CZECH.value),
-    
+
     GERMAN("de"),
     DE(GERMAN.value),
-    
+
     SPANISH("es"),
     ES(SPANISH.value),
-    
+
     FRENCH("fr"),
     FR(FRENCH.value),
-    
+
     PORTUGUESE("pt"),
     PT(PORTUGUESE.value)
 }

@@ -34,13 +34,17 @@ package net.thauvin.erik.jokeapi
 
 import assertk.all
 import assertk.assertThat
+import assertk.assertions.each
 import assertk.assertions.isBetween
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThanOrEqualTo
+import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.size
 import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJoke
+import net.thauvin.erik.jokeapi.JokeApi.Companion.getJokes
+import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJokes
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.models.Category
 import net.thauvin.erik.jokeapi.models.Flag
@@ -66,7 +70,6 @@ class JokeConfigTest {
             type(Type.TWOPART)
             idRange(IdRange(id - 2, id + 2))
             safe(true)
-            splitNewLine(false)
         }.build()
         val joke = getJoke(config)
         logger.fine(joke.toString())
@@ -81,6 +84,22 @@ class JokeConfigTest {
     }
 
     @Test
+    fun `Get joke with Builder and Split Newline`() {
+        val id = 5
+        val config = JokeConfig.Builder().apply {
+            categories(setOf(Category.PROGRAMMING))
+            idRange(IdRange(id))
+            splitNewLine(true)
+        }.build()
+        val joke = getJoke(config)
+        logger.fine(joke.toString())
+        assertThat(joke, "config").all {
+            prop(Joke::id).isEqualTo(id)
+            prop(Joke::joke).size().isEqualTo(2)
+        }
+    }
+
+    @Test
     fun `Get Raw Joke with Builder`() {
         val config = JokeConfig.Builder().apply {
             categories(setOf(Category.PROGRAMMING))
@@ -89,8 +108,28 @@ class JokeConfigTest {
             amount(2)
             safe(true)
         }.build()
-        val joke = getRawJoke(config)
+        val joke = getRawJokes(config)
         assertContains(joke, "----------------------------------------------", false, "config.amount(2)")
+    }
+
+    @Test
+    fun `Get Multiple Jokes with Builder`() {
+        val amount = 2
+        val config = JokeConfig.Builder().apply {
+            amount(amount)
+            safe(true)
+            language(Language.FR)
+        }.build()
+        val jokes = getJokes(config)
+        assertThat(jokes, "jokes").all {
+            size().isEqualTo(amount)
+            each {
+                it.prop(Joke::id).isGreaterThanOrEqualTo(0)
+                it.prop(Joke::safe).isTrue()
+                it.prop(Joke::flags).isEmpty()
+                it.prop(Joke::language).isEqualTo(Language.FR)
+            }
+        }
     }
 
     companion object {
