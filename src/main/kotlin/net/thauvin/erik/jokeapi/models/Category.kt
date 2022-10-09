@@ -33,22 +33,14 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * The supported [categories and aliases](https://jokeapi.dev/#categories), use [ANY] for all.
+ * The supported [categories](https://jokeapi.dev/#categories), use [ANY] for all.
  */
 enum class Category(val value: String) {
     ANY("Any"),
     CHRISTMAS("Christmas"),
     DARK("Dark"),
-
     MISC("Misc"),
-    MISCELLANEOUS(MISC.value),
-
     PROGRAMMING("Programming"),
-    CODING(PROGRAMMING.value),
-    DEVELOPMENT(PROGRAMMING.value),
-
     PUN("Pun"),
-
-    SPOOKY("Spooky"),
-    HALLOWEEN(SPOOKY.value)
+    SPOOKY("Spooky")
 }

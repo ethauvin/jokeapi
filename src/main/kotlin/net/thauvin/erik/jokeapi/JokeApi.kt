@@ -179,7 +179,7 @@ class JokeApi private constructor() {
  */
 fun getJoke(
     categories: Set<Category> = setOf(Category.ANY),
-    language: Language = Language.ENGLISH,
+    language: Language = Language.EN,
     flags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
     search: String = "",
@@ -218,7 +218,7 @@ fun getJoke(
 fun getJokes(
     amount: Int,
     categories: Set<Category> = setOf(Category.ANY),
-    language: Language = Language.ENGLISH,
+    language: Language = Language.EN,
     flags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
     search: String = "",
@@ -259,7 +259,7 @@ fun getJokes(
  */
 fun getRawJokes(
     categories: Set<Category> = setOf(Category.ANY),
-    language: Language = Language.ENGLISH,
+    language: Language = Language.EN,
     flags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
     format: Format = Format.JSON,
@@ -272,14 +272,14 @@ fun getRawJokes(
     val params = mutableMapOf<String, String>()
 
     // Categories
-    val path = if (!categories.contains(Category.ANY)) {
-        categories.stream().map(Category::value).collect(Collectors.joining(","))
-    } else {
+    val path = if (categories.isEmpty() || categories.contains(Category.ANY)) {
         Category.ANY.value
+    } else {
+        categories.stream().map(Category::value).collect(Collectors.joining(","))
     }
 
     // Language
-    if (language != Language.ENGLISH) {
+    if (language != Language.EN) {
         params[Parameter.LANG] = language.value
     }
 

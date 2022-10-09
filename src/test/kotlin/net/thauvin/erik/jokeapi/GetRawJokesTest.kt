@@ -49,7 +49,7 @@ import kotlin.test.assertContains
 internal class GetRawJokesTest {
     @Test
     fun `Get Raw Joke with TXT`() {
-        val response = getRawJokes(format = Format.TEXT)
+        val response = getRawJokes(format = Format.TXT)
         assertThat(response, "getRawJoke(txt)").all {
             isNotEmpty()
             doesNotContain("Error")

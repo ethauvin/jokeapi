@@ -67,7 +67,7 @@ class JokeConfig private constructor(
      */
     data class Builder(
         var categories: Set<Category> = setOf(Category.ANY),
-        var language: Language = Language.ENGLISH,
+        var language: Language = Language.EN,
         var flags: Set<Flag> = emptySet(),
         var type: Type = Type.ALL,
         var format: Format = Format.JSON,

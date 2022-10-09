@@ -112,7 +112,7 @@ class JokeConfigTest {
     fun `Get Raw Joke with Builder`() {
         val config = JokeConfig.Builder().apply {
             categories(setOf(Category.PROGRAMMING))
-            format(Format.TEXT)
+            format(Format.TXT)
             search("bar")
             amount(2)
             safe(true)

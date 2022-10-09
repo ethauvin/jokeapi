@@ -36,11 +36,11 @@ package net.thauvin.erik.jokeapi.models
  * The supported [blacklist flags](https://jokeapi.dev/#flags-param), use [ALL] to prevent all.
  */
 enum class Flag(val value: String) {
+    EXPLICIT("explicit"),
     NSFW("nsfw"),
-    RELIGIOUS("religious"),
     POLITICAL("political"),
     RACIST("racist"),
+    RELIGIOUS("religious"),
     SEXIST("sexist"),
-    EXPLICIT("explicit"),
     ALL("${NSFW.value},${RELIGIOUS.value},${POLITICAL.value},${RACIST.value},${SEXIST.value},${EXPLICIT.value}")
 }
