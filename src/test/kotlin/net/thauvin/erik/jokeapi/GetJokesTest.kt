@@ -1,5 +1,5 @@
 /*
- * GetJokeTest.kt
+ * GetJokeTests.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -44,7 +44,6 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.size
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getJokes
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
@@ -79,10 +78,6 @@ internal class GetJokesTest {
     @Test
     fun `Get One Joke as Multiple`() {
         val jokes = getJokes(amount = 1, safe = true)
-        jokes.forEach {
-            println(it.joke.joinToString("\n"))
-            println("-".repeat(46))
-        }
         assertThat(jokes, "jokes").all {
             size().isEqualTo(1)
             index(0).all {

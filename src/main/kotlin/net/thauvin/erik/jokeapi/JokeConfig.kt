@@ -53,9 +53,10 @@ class JokeConfig private constructor(
     val format: Format,
     val search: String,
     val idRange: IdRange,
-    val amount: Int = 1,
+    val amount: Int,
     val safe: Boolean,
     val splitNewLine: Boolean,
+    val auth: String
 ) {
     /**
      * [Builds][build] a new configuration.
@@ -74,7 +75,8 @@ class JokeConfig private constructor(
         var idRange: IdRange = IdRange(),
         var amount: Int = 1,
         var safe: Boolean = false,
-        var splitNewLine: Boolean = false
+        var splitNewLine: Boolean = false,
+        var auth: String = ""
     ) {
         fun categories(categories: Set<Category>) = apply { this.categories = categories }
         fun language(language: Language) = apply { this.language = language }
@@ -86,9 +88,10 @@ class JokeConfig private constructor(
         fun amount(amount: Int) = apply { this.amount = amount }
         fun safe(safe: Boolean) = apply { this.safe = safe }
         fun splitNewLine(splitNewLine: Boolean) = apply { this.splitNewLine = splitNewLine }
+        fun auth(auth: String) = apply { this.auth = auth }
 
         fun build() = JokeConfig(
-            categories, language, flags, type, format, search, idRange, amount, safe, splitNewLine
+            categories, language, flags, type, format, search, idRange, amount, safe, splitNewLine, auth
         )
     }
 }

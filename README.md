@@ -9,7 +9,7 @@ A simple Kotlin/Java library to retrieve jokes from [Sv443's JokeAPI](https://v2
 ## Examples (TL;DR)
 
 ```kotlin
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
+import net.thauvin.erik.jokeapi.getJoke
 
 val joke = getJoke()
 val safe = getJoke(safe = true)
@@ -124,9 +124,7 @@ var config = new JokeConfig.Builder()
         .safe(true)
         .build();
 var joke = JokeApi.getJoke(config);
-for (var j : joke.getJoke()) {
-    System.out.println(j);
-}
+joke.getJoke().forEach(System.out::println);
 ```
 
 ## Extending
@@ -136,7 +134,7 @@ A generic `apiCall()` function is available to access other [JokeAPI endpoints](
 For example to retrieve the French [language code](https://v2.jokeapi.dev/#langcode-endpoint):
 
 ```kotlin
-val lang = apiCall(
+val lang = JokeApi.apiCall(
     endPoint = "langcode",
     path = "french",
     params = mapOf(Parameter.FORMAT to Format.YAML.value)

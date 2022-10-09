@@ -61,6 +61,15 @@ import kotlin.test.assertContains
 
 class JokeConfigTest {
     @Test
+    fun `Get Joke with Default Builder`() {
+        val joke = getJoke()
+        assertThat(joke, "joke").all {
+            prop(Joke::id).isGreaterThanOrEqualTo(0)
+            prop(Joke::language).isEqualTo(Language.EN)
+        }
+    }
+
+    @Test
     fun `Get Joke with Builder`() {
         val id = 266
         val config = JokeConfig.Builder().apply {
@@ -129,6 +138,47 @@ class JokeConfigTest {
                 it.prop(Joke::flags).isEmpty()
                 it.prop(Joke::language).isEqualTo(Language.FR)
             }
+        }
+    }
+
+    @Test
+    fun `Validate Config`() {
+        val categories = setOf(Category.ANY)
+        val language = Language.CS
+        val flags = setOf(Flag.POLITICAL, Flag.RELIGIOUS)
+        val type = Type.TWOPART
+        val format = Format.XML
+        val search = "foo"
+        val idRange = IdRange(1, 20)
+        val amount = 10
+        val safe = true
+        val splitNewLine = true
+        val auth = "token"
+        val config = JokeConfig.Builder().apply {
+            categories(categories)
+            language(language)
+            flags(flags)
+            type(type)
+            format(format)
+            search(search)
+            idRange(idRange)
+            amount(amount)
+            safe(safe)
+            splitNewLine(splitNewLine)
+            auth(auth)
+        }.build()
+        assertThat(config, "config").all {
+            prop(JokeConfig::categories).isEqualTo(categories)
+            prop(JokeConfig::language).isEqualTo(language)
+            prop(JokeConfig::flags).isEqualTo(flags)
+            prop(JokeConfig::type).isEqualTo(type)
+            prop(JokeConfig::format).isEqualTo(format)
+            prop(JokeConfig::search).isEqualTo(search)
+            prop(JokeConfig::idRange).isEqualTo(idRange)
+            prop(JokeConfig::amount).isEqualTo(amount)
+            prop(JokeConfig::safe).isEqualTo(safe)
+            prop(JokeConfig::splitNewLine).isEqualTo(splitNewLine)
+            prop(JokeConfig::auth).isEqualTo(auth)
         }
     }
 

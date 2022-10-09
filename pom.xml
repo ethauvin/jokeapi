@@ -10,7 +10,7 @@
   <artifactId>jokeapi</artifactId>
   <version>0.9-SNAPSHOT</version>
   <name>jokeapi</name>
-  <description>Kotlin/Java Wrapper for Sv443's JokeApi</description>
+  <description>Kotlin/Java Wrapper for Sv443's JokeAPI</description>
   <url>https://github.com/ethauvin/jokeapi</url>
   <licenses>
     <license>

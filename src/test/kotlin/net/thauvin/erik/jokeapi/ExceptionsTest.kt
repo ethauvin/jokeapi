@@ -44,8 +44,6 @@ import assertk.assertions.isNull
 import assertk.assertions.prop
 import assertk.assertions.size
 import assertk.assertions.startsWith
-import net.thauvin.erik.jokeapi.JokeApi.Companion.fetchUrl
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
 import net.thauvin.erik.jokeapi.exceptions.JokeException
@@ -59,8 +57,6 @@ import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
 internal class ExceptionsTest {
-    private val httpStat = "https://httpstat.us"
-
     @Test
     fun `Validate Joke Exception`() {
         val e = assertThrows<JokeException> {
@@ -78,29 +74,19 @@ internal class ExceptionsTest {
         }
     }
 
-    @ParameterizedTest(name = "HTTP Status Code: {0}")
-    @ValueSource(ints = [400, 404, 403, 413, 414, 429, 500, 523])
-    fun `Validate HTTP Error Exceptions`(input: Int) {
+    @ParameterizedTest
+    @ValueSource(ints = [400, 404, 403, 413, 414, 429, 500, 523, 666])
+    fun `Validate HTTP Exceptions`(code: Int) {
         val e = assertThrows<HttpErrorException> {
-            fetchUrl("$httpStat/$input")
+            fetchUrl("https://httpstat.us/$code")
         }
-        assertThat(e, "fetchUrl($httpStat/$input)").all {
-            prop(HttpErrorException::statusCode).isEqualTo(input)
+        assertThat(e, "fetchUrl($code)").all {
+            prop(HttpErrorException::statusCode).isEqualTo(code)
             prop(HttpErrorException::message).isNotNull().isNotEmpty()
-            prop(HttpErrorException::cause).isNotNull().assertThat(Throwable::message).isNotNull()
-        }
-    }
-
-    @Test
-    fun `Fetch Invalid URL`() {
-        val statusCode = 999
-        val e = assertThrows<HttpErrorException> {
-            fetchUrl("$httpStat/$statusCode")
-        }
-        assertThat(e, "fetchUrl($httpStat/$statusCode).statusCode").all {
-            prop(HttpErrorException::statusCode).isEqualTo(statusCode)
-            prop(HttpErrorException::message).isNotNull().isNotEmpty()
-            prop(HttpErrorException::cause).isNull()
+            if (code < 600)
+                prop(HttpErrorException::cause).isNotNull().assertThat(Throwable::message).isNotNull()
+            else
+                prop(HttpErrorException::cause).isNull()
         }
     }
 

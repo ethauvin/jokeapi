@@ -1,5 +1,5 @@
 /*
- * JokeException.kt
+ * FetchUrlTest.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -30,28 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi.exceptions
+package net.thauvin.erik.jokeapi
 
-/**
- * Signals that an error has occurred.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
- */
-class JokeException @JvmOverloads constructor(
-    val internalError: Boolean,
-    val code: Int,
-    message: String,
-    val causedBy: List<String>,
-    val additionalInfo: String,
-    val timestamp: Long,
-    cause: Throwable? = null
-) : RuntimeException(message, cause) {
-    companion object {
-        private const val serialVersionUID = 1L
+import assertk.assertThat
+import assertk.assertions.contains
+import org.json.JSONException
+import org.json.JSONObject
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.util.logging.ConsoleHandler
+import java.util.logging.Level
+
+class UtilTest {
+    @Test
+    fun `Invalid JSON Error`() {
+        assertThrows<JSONException> { parseError(JSONObject("{}")) }
     }
 
-    fun debug(): String {
-        return "JokeException(message=$message, internalError=$internalError, code=$code," +
-                " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
+    @Test
+    fun `Invalid JSON Joke`() {
+        assertThrows<JSONException> { parseJoke(JSONObject("{}"), false) }
+    }
+
+    @Test
+    fun `Validate Authentication Header`() {
+        val token = "AUTH-TOKEN"
+        val body = fetchUrl("https://postman-echo.com/get", token)
+        assertThat(body, "body").contains("\"authentication\":\"$token\"")
+    }
+
+    companion object {
+        @JvmStatic
+        @BeforeAll
+        fun beforeAll() {
+            with(JokeApi.logger) {
+                addHandler(ConsoleHandler().apply { level = Level.FINE })
+                level = Level.FINE
+            }
+        }
     }
 }

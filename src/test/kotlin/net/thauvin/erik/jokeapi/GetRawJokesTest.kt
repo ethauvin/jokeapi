@@ -1,5 +1,5 @@
 /*
- * GetRawJokeTest.kt
+ * GetRawJokesTest.kt
  *
  * Copyright (c) 2022, Erik C. Thauvin (erik@thauvin.net)
  * All rights reserved.
@@ -37,9 +37,9 @@ import assertk.assertThat
 import assertk.assertions.doesNotContain
 import assertk.assertions.isNotEmpty
 import assertk.assertions.startsWith
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJokes
 import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.models.Format
+import net.thauvin.erik.jokeapi.models.IdRange
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.util.logging.ConsoleHandler
@@ -72,6 +72,12 @@ internal class GetRawJokesTest {
     fun `Get Raw Jokes`() {
         val response = getRawJokes(amount = 2)
         assertContains(response, "\"amount\": 2", false, "getRawJoke(2)")
+    }
+
+    @Test
+    fun `Get Raw Invalid Jokes`() {
+        val response = getRawJokes(search = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
+        assertContains(response, "\"error\": true", false, "getRawJokes(foo)")
     }
 
     companion object {
