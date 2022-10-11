@@ -60,7 +60,7 @@ internal class ExceptionsTest {
     @Test
     fun `Validate Joke Exception`() {
         val e = assertThrows<JokeException> {
-            getJoke(categories = setOf(Category.CHRISTMAS), search = "foo")
+            getJoke(categories = setOf(Category.CHRISTMAS), contains = "foo")
         }
         logger.fine(e.debug())
         assertThat(e, "getJoke(${Category.CHRISTMAS},foo)").all {

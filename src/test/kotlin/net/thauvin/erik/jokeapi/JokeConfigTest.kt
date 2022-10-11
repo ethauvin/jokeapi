@@ -65,7 +65,7 @@ class JokeConfigTest {
         val joke = getJoke()
         assertThat(joke, "joke").all {
             prop(Joke::id).isGreaterThanOrEqualTo(0)
-            prop(Joke::language).isEqualTo(Language.EN)
+            prop(Joke::lang).isEqualTo(Language.EN)
         }
     }
 
@@ -74,8 +74,8 @@ class JokeConfigTest {
         val id = 266
         val config = JokeConfig.Builder().apply {
             categories(setOf(Category.PROGRAMMING))
-            language(Language.EN)
-            flags(setOf(Flag.ALL))
+            lang(Language.EN)
+            blacklistFlags(setOf(Flag.ALL))
             type(Type.TWOPART)
             idRange(IdRange(id - 2, id + 2))
             safe(true)
@@ -86,7 +86,7 @@ class JokeConfigTest {
             prop(Joke::type).isEqualTo(Type.TWOPART)
             prop(Joke::category).isEqualTo(Category.PROGRAMMING)
             prop(Joke::joke).size().isEqualTo(2)
-            prop(Joke::language).isEqualTo(Language.EN)
+            prop(Joke::lang).isEqualTo(Language.EN)
             prop(Joke::flags).isEmpty()
             prop(Joke::id).isBetween(id - 2, id + 2)
         }
@@ -113,7 +113,7 @@ class JokeConfigTest {
         val config = JokeConfig.Builder().apply {
             categories(setOf(Category.PROGRAMMING))
             format(Format.TXT)
-            search("bar")
+            contains("bar")
             amount(2)
             safe(true)
         }.build()
@@ -127,7 +127,7 @@ class JokeConfigTest {
         val config = JokeConfig.Builder().apply {
             amount(amount)
             safe(true)
-            language(Language.FR)
+            lang(Language.FR)
         }.build()
         val jokes = getJokes(config)
         assertThat(jokes, "jokes").all {
@@ -136,7 +136,7 @@ class JokeConfigTest {
                 it.prop(Joke::id).isGreaterThanOrEqualTo(0)
                 it.prop(Joke::safe).isTrue()
                 it.prop(Joke::flags).isEmpty()
-                it.prop(Joke::language).isEqualTo(Language.FR)
+                it.prop(Joke::lang).isEqualTo(Language.FR)
             }
         }
     }
@@ -156,11 +156,11 @@ class JokeConfigTest {
         val auth = "token"
         val config = JokeConfig.Builder().apply {
             categories(categories)
-            language(language)
-            flags(flags)
+            lang(language)
+            blacklistFlags(flags)
             type(type)
             format(format)
-            search(search)
+            contains(search)
             idRange(idRange)
             amount(amount)
             safe(safe)
@@ -173,7 +173,7 @@ class JokeConfigTest {
             prop(JokeConfig::flags).isEqualTo(flags)
             prop(JokeConfig::type).isEqualTo(type)
             prop(JokeConfig::format).isEqualTo(format)
-            prop(JokeConfig::search).isEqualTo(search)
+            prop(JokeConfig::contains).isEqualTo(search)
             prop(JokeConfig::idRange).isEqualTo(idRange)
             prop(JokeConfig::amount).isEqualTo(amount)
             prop(JokeConfig::safe).isEqualTo(safe)

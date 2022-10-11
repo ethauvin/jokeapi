@@ -76,7 +76,7 @@ internal class GetRawJokesTest {
 
     @Test
     fun `Get Raw Invalid Jokes`() {
-        val response = getRawJokes(search = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
+        val response = getRawJokes(contains = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
         assertContains(response, "\"error\": true", false, "getRawJokes(foo)")
     }
 

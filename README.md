@@ -13,7 +13,7 @@ import net.thauvin.erik.jokeapi.getJoke
 
 val joke = getJoke()
 val safe = getJoke(safe = true)
-val pun = getJoke(category = Category.PUN)
+val pun = getJoke(categories = setOf(Category.PUN))
 ```
 The parameters match the [joke endpoint](https://v2.jokeapi.dev/#joke-endpoint).
 
@@ -27,7 +27,7 @@ data class Joke(
     val flags: Set<Flag>,
     val id: Int,
     val safe: Boolean,
-    val language: Language
+    val lang: Language
 )
 ```
 - View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt)...
@@ -35,7 +35,7 @@ data class Joke(
 To retrieve multiple jokes:
 
 ```kotlin
-val frenchJokes = getJokes(amount = 2, type = Type.TWOPART, language = Language.FR)
+val frenchJokes = getJokes(amount = 2, type = Type.TWOPART, lang = Language.FR)
 frenchJokes.forEach {
     println(it.joke.joinToString("\n"))
     println("-".repeat(46))
@@ -70,6 +70,18 @@ class HttpErrorException(
 ```
 - View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ExceptionsTest.kt)...
 
+## Java
+
+To make it easier to use the library with Java, a configuration builder is available:
+
+```java
+var config = new JokeConfig.Builder()
+        .type(Type.SINGLE)
+        .safe(true)
+        .build();
+var joke = JokeApi.getJoke(config);
+joke.getJoke().forEach(System.out::println);
+```
 ## Gradle, Maven, etc.
 To use with [Gradle](https://gradle.org/), include the following dependency in your build file:
 
@@ -113,19 +125,6 @@ lang: "en"
 
 ```
 - View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokeTest.kt)...
-
-## Java
-
-To make it easier to use the library with Java, a configuration builder is also available:
-
-```java
-var config = new JokeConfig.Builder()
-        .type(Type.SINGLE)
-        .safe(true)
-        .build();
-var joke = JokeApi.getJoke(config);
-joke.getJoke().forEach(System.out::println);
-```
 
 ## Extending
 

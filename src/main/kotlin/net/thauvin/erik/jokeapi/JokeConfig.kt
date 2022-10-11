@@ -51,7 +51,7 @@ class JokeConfig private constructor(
     val flags: Set<Flag>,
     val type: Type,
     val format: Format,
-    val search: String,
+    val contains: String,
     val idRange: IdRange,
     val amount: Int,
     val safe: Boolean,
@@ -67,31 +67,31 @@ class JokeConfig private constructor(
      */
     data class Builder(
         var categories: Set<Category> = setOf(Category.ANY),
-        var language: Language = Language.EN,
-        var flags: Set<Flag> = emptySet(),
+        var lang: Language = Language.EN,
+        var blacklistFlags: Set<Flag> = emptySet(),
         var type: Type = Type.ALL,
         var format: Format = Format.JSON,
-        var search: String = "",
+        var contains: String = "",
         var idRange: IdRange = IdRange(),
         var amount: Int = 1,
         var safe: Boolean = false,
-        var splitNewLine: Boolean = false,
-        var auth: String = ""
-    ) {
+        var auth: String = "",
+        var splitNewLine: Boolean = false
+        ) {
         fun categories(categories: Set<Category>) = apply { this.categories = categories }
-        fun language(language: Language) = apply { this.language = language }
-        fun flags(flags: Set<Flag>) = apply { this.flags = flags }
+        fun lang(language: Language) = apply { lang = language }
+        fun blacklistFlags(flags: Set<Flag>) = apply { blacklistFlags = flags }
         fun type(type: Type) = apply { this.type = type }
         fun format(format: Format) = apply { this.format = format }
-        fun search(search: String) = apply { this.search = search }
+        fun contains(search: String) = apply { contains = search }
         fun idRange(idRange: IdRange) = apply { this.idRange = idRange }
         fun amount(amount: Int) = apply { this.amount = amount }
         fun safe(safe: Boolean) = apply { this.safe = safe }
-        fun splitNewLine(splitNewLine: Boolean) = apply { this.splitNewLine = splitNewLine }
         fun auth(auth: String) = apply { this.auth = auth }
+        fun splitNewLine(splitNewLine: Boolean) = apply { this.splitNewLine = splitNewLine }
 
         fun build() = JokeConfig(
-            categories, language, flags, type, format, search, idRange, amount, safe, splitNewLine, auth
+            categories, lang, blacklistFlags, type, format, contains, idRange, amount, safe, splitNewLine, auth
         )
     }
 }

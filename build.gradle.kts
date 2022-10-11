@@ -8,7 +8,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.21.0"
     id("java")
     id("maven-publish")
-    id("org.jetbrains.dokka") version "1.7.10"
+    id("org.jetbrains.dokka") version "1.7.20"
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
     id("org.sonarqube") version "3.4.0.2513"
     id("signing")

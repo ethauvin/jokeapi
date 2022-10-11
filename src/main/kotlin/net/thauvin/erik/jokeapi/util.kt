@@ -166,7 +166,7 @@ internal fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
         flags = enabledFlags,
         safe = json.getBoolean("safe"),
         id = json.getInt("id"),
-        language = Language.valueOf(json.getString(Parameter.LANG).uppercase())
+        lang = Language.valueOf(json.getString(Parameter.LANG).uppercase())
     )
 }
 

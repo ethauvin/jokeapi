@@ -111,11 +111,11 @@ class JokeApi private constructor() {
         fun getRawJokes(config: JokeConfig): String {
             return getRawJokes(
                 categories = config.categories,
-                language = config.language,
-                flags = config.flags,
+                lang = config.language,
+                blacklistFlags = config.flags,
                 type = config.type,
                 format = config.format,
-                search = config.search,
+                contains = config.contains,
                 idRange = config.idRange,
                 amount = config.amount,
                 safe = config.safe,
@@ -134,14 +134,14 @@ class JokeApi private constructor() {
         fun getJoke(config: JokeConfig = JokeConfig.Builder().build()): Joke {
             return getJoke(
                 categories = config.categories,
-                language = config.language,
-                flags = config.flags,
+                lang = config.language,
+                blacklistFlags = config.flags,
                 type = config.type,
-                search = config.search,
+                contains = config.contains,
                 idRange = config.idRange,
                 safe = config.safe,
-                splitNewLine = config.splitNewLine,
-                auth = config.auth
+                auth = config.auth,
+                splitNewLine = config.splitNewLine
             )
         }
 
@@ -155,15 +155,15 @@ class JokeApi private constructor() {
         fun getJokes(config: JokeConfig): Array<Joke> {
             return getJokes(
                 categories = config.categories,
-                language = config.language,
-                flags = config.flags,
+                lang = config.language,
+                blacklistFlags = config.flags,
                 type = config.type,
-                search = config.search,
+                contains = config.contains,
                 idRange = config.idRange,
                 amount = config.amount,
                 safe = config.safe,
-                splitNewLine = config.splitNewLine,
-                auth = config.auth
+                auth = config.auth,
+                splitNewLine = config.splitNewLine
             )
         }
     }
@@ -179,22 +179,22 @@ class JokeApi private constructor() {
  */
 fun getJoke(
     categories: Set<Category> = setOf(Category.ANY),
-    language: Language = Language.EN,
-    flags: Set<Flag> = emptySet(),
+    lang: Language = Language.EN,
+    blacklistFlags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
-    search: String = "",
+    contains: String = "",
     idRange: IdRange = IdRange(),
     safe: Boolean = false,
-    splitNewLine: Boolean = false,
-    auth: String = ""
+    auth: String = "",
+    splitNewLine: Boolean = false
 ): Joke {
     val json = JSONObject(
         getRawJokes(
             categories = categories,
-            language = language,
-            flags = flags,
+            lang = lang,
+            blacklistFlags = blacklistFlags,
             type = type,
-            search = search,
+            contains = contains,
             idRange = idRange,
             safe = safe,
             auth = auth
@@ -218,22 +218,22 @@ fun getJoke(
 fun getJokes(
     amount: Int,
     categories: Set<Category> = setOf(Category.ANY),
-    language: Language = Language.EN,
-    flags: Set<Flag> = emptySet(),
+    lang: Language = Language.EN,
+    blacklistFlags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
-    search: String = "",
+    contains: String = "",
     idRange: IdRange = IdRange(),
     safe: Boolean = false,
-    splitNewLine: Boolean = false,
-    auth: String = ""
+    auth: String = "",
+    splitNewLine: Boolean = false
 ): Array<Joke> {
     val json = JSONObject(
         getRawJokes(
             categories = categories,
-            language = language,
-            flags = flags,
+            lang = lang,
+            blacklistFlags = blacklistFlags,
             type = type,
-            search = search,
+            contains = contains,
             idRange = idRange,
             amount = amount,
             safe = safe,
@@ -259,11 +259,11 @@ fun getJokes(
  */
 fun getRawJokes(
     categories: Set<Category> = setOf(Category.ANY),
-    language: Language = Language.EN,
-    flags: Set<Flag> = emptySet(),
+    lang: Language = Language.EN,
+    blacklistFlags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
     format: Format = Format.JSON,
-    search: String = "",
+    contains: String = "",
     idRange: IdRange = IdRange(),
     amount: Int = 1,
     safe: Boolean = false,
@@ -279,16 +279,16 @@ fun getRawJokes(
     }
 
     // Language
-    if (language != Language.EN) {
-        params[Parameter.LANG] = language.value
+    if (lang != Language.EN) {
+        params[Parameter.LANG] = lang.value
     }
 
     // Flags
-    if (flags.isNotEmpty()) {
-        if (flags.contains(Flag.ALL)) {
+    if (blacklistFlags.isNotEmpty()) {
+        if (blacklistFlags.contains(Flag.ALL)) {
             params[Parameter.FLAGS] = Flag.ALL.value
         } else {
-            params[Parameter.FLAGS] = flags.stream().map(Flag::value).collect(Collectors.joining(","))
+            params[Parameter.FLAGS] = blacklistFlags.stream().map(Flag::value).collect(Collectors.joining(","))
         }
     }
 
@@ -303,8 +303,8 @@ fun getRawJokes(
     }
 
     // Contains
-    if (search.isNotBlank()) {
-        params[Parameter.CONTAINS] = search
+    if (contains.isNotBlank()) {
+        params[Parameter.CONTAINS] = contains
     }
 
     // Range

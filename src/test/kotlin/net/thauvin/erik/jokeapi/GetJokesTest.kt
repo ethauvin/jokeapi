@@ -57,14 +57,14 @@ internal class GetJokesTest {
     @Test
     fun `Get Multiple Jokes`() {
         val amount = 2
-        val jokes = getJokes(amount = amount, safe = true, language = Language.FR)
+        val jokes = getJokes(amount = amount, safe = true, lang = Language.FR)
         assertThat(jokes, "jokes").all {
             size().isEqualTo(amount)
             each {
                 it.prop(Joke::id).isGreaterThanOrEqualTo(0)
                 it.prop(Joke::safe).isTrue()
                 it.prop(Joke::flags).isEmpty()
-                it.prop(Joke::language).isEqualTo(Language.FR)
+                it.prop(Joke::lang).isEqualTo(Language.FR)
             }
         }
     }

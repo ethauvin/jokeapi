@@ -37,6 +37,7 @@ package net.thauvin.erik.jokeapi.models
  */
 enum class Format(val value: String) {
     JSON("json"),
+
     /** Plain Text */
     TXT("txt"),
     XML("xml"),
