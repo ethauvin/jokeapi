@@ -311,18 +311,16 @@ fun getRawJokes(
     if (idRange.start >= 0) {
         if (idRange.end == -1 || idRange.start == idRange.end) {
             params[Parameter.RANGE] = idRange.start.toString()
-        } else if (idRange.end > idRange.start) {
-            params[Parameter.RANGE] = "${idRange.start}-${idRange.end}"
         } else {
-            throw IllegalArgumentException("Invalid ID Range: ${idRange.start}, ${idRange.end}")
+            require(idRange.end > idRange.start) { "Invalid ID Range: ${idRange.start}, ${idRange.end}" }
+            params[Parameter.RANGE] = "${idRange.start}-${idRange.end}"
         }
     }
 
     // Amount
+    require(amount > 0) { "Invalid Amount: $amount" }
     if (amount > 1) {
         params[Parameter.AMOUNT] = amount.toString()
-    } else if (amount <= 0) {
-        throw IllegalArgumentException("Invalid Amount: $amount")
     }
 
     // Safe

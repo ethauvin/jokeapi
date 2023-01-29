@@ -77,7 +77,7 @@ class JokeConfig private constructor(
         var safe: Boolean = false,
         var auth: String = "",
         var splitNewLine: Boolean = false
-        ) {
+    ) {
         fun categories(categories: Set<Category>) = apply { this.categories = categories }
         fun lang(language: Language) = apply { lang = language }
         fun blacklistFlags(flags: Set<Flag>) = apply { blacklistFlags = flags }

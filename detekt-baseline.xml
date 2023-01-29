@@ -2,7 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexMethod:JokeApi.kt$fun getRawJokes( categories: Set&lt;Category> = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, contains: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, auth: String = "" ): String</ID>
     <ID>LongParameterList:JokeApi.kt$( amount: Int, categories: Set&lt;Category> = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, contains: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, auth: String = "", splitNewLine: Boolean = false )</ID>
     <ID>LongParameterList:JokeApi.kt$( categories: Set&lt;Category> = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, contains: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, auth: String = "", splitNewLine: Boolean = false )</ID>
     <ID>LongParameterList:JokeApi.kt$( categories: Set&lt;Category> = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, contains: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, auth: String = "" )</ID>
@@ -19,6 +18,5 @@
     <ID>MagicNumber:util.kt$500</ID>
     <ID>MagicNumber:util.kt$523</ID>
     <ID>TooManyFunctions:JokeConfig.kt$JokeConfig$Builder</ID>
-    <ID>UnusedPrivateMember:JokeConfig.kt$JokeConfig.Builder$search: String</ID>
   </CurrentIssues>
 </SmellBaseline>
