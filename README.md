@@ -36,7 +36,7 @@ data class Joke(
     val lang: Language
 )
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt#L31)...
 
 To retrieve multiple jokes:
 
@@ -48,7 +48,7 @@ frenchJokes.forEach {
 }
 ```
 
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokesTest.kt)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokesTest.kt#L31)...
 
 
 If an error occurs, a `JokeException` is thrown, matching the [JokeAPI errors](https://sv443.net/jokeapi/v2/#errors):
@@ -74,7 +74,7 @@ class HttpErrorException(
     cause: Throwable? = null
 ) : IOException(message, cause)
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ExceptionsTest.kt)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ExceptionsTest.kt#L31)...
 
 ## Java
 
@@ -130,7 +130,7 @@ safe: true
 lang: "en"
 
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokeTest.kt)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokesTest.kt#L31)...
 
 ## Extending
 
@@ -150,7 +150,7 @@ println(lang)
 error: false
 code: "fr"
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt#L31)...
 
 
 
