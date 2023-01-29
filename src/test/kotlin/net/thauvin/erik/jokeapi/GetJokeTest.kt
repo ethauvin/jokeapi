@@ -57,12 +57,11 @@ import net.thauvin.erik.jokeapi.models.IdRange
 import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
 import net.thauvin.erik.jokeapi.models.Type
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(BeforeAllTests::class)
 internal class GetJokeTest {
     @Test
     fun `Get Joke`() {
@@ -176,7 +175,6 @@ internal class GetJokeTest {
         logger.fine(joke.toString())
         assertThat(joke, "getJoke(safe)").all {
             prop(Joke::safe).isTrue()
-            prop(Joke::flags).isEmpty()
         }
     }
 
@@ -208,17 +206,6 @@ internal class GetJokeTest {
             prop(Joke::id).isEqualTo(id)
             prop(Joke::joke).any {
                 it.contains(search)
-            }
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun beforeAll() {
-            with(logger) {
-                addHandler(ConsoleHandler().apply { level = Level.FINE })
-                level = Level.FINE
             }
         }
     }

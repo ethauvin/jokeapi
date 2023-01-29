@@ -36,13 +36,12 @@ import assertk.assertThat
 import assertk.assertions.contains
 import org.json.JSONException
 import org.json.JSONObject
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
+import org.junit.jupiter.api.extension.ExtendWith
 
-class UtilTest {
+@ExtendWith(BeforeAllTests::class)
+internal class UtilTest {
     @Test
     fun `Invalid JSON Error`() {
         assertThrows<JSONException> { parseError(JSONObject("{}")) }
@@ -58,16 +57,5 @@ class UtilTest {
         val token = "AUTH-TOKEN"
         val body = fetchUrl("https://postman-echo.com/get", token)
         assertThat(body, "body").contains("\"authentication\":\"$token\"")
-    }
-
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun beforeAll() {
-            with(JokeApi.logger) {
-                addHandler(ConsoleHandler().apply { level = Level.FINE })
-                level = Level.FINE
-            }
-        }
     }
 }

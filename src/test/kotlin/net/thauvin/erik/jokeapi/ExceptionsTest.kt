@@ -48,14 +48,13 @@ import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
 import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.Category
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
 
+@ExtendWith(BeforeAllTests::class)
 internal class ExceptionsTest {
     @Test
     fun `Validate Joke Exception`() {
@@ -87,17 +86,6 @@ internal class ExceptionsTest {
                 prop(HttpErrorException::cause).isNotNull().assertThat(Throwable::message).isNotNull()
             else
                 prop(HttpErrorException::cause).isNull()
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun beforeAll() {
-            with(logger) {
-                addHandler(ConsoleHandler().apply { level = Level.FINE })
-                level = Level.FINE
-            }
         }
     }
 }

@@ -53,13 +53,12 @@ import net.thauvin.erik.jokeapi.models.IdRange
 import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
 import net.thauvin.erik.jokeapi.models.Type
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
+import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertContains
 
-class JokeConfigTest {
+@ExtendWith(BeforeAllTests::class)
+internal class JokeConfigTest {
     @Test
     fun `Get Joke with Default Builder`() {
         val joke = getJoke()
@@ -179,17 +178,6 @@ class JokeConfigTest {
             prop(JokeConfig::safe).isEqualTo(safe)
             prop(JokeConfig::splitNewLine).isEqualTo(splitNewLine)
             prop(JokeConfig::auth).isEqualTo(auth)
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun beforeAll() {
-            with(logger) {
-                addHandler(ConsoleHandler().apply { level = Level.FINE })
-                level = Level.FINE
-            }
         }
     }
 }

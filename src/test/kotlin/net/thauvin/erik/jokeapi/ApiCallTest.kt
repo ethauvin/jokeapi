@@ -36,18 +36,16 @@ import assertk.assertThat
 import assertk.assertions.isGreaterThan
 import assertk.assertions.startsWith
 import net.thauvin.erik.jokeapi.JokeApi.Companion.apiCall
-import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.models.Format
 import net.thauvin.erik.jokeapi.models.Parameter
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
+import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertContains
 
+@ExtendWith(BeforeAllTests::class)
 internal class ApiCallTest {
     @Test
     fun `Get Flags`() {
@@ -75,16 +73,5 @@ internal class ApiCallTest {
         // See https://v2.jokeapi.dev/#ping-endpoint
         val ping = apiCall(endPoint = "ping", params = mapOf(Parameter.FORMAT to Format.TXT.value))
         assertThat(ping, "apiCall(ping, txt)").startsWith("Pong!")
-    }
-
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun beforeAll() {
-            with(logger) {
-                addHandler(ConsoleHandler().apply { level = Level.FINE })
-                level = Level.FINE
-            }
-        }
     }
 }

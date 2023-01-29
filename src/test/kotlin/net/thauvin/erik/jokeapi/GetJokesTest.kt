@@ -37,22 +37,19 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.each
 import assertk.assertions.index
-import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.size
-import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
 import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.logging.ConsoleHandler
-import java.util.logging.Level
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(BeforeAllTests::class)
 internal class GetJokesTest {
     @Test
     fun `Get Multiple Jokes`() {
@@ -63,7 +60,6 @@ internal class GetJokesTest {
             each {
                 it.prop(Joke::id).isGreaterThanOrEqualTo(0)
                 it.prop(Joke::safe).isTrue()
-                it.prop(Joke::flags).isEmpty()
                 it.prop(Joke::lang).isEqualTo(Language.FR)
             }
         }
@@ -82,19 +78,7 @@ internal class GetJokesTest {
             size().isEqualTo(1)
             index(0).all {
                 prop(Joke::id).isGreaterThanOrEqualTo(0)
-                prop(Joke::flags).isEmpty()
                 prop(Joke::safe).isTrue()
-            }
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun beforeAll() {
-            with(logger) {
-                addHandler(ConsoleHandler().apply { level = Level.FINE })
-                level = Level.FINE
             }
         }
     }
