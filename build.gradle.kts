@@ -4,18 +4,18 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.42.0"
-    id("io.gitlab.arturbosch.detekt") version "1.21.0"
+    id("com.github.ben-manes.versions") version "0.44.0"
+    id("io.gitlab.arturbosch.detekt") version "1.22.0"
     id("java")
     id("maven-publish")
     id("org.jetbrains.dokka") version "1.7.20"
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
-    id("org.sonarqube") version "3.4.0.2513"
+    id("org.sonarqube") version "3.5.0.2730"
     id("signing")
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.8.0"
 }
 
-description = "Kotlin/Java Wrapper for Sv443's JokeAPI"
+description = "Wrapper for Sv443's JokeAPI"
 group = "net.thauvin.erik"
 version = "0.9-SNAPSHOT"
 
@@ -35,12 +35,8 @@ dependencies {
     implementation("org.json:json:20220924")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
 
 java {
@@ -66,6 +62,10 @@ val javadocJar by tasks.creating(Jar::class) {
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+    }
+
     withType<KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = java.targetCompatibility.toString()
     }
@@ -141,8 +141,8 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/$gitHub.git")
-                    developerConnection.set("scm:git:git@github.com:$gitHub.git")
+                    connection.set("scm:git://github.com/$gitHub.git")
+                    developerConnection.set("scm:git@github.com:$gitHub.git")
                     url.set(mavenUrl)
                 }
                 issueManagement {
