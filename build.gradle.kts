@@ -112,7 +112,7 @@ tasks {
         mustRunAfter(clean)
     }
 
-    "sonarqube" {
+    "sonar" {
         dependsOn(koverReport)
     }
 }
