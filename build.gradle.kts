@@ -12,7 +12,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
     id("org.sonarqube") version "3.5.0.2730"
     id("signing")
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.10"
 }
 
 description = "Wrapper for Sv443's JokeAPI"

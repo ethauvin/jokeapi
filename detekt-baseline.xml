@@ -7,16 +7,16 @@
     <ID>LongParameterList:JokeApi.kt$( categories: Set&lt;Category> = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag> = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, contains: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, auth: String = "" )</ID>
     <ID>LongParameterList:JokeConfig.kt$JokeConfig$( val categories: Set&lt;Category>, val language: Language, val flags: Set&lt;Flag>, val type: Type, val format: Format, val contains: String, val idRange: IdRange, val amount: Int, val safe: Boolean, val splitNewLine: Boolean, val auth: String )</ID>
     <ID>LongParameterList:JokeException.kt$JokeException$( val internalError: Boolean, val code: Int, message: String, val causedBy: List&lt;String>, val additionalInfo: String, val timestamp: Long, cause: Throwable? = null )</ID>
-    <ID>MagicNumber:util.kt$200</ID>
-    <ID>MagicNumber:util.kt$399</ID>
-    <ID>MagicNumber:util.kt$400</ID>
-    <ID>MagicNumber:util.kt$403</ID>
-    <ID>MagicNumber:util.kt$404</ID>
-    <ID>MagicNumber:util.kt$413</ID>
-    <ID>MagicNumber:util.kt$414</ID>
-    <ID>MagicNumber:util.kt$429</ID>
-    <ID>MagicNumber:util.kt$500</ID>
-    <ID>MagicNumber:util.kt$523</ID>
+    <ID>MagicNumber:JokeUtil.kt$200</ID>
+    <ID>MagicNumber:JokeUtil.kt$399</ID>
+    <ID>MagicNumber:JokeUtil.kt$400</ID>
+    <ID>MagicNumber:JokeUtil.kt$403</ID>
+    <ID>MagicNumber:JokeUtil.kt$404</ID>
+    <ID>MagicNumber:JokeUtil.kt$413</ID>
+    <ID>MagicNumber:JokeUtil.kt$414</ID>
+    <ID>MagicNumber:JokeUtil.kt$429</ID>
+    <ID>MagicNumber:JokeUtil.kt$500</ID>
+    <ID>MagicNumber:JokeUtil.kt$523</ID>
     <ID>TooManyFunctions:JokeConfig.kt$JokeConfig$Builder</ID>
   </CurrentIssues>
 </SmellBaseline>
