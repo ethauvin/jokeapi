@@ -41,10 +41,10 @@ import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.size
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getJoke
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getJokes
-import net.thauvin.erik.jokeapi.JokeApi.Companion.getRawJokes
-import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
+import net.thauvin.erik.jokeapi.JokeApi.getJoke
+import net.thauvin.erik.jokeapi.JokeApi.getJokes
+import net.thauvin.erik.jokeapi.JokeApi.getRawJokes
+import net.thauvin.erik.jokeapi.JokeApi.logger
 import net.thauvin.erik.jokeapi.models.Category
 import net.thauvin.erik.jokeapi.models.Flag
 import net.thauvin.erik.jokeapi.models.Format

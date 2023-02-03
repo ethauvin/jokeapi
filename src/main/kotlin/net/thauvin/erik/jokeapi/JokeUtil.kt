@@ -1,5 +1,5 @@
 /*
- * util.kt
+ * JokeUtil.kt
  *
  * Copyright 2022-2023 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -29,6 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:JvmName("JokeUtil")
+
 package net.thauvin.erik.jokeapi
 
 import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
@@ -52,14 +54,14 @@ internal fun fetchUrl(url: String, auth: String = ""): String {
 
     val connection = URL(url).openConnection() as HttpURLConnection
     connection.setRequestProperty(
-        "User-Agent", "Mozilla/5.0 (Linux x86_64; rv:105.0) Gecko/20100101 Firefox/105.0"
+        "User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"
     )
     if (auth.isNotEmpty()) {
         connection.setRequestProperty("Authentication", auth)
     }
 
     if (connection.responseCode in 200..399) {
-        val body = connection.inputStream.bufferedReader().readText()
+        val body = connection.inputStream.bufferedReader().use { it.readText() }
         if (JokeApi.logger.isLoggable(Level.FINE)) {
             JokeApi.logger.fine(body)
         }

@@ -34,7 +34,7 @@ package net.thauvin.erik.jokeapi
 import assertk.assertThat
 import assertk.assertions.isGreaterThan
 import assertk.assertions.startsWith
-import net.thauvin.erik.jokeapi.JokeApi.Companion.apiCall
+import net.thauvin.erik.jokeapi.JokeApi.apiCall
 import net.thauvin.erik.jokeapi.models.Format
 import net.thauvin.erik.jokeapi.models.Parameter
 import org.json.JSONObject

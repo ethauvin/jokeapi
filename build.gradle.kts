@@ -4,7 +4,7 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.44.0"
+    id("com.github.ben-manes.versions") version "0.45.0"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
     id("java")
     id("maven-publish")

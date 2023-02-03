@@ -50,121 +50,119 @@ import java.util.stream.Collectors
 /**
  * Implements the [Sv443's JokeAPI](https://jokeapi.dev/).
  */
-class JokeApi private constructor() {
-    companion object {
-        private const val API_URL = "https://v2.jokeapi.dev/"
+object JokeApi {
+    private const val API_URL = "https://v2.jokeapi.dev/"
 
-        @JvmStatic
-        val logger: Logger by lazy { Logger.getLogger(JokeApi::class.java.simpleName) }
+    @JvmStatic
+    val logger: Logger by lazy { Logger.getLogger(JokeApi::class.java.simpleName) }
 
-        /**
-         * Makes a direct API call.
-         *
-         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#endpoints) for more details.
-         */
-        @JvmStatic
-        @JvmOverloads
-        @Throws(HttpErrorException::class)
-        fun apiCall(
-            endPoint: String,
-            path: String = "",
-            params: Map<String, String> = emptyMap(),
-            auth: String = ""
-        ): String {
-            val urlBuilder = StringBuilder("$API_URL$endPoint")
+    /**
+     * Makes a direct API call.
+     *
+     * Sse the [JokeAPI Documentation](https://jokeapi.dev/#endpoints) for more details.
+     */
+    @JvmStatic
+    @JvmOverloads
+    @Throws(HttpErrorException::class)
+    fun apiCall(
+        endPoint: String,
+        path: String = "",
+        params: Map<String, String> = emptyMap(),
+        auth: String = ""
+    ): String {
+        val urlBuilder = StringBuilder("$API_URL$endPoint")
 
-            if (path.isNotEmpty()) {
-                if (!urlBuilder.endsWith(('/'))) {
-                    urlBuilder.append('/')
-                }
-                urlBuilder.append(path)
+        if (path.isNotEmpty()) {
+            if (!urlBuilder.endsWith(('/'))) {
+                urlBuilder.append('/')
             }
+            urlBuilder.append(path)
+        }
 
-            if (params.isNotEmpty()) {
-                urlBuilder.append('?')
-                val it = params.iterator()
-                while (it.hasNext()) {
-                    val param = it.next()
-                    urlBuilder.append(param.key)
-                    if (param.value.isNotEmpty()) {
-                        urlBuilder.append("=").append(
-                            URLEncoder.encode(param.value, StandardCharsets.UTF_8).replace("+", "%20")
-                                .replace("*", "%2A").replace("%7E", "~")
-                        )
-                    }
-                    if (it.hasNext()) {
-                        urlBuilder.append("&")
-                    }
+        if (params.isNotEmpty()) {
+            urlBuilder.append('?')
+            val it = params.iterator()
+            while (it.hasNext()) {
+                val param = it.next()
+                urlBuilder.append(param.key)
+                if (param.value.isNotEmpty()) {
+                    urlBuilder.append("=").append(
+                        URLEncoder.encode(param.value, StandardCharsets.UTF_8).replace("+", "%20")
+                            .replace("*", "%2A").replace("%7E", "~")
+                    )
+                }
+                if (it.hasNext()) {
+                    urlBuilder.append("&")
                 }
             }
-            return fetchUrl(urlBuilder.toString(), auth)
         }
+        return fetchUrl(urlBuilder.toString(), auth)
+    }
 
-        /**
-         * Returns one or more jokes using a [configuration][JokeConfig].
-         *
-         * See the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
-         */
-        @JvmStatic
-        @Throws(HttpErrorException::class)
-        fun getRawJokes(config: JokeConfig): String {
-            return getRawJokes(
-                categories = config.categories,
-                lang = config.language,
-                blacklistFlags = config.flags,
-                type = config.type,
-                format = config.format,
-                contains = config.contains,
-                idRange = config.idRange,
-                amount = config.amount,
-                safe = config.safe,
-                auth = config.auth
-            )
-        }
+    /**
+     * Returns one or more jokes using a [configuration][JokeConfig].
+     *
+     * See the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+     */
+    @JvmStatic
+    @Throws(HttpErrorException::class)
+    fun getRawJokes(config: JokeConfig): String {
+        return getRawJokes(
+            categories = config.categories,
+            lang = config.language,
+            blacklistFlags = config.flags,
+            type = config.type,
+            format = config.format,
+            contains = config.contains,
+            idRange = config.idRange,
+            amount = config.amount,
+            safe = config.safe,
+            auth = config.auth
+        )
+    }
 
-        /**
-         * Retrieve a [Joke] instance using a [configuration][JokeConfig].
-         *
-         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
-         */
-        @JvmStatic
-        @JvmOverloads
-        @Throws(HttpErrorException::class, JokeException::class)
-        fun getJoke(config: JokeConfig = JokeConfig.Builder().build()): Joke {
-            return getJoke(
-                categories = config.categories,
-                lang = config.language,
-                blacklistFlags = config.flags,
-                type = config.type,
-                contains = config.contains,
-                idRange = config.idRange,
-                safe = config.safe,
-                auth = config.auth,
-                splitNewLine = config.splitNewLine
-            )
-        }
+    /**
+     * Retrieve a [Joke] instance using a [configuration][JokeConfig].
+     *
+     * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+     */
+    @JvmStatic
+    @JvmOverloads
+    @Throws(HttpErrorException::class, JokeException::class)
+    fun getJoke(config: JokeConfig = JokeConfig.Builder().build()): Joke {
+        return getJoke(
+            categories = config.categories,
+            lang = config.language,
+            blacklistFlags = config.flags,
+            type = config.type,
+            contains = config.contains,
+            idRange = config.idRange,
+            safe = config.safe,
+            auth = config.auth,
+            splitNewLine = config.splitNewLine
+        )
+    }
 
-        /**
-         * Returns an array of [Joke] instances using a [configuration][JokeConfig].
-         *
-         * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
-         */
-        @JvmStatic
-        @Throws(HttpErrorException::class, JokeException::class)
-        fun getJokes(config: JokeConfig): Array<Joke> {
-            return getJokes(
-                categories = config.categories,
-                lang = config.language,
-                blacklistFlags = config.flags,
-                type = config.type,
-                contains = config.contains,
-                idRange = config.idRange,
-                amount = config.amount,
-                safe = config.safe,
-                auth = config.auth,
-                splitNewLine = config.splitNewLine
-            )
-        }
+    /**
+     * Returns an array of [Joke] instances using a [configuration][JokeConfig].
+     *
+     * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+     */
+    @JvmStatic
+    @Throws(HttpErrorException::class, JokeException::class)
+    fun getJokes(config: JokeConfig): Array<Joke> {
+        return getJokes(
+            categories = config.categories,
+            lang = config.language,
+            blacklistFlags = config.flags,
+            type = config.type,
+            contains = config.contains,
+            idRange = config.idRange,
+            amount = config.amount,
+            safe = config.safe,
+            auth = config.auth,
+            splitNewLine = config.splitNewLine
+        )
     }
 }
 

@@ -48,7 +48,7 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.size
-import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
+import net.thauvin.erik.jokeapi.JokeApi.logger
 import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.Category
 import net.thauvin.erik.jokeapi.models.Flag

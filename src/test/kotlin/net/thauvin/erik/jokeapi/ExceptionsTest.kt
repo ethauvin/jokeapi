@@ -43,7 +43,7 @@ import assertk.assertions.isNull
 import assertk.assertions.prop
 import assertk.assertions.size
 import assertk.assertions.startsWith
-import net.thauvin.erik.jokeapi.JokeApi.Companion.logger
+import net.thauvin.erik.jokeapi.JokeApi.logger
 import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
 import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.Category

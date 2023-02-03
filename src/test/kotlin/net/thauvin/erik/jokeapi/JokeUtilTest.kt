@@ -40,7 +40,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(BeforeAllTests::class)
-internal class UtilTest {
+internal class JokeUtilTest {
     @Test
     fun `Invalid JSON Error`() {
         assertThrows<JSONException> { parseError(JSONObject("{}")) }
