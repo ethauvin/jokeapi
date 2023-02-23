@@ -1,10 +1,9 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.dokka.gradle.DokkaTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.45.0"
+    id("com.github.ben-manes.versions") version "0.46.0"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
     id("java")
     id("maven-publish")
@@ -31,7 +30,8 @@ repositories {
 
 dependencies {
     implementation(platform(kotlin("bom")))
-    
+
+    implementation("net.thauvin.erik:urlencoder:1.3.0")
     implementation("org.json:json:20220924")
 
     testImplementation(kotlin("test"))
@@ -40,8 +40,9 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
     withSourcesJar()
 }
 
@@ -66,23 +67,11 @@ tasks {
         useJUnitPlatform()
     }
 
-    withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = java.targetCompatibility.toString()
-    }
-
     withType<Test> {
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
             events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         }
-    }
-
-    withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        this.jvmTarget = java.targetCompatibility.toString()
-    }
-
-    withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
-        this.jvmTarget = java.targetCompatibility.toString()
     }
 
     withType<GenerateMavenPom> {
@@ -149,8 +138,8 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git://github.com/$gitHub.git")
-                    developerConnection.set("scm:git@github.com:$gitHub.git")
+                    connection.set("scm:git:https://github.com/$gitHub.git")
+                    developerConnection.set("scm:git:git@github.com:$gitHub.git")
                     url.set(mavenUrl)
                 }
                 issueManagement {

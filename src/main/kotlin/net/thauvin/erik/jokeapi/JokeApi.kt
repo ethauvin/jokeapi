@@ -41,9 +41,8 @@ import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
 import net.thauvin.erik.jokeapi.models.Parameter
 import net.thauvin.erik.jokeapi.models.Type
+import net.thauvin.erik.urlencoder.UrlEncoder
 import org.json.JSONObject
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import java.util.logging.Logger
 import java.util.stream.Collectors
 
@@ -86,10 +85,7 @@ object JokeApi {
                 val param = it.next()
                 urlBuilder.append(param.key)
                 if (param.value.isNotEmpty()) {
-                    urlBuilder.append("=").append(
-                        URLEncoder.encode(param.value, StandardCharsets.UTF_8).replace("+", "%20")
-                            .replace("*", "%2A").replace("%7E", "~")
-                    )
+                    urlBuilder.append("=").append(UrlEncoder.encode(param.value))
                 }
                 if (it.hasNext()) {
                     urlBuilder.append("&")

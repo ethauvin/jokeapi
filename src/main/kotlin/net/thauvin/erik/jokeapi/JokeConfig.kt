@@ -74,8 +74,8 @@ class JokeConfig private constructor(
         var idRange: IdRange = IdRange(),
         var amount: Int = 1,
         var safe: Boolean = false,
-        var auth: String = "",
-        var splitNewLine: Boolean = false
+        var splitNewLine: Boolean = false,
+        var auth: String = ""
     ) {
         fun categories(categories: Set<Category>) = apply { this.categories = categories }
         fun lang(language: Language) = apply { lang = language }
@@ -86,8 +86,8 @@ class JokeConfig private constructor(
         fun idRange(idRange: IdRange) = apply { this.idRange = idRange }
         fun amount(amount: Int) = apply { this.amount = amount }
         fun safe(safe: Boolean) = apply { this.safe = safe }
-        fun auth(auth: String) = apply { this.auth = auth }
         fun splitNewLine(splitNewLine: Boolean) = apply { this.splitNewLine = splitNewLine }
+        fun auth(auth: String) = apply { this.auth = auth }
 
         fun build() = JokeConfig(
             categories, lang, blacklistFlags, type, format, contains, idRange, amount, safe, splitNewLine, auth
