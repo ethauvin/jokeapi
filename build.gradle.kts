@@ -1,6 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.github.ben-manes.versions") version "0.46.0"
@@ -40,9 +41,8 @@ dependencies {
 }
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     withSourcesJar()
 }
 
@@ -67,11 +67,23 @@ tasks {
         useJUnitPlatform()
     }
 
+    withType<KotlinCompile>().configureEach {
+        kotlinOptions.jvmTarget = java.targetCompatibility.toString()
+    }
+
     withType<Test> {
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
             events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         }
+    }
+
+    withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        this.jvmTarget = java.targetCompatibility.toString()
+    }
+
+    withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
+        this.jvmTarget = java.targetCompatibility.toString()
     }
 
     withType<GenerateMavenPom> {
