@@ -46,6 +46,17 @@ java {
     withSourcesJar()
 }
 
+koverReport {
+    defaults {
+        xml {
+            onCheck = true
+        }
+        html {
+            onCheck = true
+        }
+    }
+}
+
 sonarqube {
     properties {
         property("sonar.projectKey", "ethauvin_$name")
@@ -119,10 +130,6 @@ tasks {
         outputs.dir(deployDir)
         inputs.files(copyToDeploy)
         mustRunAfter(clean)
-    }
-
-    "sonar" {
-        dependsOn(koverReport)
     }
 }
 
