@@ -46,8 +46,8 @@ import kotlin.test.assertContains
 internal class GetRawJokesTest {
     @Test
     fun `Get Raw Joke with TXT`() {
-        val response = getRawJokes(format = Format.TXT)
-        assertThat(response, "getRawJoke(txt)").all {
+        val response = rawJokes(format = Format.TXT)
+        assertThat(response, "rawJoke(txt)").all {
             isNotEmpty()
             doesNotContain("Error")
         }
@@ -55,25 +55,25 @@ internal class GetRawJokesTest {
 
     @Test
     fun `Get Raw Joke with XML`() {
-        val response = getRawJokes(format = Format.XML)
-        assertThat(response, "getRawJoke(xml)").startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
+        val response = rawJokes(format = Format.XML)
+        assertThat(response, "rawJoke(xml)").startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
     }
 
     @Test
     fun `Get Raw Joke with YAML`() {
-        val response = getRawJokes(format = Format.YAML)
-        assertThat(response, "getRawJoke(yaml)").startsWith("error: false")
+        val response = rawJokes(format = Format.YAML)
+        assertThat(response, "rawJoke(yaml)").startsWith("error: false")
     }
 
     @Test
     fun `Get Raw Jokes`() {
-        val response = getRawJokes(amount = 2)
-        assertContains(response, "\"amount\": 2", false, "getRawJoke(2)")
+        val response = rawJokes(amount = 2)
+        assertContains(response, "\"amount\": 2", false, "rawJoke(2)")
     }
 
     @Test
     fun `Get Raw Invalid Jokes`() {
-        val response = getRawJokes(contains = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
+        val response = rawJokes(contains = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
         assertContains(response, "\"error\": true", false, "getRawJokes(foo)")
     }
 }

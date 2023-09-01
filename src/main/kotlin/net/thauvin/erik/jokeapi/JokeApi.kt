@@ -103,7 +103,7 @@ object JokeApi {
     @JvmStatic
     @Throws(HttpErrorException::class)
     fun getRawJokes(config: JokeConfig): String {
-        return getRawJokes(
+        return rawJokes(
             categories = config.categories,
             lang = config.language,
             blacklistFlags = config.flags,
@@ -125,8 +125,8 @@ object JokeApi {
     @JvmStatic
     @JvmOverloads
     @Throws(HttpErrorException::class, JokeException::class)
-    fun getJoke(config: JokeConfig = JokeConfig.Builder().build()): Joke {
-        return getJoke(
+    fun joke(config: JokeConfig = JokeConfig.Builder().build()): Joke {
+        return joke(
             categories = config.categories,
             lang = config.language,
             blacklistFlags = config.flags,
@@ -146,8 +146,8 @@ object JokeApi {
      */
     @JvmStatic
     @Throws(HttpErrorException::class, JokeException::class)
-    fun getJokes(config: JokeConfig): Array<Joke> {
-        return getJokes(
+    fun jokes(config: JokeConfig): Array<Joke> {
+        return jokes(
             categories = config.categories,
             lang = config.language,
             blacklistFlags = config.flags,
@@ -170,7 +170,7 @@ object JokeApi {
  *
  * @param splitNewLine Split newline within [Type.SINGLE] joke.
  */
-fun getJoke(
+fun joke(
     categories: Set<Category> = setOf(Category.ANY),
     lang: Language = Language.EN,
     blacklistFlags: Set<Flag> = emptySet(),
@@ -182,7 +182,7 @@ fun getJoke(
     splitNewLine: Boolean = false
 ): Joke {
     val json = JSONObject(
-        getRawJokes(
+        rawJokes(
             categories = categories,
             lang = lang,
             blacklistFlags = blacklistFlags,
@@ -208,7 +208,7 @@ fun getJoke(
  * @param amount The required amount of jokes to return.
  * @param splitNewLine Split newline within [Type.SINGLE] joke.
  */
-fun getJokes(
+fun jokes(
     amount: Int,
     categories: Set<Category> = setOf(Category.ANY),
     lang: Language = Language.EN,
@@ -221,7 +221,7 @@ fun getJokes(
     splitNewLine: Boolean = false
 ): Array<Joke> {
     val json = JSONObject(
-        getRawJokes(
+        rawJokes(
             categories = categories,
             lang = lang,
             blacklistFlags = blacklistFlags,
@@ -250,7 +250,7 @@ fun getJokes(
  *
  * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
  */
-fun getRawJokes(
+fun rawJokes(
     categories: Set<Category> = setOf(Category.ANY),
     lang: Language = Language.EN,
     blacklistFlags: Set<Flag> = emptySet(),

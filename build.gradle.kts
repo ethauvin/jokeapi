@@ -5,14 +5,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.github.ben-manes.versions") version "0.47.0"
-    id("io.gitlab.arturbosch.detekt") version "1.23.0"
+    id("io.gitlab.arturbosch.detekt") version "1.23.1"
     id("java")
     id("maven-publish")
-    id("org.jetbrains.dokka") version "1.8.20"
-    id("org.jetbrains.kotlinx.kover") version "0.7.2"
-    id("org.sonarqube") version "4.2.1.3168"
+    id("org.jetbrains.dokka") version "1.9.0"
+    id("org.jetbrains.kotlinx.kover") version "0.7.3"
+    id("org.sonarqube") version "4.3.1.3277"
     id("signing")
-    kotlin("jvm") version "1.8.22"
+    kotlin("jvm") version "1.9.10"
 }
 
 description = "Wrapper for Sv443's JokeAPI"
@@ -36,7 +36,7 @@ dependencies {
     implementation("org.json:json:20230618")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.26.1")
 }
 
@@ -63,7 +63,7 @@ sonarqube {
         property("sonar.organization", "ethauvin-github")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/kover/report.xml")
+        property("sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/kover/report.xml")
     }
 }
 

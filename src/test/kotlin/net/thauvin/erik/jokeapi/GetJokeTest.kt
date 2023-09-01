@@ -64,9 +64,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 internal class GetJokeTest {
     @Test
     fun `Get Joke`() {
-        val joke = getJoke()
+        val joke = joke()
         logger.fine(joke.toString())
-        assertThat(joke, "getJoke()").all {
+        assertThat(joke, "joke()").all {
             prop(Joke::joke).isNotEmpty()
             prop(Joke::type).isIn(Type.SINGLE, Type.TWOPART)
             prop(Joke::id).isGreaterThanOrEqualTo(0)
@@ -76,23 +76,23 @@ internal class GetJokeTest {
 
     @Test
     fun `Get Joke without Blacklist Flags`() {
-        val joke = getJoke(blacklistFlags = setOf(Flag.ALL))
+        val joke = joke(blacklistFlags = setOf(Flag.ALL))
         assertThat(joke::flags).isEmpty()
     }
 
     @Test
     fun `Get Joke without any Blacklist Flags`() {
         val allFlags = Flag.values().filter { it != Flag.ALL }.toSet()
-        val joke = getJoke(blacklistFlags = allFlags)
+        val joke = joke(blacklistFlags = allFlags)
         assertThat(joke::flags).isEmpty()
     }
 
     @Test
     fun `Get Joke with ID`() {
         val id = 172
-        val joke = getJoke(idRange = IdRange(id))
+        val joke = joke(idRange = IdRange(id))
         logger.fine(joke.toString())
-        assertThat(joke, "getJoke($id)").all {
+        assertThat(joke, "joke($id)").all {
             prop(Joke::flags).all {
                 contains(Flag.EXPLICIT)
                 contains(Flag.NSFW)
@@ -105,7 +105,7 @@ internal class GetJokeTest {
     @Test
     fun `Get Joke with ID Range`() {
         val idRange = IdRange(1, 100)
-        val joke = getJoke(idRange = idRange)
+        val joke = joke(idRange = idRange)
         logger.fine(joke.toString())
         assertThat(joke::id).isBetween(idRange.start, idRange.end)
     }
@@ -113,24 +113,24 @@ internal class GetJokeTest {
     @Test
     fun `Get Joke with invalid ID Range`() {
         val idRange = IdRange(100, 1)
-        val e = assertThrows<IllegalArgumentException> { getJoke(idRange = idRange, lang = Language.DE) }
+        val e = assertThrows<IllegalArgumentException> { joke(idRange = idRange, lang = Language.DE) }
         assertThat(e::message).isNotNull().contains("100, 1")
     }
 
     @Test
     fun `Get Joke with max ID Range`() {
         val idRange = IdRange(1, 30000)
-        val e = assertThrows<JokeException> { getJoke(idRange = idRange) }
-        assertThat(e, "getJoke{${idRange})").all {
+        val e = assertThrows<JokeException> { joke(idRange = idRange) }
+        assertThat(e, "joke{${idRange})").all {
             prop(JokeException::additionalInfo).contains("ID range")
         }
     }
 
     @Test
     fun `Get Joke with two Categories`() {
-        val joke = getJoke(categories = setOf(Category.PROGRAMMING, Category.MISC))
+        val joke = joke(categories = setOf(Category.PROGRAMMING, Category.MISC))
         logger.fine(joke.toString())
-        assertThat(joke.category, "getJoke(${Category.PROGRAMMING},${Category.MISC})").isIn(
+        assertThat(joke.category, "joke(${Category.PROGRAMMING},${Category.MISC})").isIn(
             Category.PROGRAMMING,
             Category.MISC
         )
@@ -139,28 +139,28 @@ internal class GetJokeTest {
     @Test
     fun `Get Joke with each Categories`() {
         Category.values().filter { it != Category.ANY }.forEach {
-            val joke = getJoke(categories = setOf(it))
+            val joke = joke(categories = setOf(it))
             logger.fine(joke.toString())
-            assertThat(joke::category, "getJoke($it)").prop(Category::value).isEqualTo(it.value)
+            assertThat(joke::category, "joke($it)").prop(Category::value).isEqualTo(it.value)
         }
     }
 
     @Test
     fun `Get Joke with each Languages`() {
         Language.values().forEach {
-            val joke = getJoke(lang = it)
+            val joke = joke(lang = it)
             logger.fine(joke.toString())
-            assertThat(joke::lang, "getJoke($it)").prop(Language::value).isEqualTo(it.value)
+            assertThat(joke::lang, "joke($it)").prop(Language::value).isEqualTo(it.value)
         }
     }
 
     @Test
     fun `Get Joke with Split Newline`() {
-        val joke = getJoke(
+        val joke = joke(
             categories = setOf(Category.DARK), type = Type.SINGLE, idRange = IdRange(178), splitNewLine = true
         )
         logger.fine(joke.toString())
-        assertThat(joke::joke, "getJoke(splitNewLine=true)").all {
+        assertThat(joke::joke, "joke(splitNewLine=true)").all {
             size().isEqualTo(2)
             each {
                 containsNone("\n")
@@ -170,25 +170,25 @@ internal class GetJokeTest {
 
     @Test
     fun `Get Safe Joke`() {
-        val joke = getJoke(safe = true)
+        val joke = joke(safe = true)
         logger.fine(joke.toString())
-        assertThat(joke, "getJoke(safe)").all {
+        assertThat(joke, "joke(safe)").all {
             prop(Joke::safe).isTrue()
         }
     }
 
     @Test
     fun `Get Single Joke`() {
-        val joke = getJoke(type = Type.SINGLE)
+        val joke = joke(type = Type.SINGLE)
         logger.fine(joke.toString())
         assertThat(joke::type).assertThat(Type.SINGLE)
     }
 
     @Test
     fun `Get Two-Parts Joke`() {
-        val joke = getJoke(type = Type.TWOPART)
+        val joke = joke(type = Type.TWOPART)
         logger.fine(joke.toString())
-        assertThat(joke, "getJoke(${Type.TWOPART})").all {
+        assertThat(joke, "joke(${Type.TWOPART})").all {
             prop(Joke::type).isEqualTo(Type.TWOPART)
             prop(Joke::joke).size().isGreaterThan(1)
         }
@@ -199,9 +199,9 @@ internal class GetJokeTest {
         val id = 265
         val search = "his wife"
         val joke =
-            getJoke(contains = search, categories = setOf(Category.PROGRAMMING), idRange = IdRange(id), safe = true)
+            joke(contains = search, categories = setOf(Category.PROGRAMMING), idRange = IdRange(id), safe = true)
         logger.fine(joke.toString())
-        assertThat(joke, "getJoke($search)").all {
+        assertThat(joke, "joke($search)").all {
             prop(Joke::id).isEqualTo(id)
             prop(Joke::joke).any {
                 it.contains(search)

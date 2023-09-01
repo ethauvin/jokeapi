@@ -58,10 +58,10 @@ internal class ExceptionsTest {
     @Test
     fun `Validate Joke Exception`() {
         val e = assertThrows<JokeException> {
-            getJoke(categories = setOf(Category.CHRISTMAS), contains = "foo")
+            joke(categories = setOf(Category.CHRISTMAS), contains = "foo")
         }
         logger.fine(e.debug())
-        assertThat(e, "getJoke(${Category.CHRISTMAS},foo)").all {
+        assertThat(e, "joke(${Category.CHRISTMAS},foo)").all {
             prop(JokeException::code).isEqualTo(106)
             prop(JokeException::internalError).isFalse()
             prop(JokeException::message).isEqualTo("No matching joke found")

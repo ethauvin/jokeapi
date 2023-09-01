@@ -41,8 +41,8 @@ import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.size
-import net.thauvin.erik.jokeapi.JokeApi.getJoke
-import net.thauvin.erik.jokeapi.JokeApi.getJokes
+import net.thauvin.erik.jokeapi.JokeApi.joke
+import net.thauvin.erik.jokeapi.JokeApi.jokes
 import net.thauvin.erik.jokeapi.JokeApi.getRawJokes
 import net.thauvin.erik.jokeapi.JokeApi.logger
 import net.thauvin.erik.jokeapi.models.Category
@@ -60,7 +60,7 @@ import kotlin.test.assertContains
 internal class JokeConfigTest {
     @Test
     fun `Get Joke with Default Builder`() {
-        val joke = getJoke()
+        val joke = joke()
         assertThat(joke, "joke").all {
             prop(Joke::id).isGreaterThanOrEqualTo(0)
             prop(Joke::lang).isEqualTo(Language.EN)
@@ -78,7 +78,7 @@ internal class JokeConfigTest {
             idRange(IdRange(id - 2, id + 2))
             safe(true)
         }.build()
-        val joke = getJoke(config)
+        val joke = joke(config)
         logger.fine(joke.toString())
         assertThat(joke, "config").all {
             prop(Joke::type).isEqualTo(Type.TWOPART)
@@ -98,7 +98,7 @@ internal class JokeConfigTest {
             idRange(IdRange(id))
             splitNewLine(true)
         }.build()
-        val joke = getJoke(config)
+        val joke = joke(config)
         logger.fine(joke.toString())
         assertThat(joke, "config").all {
             prop(Joke::id).isEqualTo(id)
@@ -127,7 +127,7 @@ internal class JokeConfigTest {
             safe(true)
             lang(Language.FR)
         }.build()
-        val jokes = getJokes(config)
+        val jokes = jokes(config)
         assertThat(jokes, "jokes").all {
             size().isEqualTo(amount)
             each {

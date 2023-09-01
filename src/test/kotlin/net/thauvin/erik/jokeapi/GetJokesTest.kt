@@ -53,7 +53,7 @@ internal class GetJokesTest {
     @Test
     fun `Get Multiple Jokes`() {
         val amount = 2
-        val jokes = getJokes(amount = amount, safe = true, lang = Language.FR)
+        val jokes = jokes(amount = amount, safe = true, lang = Language.FR)
         assertThat(jokes, "jokes").all {
             size().isEqualTo(amount)
             each {
@@ -66,13 +66,13 @@ internal class GetJokesTest {
 
     @Test
     fun `Get Jokes with Invalid Amount`() {
-        val e = assertThrows<IllegalArgumentException> { getJokes(amount = -1) }
+        val e = assertThrows<IllegalArgumentException> { jokes(amount = -1) }
         assertThat(e::message).isNotNull().contains("-1")
     }
 
     @Test
     fun `Get One Joke as Multiple`() {
-        val jokes = getJokes(amount = 1, safe = true)
+        val jokes = jokes(amount = 1, safe = true)
         assertThat(jokes, "jokes").all {
             size().isEqualTo(1)
             index(0).all {

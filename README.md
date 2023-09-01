@@ -17,9 +17,9 @@ A simple library to retrieve jokes from [Sv443's JokeAPI](https://v2.jokeapi.dev
 ```kotlin
 import net.thauvin.erik.jokeapi.getJoke
 
-val joke = getJoke()
-val safe = getJoke(safe = true)
-val pun = getJoke(categories = setOf(Category.PUN))
+val joke = joke()
+val safe = joke(safe = true)
+val pun = joke(categories = setOf(Category.PUN))
 ```
 The parameters match the [joke endpoint](https://v2.jokeapi.dev/#joke-endpoint).
 
@@ -41,7 +41,7 @@ data class Joke(
 To retrieve multiple jokes:
 
 ```kotlin
-val frenchJokes = getJokes(amount = 2, type = Type.TWOPART, lang = Language.FR)
+val frenchJokes = jokes(amount = 2, type = Type.TWOPART, lang = Language.FR)
 frenchJokes.forEach {
     println(it.joke.joinToString("\n"))
     println("-".repeat(46))
@@ -85,7 +85,7 @@ var config = new JokeConfig.Builder()
         .type(Type.SINGLE)
         .safe(true)
         .build();
-var joke = JokeApi.getJoke(config);
+var joke = JokeApi.joke(config);
 joke.getJoke().forEach(System.out::println);
 ```
 ## Gradle, Maven, etc.
