@@ -4,7 +4,7 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.47.0"
+    id("com.github.ben-manes.versions") version "0.48.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.1"
     id("java")
     id("maven-publish")
@@ -15,9 +15,9 @@ plugins {
     kotlin("jvm") version "1.9.10"
 }
 
-description = "Wrapper for Sv443's JokeAPI"
+description = "Retrieve jokes from Sv443's JokeAPI"
 group = "net.thauvin.erik"
-version = "0.9-SNAPSHOT"
+version = "0.9.0"
 
 val deployDir = "deploy"
 val gitHub = "ethauvin/$name"
@@ -32,12 +32,12 @@ repositories {
 dependencies {
     implementation(platform(kotlin("bom")))
 
-    implementation("net.thauvin.erik:urlencoder:1.3.0")
+    implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.4.0")
     implementation("org.json:json:20230618")
 
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.26.1")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.27.0")
 }
 
 java {
@@ -126,7 +126,7 @@ tasks {
     register("deploy") {
         description = "Copies all needed files to the $deployDir directory."
         group = PublishingPlugin.PUBLISH_TASK_GROUP
-        dependsOn(clean, wrapper, build, jar)
+        dependsOn(clean, build, jar)
         outputs.dir(deployDir)
         inputs.files(copyToDeploy)
         mustRunAfter(clean)

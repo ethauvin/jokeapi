@@ -18,5 +18,6 @@
     <ID>MagicNumber:JokeUtil.kt$500</ID>
     <ID>MagicNumber:JokeUtil.kt$523</ID>
     <ID>TooManyFunctions:JokeConfig.kt$JokeConfig$Builder</ID>
+    <ID>WildcardImport:JokeApi.kt$import net.thauvin.erik.jokeapi.models.*</ID>
   </CurrentIssues>
 </SmellBaseline>

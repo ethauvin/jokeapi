@@ -36,6 +36,7 @@ import assertk.assertions.isGreaterThan
 import assertk.assertions.startsWith
 import net.thauvin.erik.jokeapi.JokeApi.apiCall
 import net.thauvin.erik.jokeapi.models.Format
+import net.thauvin.erik.jokeapi.models.Language
 import net.thauvin.erik.jokeapi.models.Parameter
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -72,5 +73,15 @@ internal class ApiCallTest {
         // See https://v2.jokeapi.dev/#ping-endpoint
         val ping = apiCall(endPoint = "ping", params = mapOf(Parameter.FORMAT to Format.TXT.value))
         assertThat(ping, "apiCall(ping, txt)").startsWith("Pong!")
+    }
+
+    @Test
+    fun `Get Supported Language`() {
+        // See  https://v2.jokeapi.dev/languages
+        val lang = apiCall(
+            endPoint = "languages",
+            params = mapOf(Parameter.FORMAT to Format.XML.value, Parameter.LANG to Language.FR.value)
+        )
+        assertThat(lang).startsWith("<?xml version='1.0'?>")
     }
 }

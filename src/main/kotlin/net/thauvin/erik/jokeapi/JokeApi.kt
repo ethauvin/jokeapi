@@ -33,15 +33,8 @@ package net.thauvin.erik.jokeapi
 
 import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
 import net.thauvin.erik.jokeapi.exceptions.JokeException
-import net.thauvin.erik.jokeapi.models.Category
-import net.thauvin.erik.jokeapi.models.Flag
-import net.thauvin.erik.jokeapi.models.Format
-import net.thauvin.erik.jokeapi.models.IdRange
-import net.thauvin.erik.jokeapi.models.Joke
-import net.thauvin.erik.jokeapi.models.Language
-import net.thauvin.erik.jokeapi.models.Parameter
-import net.thauvin.erik.jokeapi.models.Type
-import net.thauvin.erik.urlencoder.UrlEncoder
+import net.thauvin.erik.jokeapi.models.*
+import net.thauvin.erik.urlencoder.UrlEncoderUtil
 import org.json.JSONObject
 import java.util.logging.Logger
 import java.util.stream.Collectors
@@ -85,7 +78,7 @@ object JokeApi {
                 val param = it.next()
                 urlBuilder.append(param.key)
                 if (param.value.isNotEmpty()) {
-                    urlBuilder.append("=").append(UrlEncoder.encode(param.value))
+                    urlBuilder.append("=").append(UrlEncoderUtil.encode(param.value))
                 }
                 if (it.hasNext()) {
                     urlBuilder.append("&")

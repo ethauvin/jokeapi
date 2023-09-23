@@ -1,8 +1,8 @@
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://opensource.org/licenses/BSD-3-Clause)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.8.22-7f52ff)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.9.10-7f52ff)](https://kotlinlang.org/)
 [![Nexus Snapshot](https://img.shields.io/nexus/s/net.thauvin.erik/jokeapi?label=snapshot&server=https%3A%2F%2Foss.sonatype.org%2F)](https://oss.sonatype.org/content/repositories/snapshots/net/thauvin/erik/jokeapi/)
 [![Release](https://img.shields.io/github/release/ethauvin/jokeapi.svg)](https://github.com/ethauvin/jokeapi/releases/latest)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.thauvin.erik/jokeapi/badge.svg?color=blue)](https://maven-badges.herokuapp.com/maven-central/net.thauvin.erik/jokeapi)
+[![Maven Central](https://img.shields.io/maven-central/v/net.thauvin.erik/jokeap)](https://central.sonatype.com/artifact/net.thauvin.erik/jokeapi)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ethauvin_jokeapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=ethauvin_jokeapi)
 [![GitHub CI](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml/badge.svg)](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml)
@@ -36,7 +36,7 @@ data class Joke(
     val lang: Language
 )
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt#L31)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt#L64)...
 
 To retrieve multiple jokes:
 
@@ -48,7 +48,7 @@ frenchJokes.forEach {
 }
 ```
 
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokesTest.kt#L31)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokesTest.kt#L52)...
 
 
 If an error occurs, a `JokeException` is thrown, matching the [JokeAPI errors](https://sv443.net/jokeapi/v2/#errors):
@@ -74,7 +74,7 @@ class HttpErrorException(
     cause: Throwable? = null
 ) : IOException(message, cause)
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ExceptionsTest.kt#L31)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ExceptionsTest.kt#L57)...
 
 ## Java
 
@@ -98,11 +98,11 @@ repositories {
 }
 
 dependencies {
-    implementation("net.thauvin.erik:jokeapi:0.9-SNAPSHOT")
+    implementation("net.thauvin.erik:jokeapi:0.9.0")
 }
 ```
 
-Instructions for using with Maven, Ivy, etc. can be found on Maven Central.
+Instructions for using with Maven, Ivy, etc. can be found on [Maven Central](https://central.sonatype.com/artifact/net.thauvin.erik/jokeapi).
 
 ## Raw Jokes
 
@@ -130,7 +130,7 @@ safe: true
 lang: "en"
 
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokesTest.kt#L31)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokesTest.kt#L46)...
 
 ## Extending
 
@@ -150,10 +150,4 @@ println(lang)
 error: false
 code: "fr"
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt#L31)...
-
-
-
-
-
-
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt#L48)...
