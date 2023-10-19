@@ -4,20 +4,20 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.48.0"
+    id("com.github.ben-manes.versions") version "0.49.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.1"
     id("java")
     id("maven-publish")
-    id("org.jetbrains.dokka") version "1.9.0"
-    id("org.jetbrains.kotlinx.kover") version "0.7.3"
-    id("org.sonarqube") version "4.3.1.3277"
+    id("org.jetbrains.dokka") version "1.9.10"
+    id("org.jetbrains.kotlinx.kover") version "0.7.4"
+    id("org.sonarqube") version "4.4.1.3373"
     id("signing")
     kotlin("jvm") version "1.9.10"
 }
 
 description = "Retrieve jokes from Sv443's JokeAPI"
 group = "net.thauvin.erik"
-version = "0.9.0"
+version = "0.9.1-SNAPSHOT"
 
 val deployDir = "deploy"
 val gitHub = "ethauvin/$name"
@@ -33,7 +33,7 @@ dependencies {
     implementation(platform(kotlin("bom")))
 
     implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.4.0")
-    implementation("org.json:json:20230618")
+    implementation("org.json:json:20231013")
 
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
@@ -63,7 +63,7 @@ sonarqube {
         property("sonar.organization", "ethauvin-github")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/kover/report.xml")
+        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/kover/report.xml")
     }
 }
 

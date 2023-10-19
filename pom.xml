@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.thauvin.erik</groupId>
   <artifactId>jokeapi</artifactId>
-  <version>0.9.0</version>
+  <version>0.9.1-SNAPSHOT</version>
   <name>jokeapi</name>
   <description>Retrieve jokes from Sv443's JokeAPI</description>
   <url>https://github.com/ethauvin/jokeapi</url>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20230618</version>
+      <version>20231013</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
