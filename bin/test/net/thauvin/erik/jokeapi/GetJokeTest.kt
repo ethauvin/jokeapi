@@ -33,10 +33,29 @@ package net.thauvin.erik.jokeapi
 
 import assertk.all
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.any
+import assertk.assertions.contains
+import assertk.assertions.containsNone
+import assertk.assertions.each
+import assertk.assertions.isBetween
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThan
+import assertk.assertions.isGreaterThanOrEqualTo
+import assertk.assertions.isIn
+import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotNull
+import assertk.assertions.isTrue
+import assertk.assertions.prop
+import assertk.assertions.size
 import net.thauvin.erik.jokeapi.JokeApi.logger
 import net.thauvin.erik.jokeapi.exceptions.JokeException
-import net.thauvin.erik.jokeapi.models.*
+import net.thauvin.erik.jokeapi.models.Category
+import net.thauvin.erik.jokeapi.models.Flag
+import net.thauvin.erik.jokeapi.models.IdRange
+import net.thauvin.erik.jokeapi.models.Joke
+import net.thauvin.erik.jokeapi.models.Language
+import net.thauvin.erik.jokeapi.models.Type
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -63,7 +82,7 @@ internal class GetJokeTest {
 
     @Test
     fun `Get Joke without any Blacklist Flags`() {
-        val allFlags = Flag.entries.filter { it != Flag.ALL }.toSet()
+        val allFlags = Flag.values().filter { it != Flag.ALL }.toSet()
         val joke = joke(blacklistFlags = allFlags)
         assertThat(joke::flags).isEmpty()
     }
@@ -119,7 +138,7 @@ internal class GetJokeTest {
 
     @Test
     fun `Get Joke with each Categories`() {
-        Category.entries.filter { it != Category.ANY }.forEach {
+        Category.values().filter { it != Category.ANY }.forEach {
             val joke = joke(categories = setOf(it))
             logger.fine(joke.toString())
             assertThat(joke::category, "joke($it)").prop(Category::value).isEqualTo(it.value)
@@ -128,7 +147,7 @@ internal class GetJokeTest {
 
     @Test
     fun `Get Joke with each Languages`() {
-        Language.entries.forEach {
+        Language.values().forEach {
             val joke = joke(lang = it)
             logger.fine(joke.toString())
             assertThat(joke::lang, "joke($it)").prop(Language::value).isEqualTo(it.value)

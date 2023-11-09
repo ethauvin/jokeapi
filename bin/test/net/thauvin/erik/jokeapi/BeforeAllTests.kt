@@ -1,5 +1,5 @@
 /*
- * JokeException.kt
+ * BeforeAllTests.kt
  *
  * Copyright 2022-2023 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -29,30 +29,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("ConstPropertyName")
+package net.thauvin.erik.jokeapi
 
-package net.thauvin.erik.jokeapi.exceptions
+import org.junit.jupiter.api.extension.BeforeAllCallback
+import org.junit.jupiter.api.extension.ExtensionContext
+import java.util.logging.ConsoleHandler
+import java.util.logging.Level
 
-/**
- * Signals that an error has occurred.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
- */
-class JokeException @JvmOverloads constructor(
-    val internalError: Boolean,
-    val code: Int,
-    message: String,
-    val causedBy: List<String>,
-    val additionalInfo: String,
-    val timestamp: Long,
-    cause: Throwable? = null
-) : RuntimeException(message, cause) {
-    companion object {
-        private const val serialVersionUID = 1L
-    }
-
-    fun debug(): String {
-        return "JokeException(message=$message, internalError=$internalError, code=$code," +
-                " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
+class BeforeAllTests : BeforeAllCallback {
+    override fun beforeAll(context: ExtensionContext?) {
+        with(JokeApi.logger) {
+            addHandler(ConsoleHandler().apply { level = Level.FINE })
+            level = Level.FINE
+        }
     }
 }
+

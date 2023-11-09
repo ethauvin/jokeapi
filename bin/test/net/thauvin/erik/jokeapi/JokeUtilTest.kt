@@ -1,5 +1,5 @@
 /*
- * JokeException.kt
+ * UtilTest.kt
  *
  * Copyright 2022-2023 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -29,30 +29,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("ConstPropertyName")
+package net.thauvin.erik.jokeapi
 
-package net.thauvin.erik.jokeapi.exceptions
+import assertk.assertThat
+import assertk.assertions.contains
+import org.json.JSONException
+import org.json.JSONObject
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 
-/**
- * Signals that an error has occurred.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
- */
-class JokeException @JvmOverloads constructor(
-    val internalError: Boolean,
-    val code: Int,
-    message: String,
-    val causedBy: List<String>,
-    val additionalInfo: String,
-    val timestamp: Long,
-    cause: Throwable? = null
-) : RuntimeException(message, cause) {
-    companion object {
-        private const val serialVersionUID = 1L
+@ExtendWith(BeforeAllTests::class)
+internal class JokeUtilTest {
+    @Test
+    fun `Invalid JSON Error`() {
+        assertThrows<JSONException> { parseError(JSONObject("{}")) }
     }
 
-    fun debug(): String {
-        return "JokeException(message=$message, internalError=$internalError, code=$code," +
-                " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
+    @Test
+    fun `Invalid JSON Joke`() {
+        assertThrows<JSONException> { parseJoke(JSONObject("{}"), false) }
+    }
+
+    @Test
+    fun `Validate Authentication Header`() {
+        val token = "AUTH-TOKEN"
+        val body = fetchUrl("https://postman-echo.com/get", token)
+        assertThat(body, "body").contains("\"authentication\": \"$token\"")
     }
 }

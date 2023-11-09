@@ -1,5 +1,5 @@
 /*
- * JokeException.kt
+ * Parameter.kt
  *
  * Copyright 2022-2023 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -29,30 +29,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("ConstPropertyName")
-
-package net.thauvin.erik.jokeapi.exceptions
+package net.thauvin.erik.jokeapi.models
 
 /**
- * Signals that an error has occurred.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
+ * The available [URL Parameters](https://jokeapi.dev/#url-parameters).
  */
-class JokeException @JvmOverloads constructor(
-    val internalError: Boolean,
-    val code: Int,
-    message: String,
-    val causedBy: List<String>,
-    val additionalInfo: String,
-    val timestamp: Long,
-    cause: Throwable? = null
-) : RuntimeException(message, cause) {
-    companion object {
-        private const val serialVersionUID = 1L
-    }
+object Parameter {
+    const val AMOUNT = "amount"
+    const val CONTAINS = "contains"
+    const val FLAGS = "blacklistFlags"
+    const val FORMAT = "format"
+    const val RANGE = "idRange"
+    const val LANG = "lang"
+    const val SAFE = "safe-mode"
+    const val TYPE = "type"
 
-    fun debug(): String {
-        return "JokeException(message=$message, internalError=$internalError, code=$code," +
-                " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
-    }
+    const val BLACKLIST_FLAGS = FLAGS
+    const val ID_RANGE = RANGE
+    const val SAFE_MODE = SAFE
+    const val SEARCH = CONTAINS
 }

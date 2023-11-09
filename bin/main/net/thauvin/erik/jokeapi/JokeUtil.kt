@@ -35,7 +35,12 @@ package net.thauvin.erik.jokeapi
 
 import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
 import net.thauvin.erik.jokeapi.exceptions.JokeException
-import net.thauvin.erik.jokeapi.models.*
+import net.thauvin.erik.jokeapi.models.Category
+import net.thauvin.erik.jokeapi.models.Flag
+import net.thauvin.erik.jokeapi.models.Joke
+import net.thauvin.erik.jokeapi.models.Language
+import net.thauvin.erik.jokeapi.models.Parameter
+import net.thauvin.erik.jokeapi.models.Type
 import org.json.JSONObject
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -150,7 +155,7 @@ internal fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
     }
     val enabledFlags = mutableSetOf<Flag>()
     val jsonFlags = json.getJSONObject("flags")
-    Flag.entries.filter { it != Flag.ALL }.forEach {
+    Flag.values().filter { it != Flag.ALL }.forEach {
         if (jsonFlags.has(it.value) && jsonFlags.getBoolean(it.value)) {
             enabledFlags.add(it)
         }

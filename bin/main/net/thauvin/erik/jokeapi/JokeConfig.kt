@@ -32,7 +32,12 @@
 package net.thauvin.erik.jokeapi
 
 import net.thauvin.erik.jokeapi.JokeConfig.Builder
-import net.thauvin.erik.jokeapi.models.*
+import net.thauvin.erik.jokeapi.models.Category
+import net.thauvin.erik.jokeapi.models.Flag
+import net.thauvin.erik.jokeapi.models.Format
+import net.thauvin.erik.jokeapi.models.IdRange
+import net.thauvin.erik.jokeapi.models.Language
+import net.thauvin.erik.jokeapi.models.Type
 
 /**
  * Joke Configuration.

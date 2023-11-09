@@ -1,5 +1,5 @@
 /*
- * JokeException.kt
+ * GetRawJokesTest.kt
  *
  * Copyright 2022-2023 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -29,30 +29,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("ConstPropertyName")
+package net.thauvin.erik.jokeapi
 
-package net.thauvin.erik.jokeapi.exceptions
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.doesNotContain
+import assertk.assertions.isNotEmpty
+import assertk.assertions.startsWith
+import net.thauvin.erik.jokeapi.models.Format
+import net.thauvin.erik.jokeapi.models.IdRange
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertContains
 
-/**
- * Signals that an error has occurred.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
- */
-class JokeException @JvmOverloads constructor(
-    val internalError: Boolean,
-    val code: Int,
-    message: String,
-    val causedBy: List<String>,
-    val additionalInfo: String,
-    val timestamp: Long,
-    cause: Throwable? = null
-) : RuntimeException(message, cause) {
-    companion object {
-        private const val serialVersionUID = 1L
+@ExtendWith(BeforeAllTests::class)
+internal class GetRawJokesTest {
+    @Test
+    fun `Get Raw Joke with TXT`() {
+        val response = rawJokes(format = Format.TXT)
+        assertThat(response, "rawJoke(txt)").all {
+            isNotEmpty()
+            doesNotContain("Error")
+        }
     }
 
-    fun debug(): String {
-        return "JokeException(message=$message, internalError=$internalError, code=$code," +
-                " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
+    @Test
+    fun `Get Raw Joke with XML`() {
+        val response = rawJokes(format = Format.XML)
+        assertThat(response, "rawJoke(xml)").startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
+    }
+
+    @Test
+    fun `Get Raw Joke with YAML`() {
+        val response = rawJokes(format = Format.YAML)
+        assertThat(response, "rawJoke(yaml)").startsWith("error: false")
+    }
+
+    @Test
+    fun `Get Raw Jokes`() {
+        val response = rawJokes(amount = 2)
+        assertContains(response, "\"amount\": 2", false, "rawJoke(2)")
+    }
+
+    @Test
+    fun `Get Raw Invalid Jokes`() {
+        val response = rawJokes(contains = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
+        assertContains(response, "\"error\": true", false, "getRawJokes(foo)")
     }
 }

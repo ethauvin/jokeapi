@@ -1,8 +1,8 @@
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://opensource.org/licenses/BSD-3-Clause)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.9.10-7f52ff)](https://kotlinlang.org/)
-[![Nexus Snapshot](https://img.shields.io/nexus/s/net.thauvin.erik/jokeapi?label=snapshot&server=https%3A%2F%2Foss.sonatype.org%2F)](https://oss.sonatype.org/content/repositories/snapshots/net/thauvin/erik/jokeapi/)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.9.20-7f52ff)](https://kotlinlang.org/)
 [![Release](https://img.shields.io/github/release/ethauvin/jokeapi.svg)](https://github.com/ethauvin/jokeapi/releases/latest)
 [![Maven Central](https://img.shields.io/maven-central/v/net.thauvin.erik/jokeapi?color=blue)](https://central.sonatype.com/artifact/net.thauvin.erik/jokeapi)
+[![Nexus Snapshot](https://img.shields.io/nexus/s/net.thauvin.erik/jokeapi?label=snapshot&server=https%3A%2F%2Foss.sonatype.org%2F)](https://oss.sonatype.org/content/repositories/snapshots/net/thauvin/erik/jokeapi/)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ethauvin_jokeapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=ethauvin_jokeapi)
 [![GitHub CI](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml/badge.svg)](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml)
@@ -88,6 +88,19 @@ var config = new JokeConfig.Builder()
 var joke = JokeApi.joke(config);
 joke.getJoke().forEach(System.out::println);
 ```
+
+## bld
+
+To use with [bld](https://rife2.com/bld), include the following dependency in your build file:
+
+```java
+repositories = List.of(MAVEN_CENTRAL);
+
+scope(compile)
+    .include(dependency("net.thauvin.erik:cryptoprice:1.0.1"));
+```
+Be sure to use the [bld Kotlin extension](https://github.com/rife2/bld-kotlin) in your project.
+
 ## Gradle, Maven, etc.
 To use with [Gradle](https://gradle.org/), include the following dependency in your build file:
 

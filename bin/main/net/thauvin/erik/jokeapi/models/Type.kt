@@ -1,5 +1,5 @@
 /*
- * JokeException.kt
+ * Type.kt
  *
  * Copyright 2022-2023 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -29,30 +29,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("ConstPropertyName")
-
-package net.thauvin.erik.jokeapi.exceptions
+package net.thauvin.erik.jokeapi.models
 
 /**
- * Signals that an error has occurred.
- *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
+ * The supported [types](https://jokeapi.dev/#type-param), use [ALL] for all.
  */
-class JokeException @JvmOverloads constructor(
-    val internalError: Boolean,
-    val code: Int,
-    message: String,
-    val causedBy: List<String>,
-    val additionalInfo: String,
-    val timestamp: Long,
-    cause: Throwable? = null
-) : RuntimeException(message, cause) {
-    companion object {
-        private const val serialVersionUID = 1L
-    }
-
-    fun debug(): String {
-        return "JokeException(message=$message, internalError=$internalError, code=$code," +
-                " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
-    }
+enum class Type(val value: String) {
+    SINGLE("single"),
+    TWOPART("twopart"),
+    ALL("${SINGLE.value},${TWOPART.value}")
 }

@@ -1,5 +1,5 @@
 /*
- * JokeException.kt
+ * HttpErrorException.kt
  *
  * Copyright 2022-2023 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -29,30 +29,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("ConstPropertyName")
-
 package net.thauvin.erik.jokeapi.exceptions
 
+import java.io.IOException
+
 /**
- * Signals that an error has occurred.
+ * Signals that a server error has occurred.
  *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
+ * Sse the [JokeAPI Documentation](https://jokeapi.dev/#status-codes) for more details.
  */
-class JokeException @JvmOverloads constructor(
-    val internalError: Boolean,
-    val code: Int,
+class HttpErrorException @JvmOverloads constructor(
+    val statusCode: Int,
     message: String,
-    val causedBy: List<String>,
-    val additionalInfo: String,
-    val timestamp: Long,
     cause: Throwable? = null
-) : RuntimeException(message, cause) {
+) : IOException(message, cause) {
     companion object {
         private const val serialVersionUID = 1L
-    }
-
-    fun debug(): String {
-        return "JokeException(message=$message, internalError=$internalError, code=$code," +
-                " causedBy=$causedBy, additionalInfo='$additionalInfo', timestamp=$timestamp)"
     }
 }
