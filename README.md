@@ -5,7 +5,7 @@
 [![Nexus Snapshot](https://img.shields.io/nexus/s/net.thauvin.erik/jokeapi?label=snapshot&server=https%3A%2F%2Foss.sonatype.org%2F)](https://oss.sonatype.org/content/repositories/snapshots/net/thauvin/erik/jokeapi/)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ethauvin_jokeapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=ethauvin_jokeapi)
-[![GitHub CI](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml/badge.svg)](https://github.com/ethauvin/jokeapi/actions/workflows/gradle.yml)
+[![GitHub CI](https://github.com/ethauvin/jokeapi/actions/workflows/bld.yml/badge.svg)](https://github.com/ethauvin/jokeapi/actions/workflows/bld.yml)
 [![CircleCI](https://circleci.com/gh/ethauvin/jokeapi/tree/master.svg?style=shield)](https://circleci.com/gh/ethauvin/jokeapi/tree/master)
 
 # JokeAPI for Kotlin, Java and Android
