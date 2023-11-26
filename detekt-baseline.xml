@@ -18,6 +18,14 @@
     <ID>MagicNumber:JokeUtil.kt$500</ID>
     <ID>MagicNumber:JokeUtil.kt$523</ID>
     <ID>TooManyFunctions:JokeConfig.kt$JokeConfig$Builder</ID>
+    <ID>WildcardImport:ExceptionsTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetJokeTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetJokeTest.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:GetJokesTest.kt$import assertk.assertions.*</ID>
     <ID>WildcardImport:JokeApi.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:JokeConfig.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:JokeConfigTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:JokeConfigTest.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:JokeUtil.kt$import net.thauvin.erik.jokeapi.models.*</ID>
   </CurrentIssues>
 </SmellBaseline>
