@@ -58,7 +58,7 @@ public class JokeApiBuild extends Project {
     public JokeApiBuild() {
         pkg = "net.thauvin.erik";
         name = "jokeapi";
-        version = version(0, 9, 1, "SNAPSHOT");
+        version = version(0, 9, 1);
 
         javaRelease = 11;
         downloadSources = true;

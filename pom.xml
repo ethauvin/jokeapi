@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.thauvin.erik</groupId>
   <artifactId>jokeapi</artifactId>
-  <version>0.9.1-SNAPSHOT</version>
+  <version>0.9.1</version>
   <name>jokeapi</name>
   <description>Retrieve jokes from Sv443&apos;s JokeAPI</description>
   <url>https://github.com/ethauvin/jokeapi</url>
