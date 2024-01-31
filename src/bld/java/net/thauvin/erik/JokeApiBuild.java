@@ -65,19 +65,16 @@ public class JokeApiBuild extends Project {
         autoDownloadPurge = true;
         repositories = List.of(MAVEN_LOCAL, MAVEN_CENTRAL);
 
-        final var kotlin = version(1, 9, 21);
+        final var kotlin = version(1, 9, 22);
         scope(compile)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-stdlib", kotlin))
-                .include(dependency("org.jetbrains.kotlin", "kotlin-stdlib-common", kotlin))
-                .include(dependency("org.jetbrains.kotlin", "kotlin-stdlib-jdk7", kotlin))
-                .include(dependency("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", kotlin))
                 .include(dependency("org.json", "json", "20231013"))
                 .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm", version(1, 4, 0)));
         scope(test)
-                .include(dependency("org.jetbrains.kotlin", "kotlin-test-junit5", version(1, 9, 21)))
+                .include(dependency("org.jetbrains.kotlin", "kotlin-test-junit5", version(1, 9, 22)))
                 .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 1)))
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 10, 1)))
-                .include(dependency("com.willowtreeapps.assertk", "assertk-jvm", version(0, 27, 0)));
+                .include(dependency("com.willowtreeapps.assertk", "assertk-jvm", version(0, 28, 0)));
 
         publishOperation()
                 .repository(version.isSnapshot() ? repository(SONATYPE_SNAPSHOTS_LEGACY.location())
