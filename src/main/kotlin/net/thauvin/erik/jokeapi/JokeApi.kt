@@ -45,6 +45,9 @@ import java.util.stream.Collectors
 object JokeApi {
     private const val API_URL = "https://v2.jokeapi.dev/"
 
+    /**
+     * The logger instance.
+     */
     @JvmStatic
     val logger: Logger by lazy { Logger.getLogger(JokeApi::class.java.simpleName) }
 

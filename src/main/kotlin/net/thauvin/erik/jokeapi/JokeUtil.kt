@@ -123,6 +123,9 @@ private fun httpError(responseCode: Int): HttpErrorException {
     return httpException
 }
 
+/**
+ * Parse Error.
+ */
 internal fun parseError(json: JSONObject): JokeException {
     val causedBy = json.getJSONArray("causedBy")
     val causes = List<String>(causedBy.length()) { i -> causedBy.getString(i) }
@@ -136,6 +139,9 @@ internal fun parseError(json: JSONObject): JokeException {
     )
 }
 
+/**
+ * Parse Joke.
+ */
 internal fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
     val jokes = mutableListOf<String>()
     if (json.has("setup")) {
