@@ -68,12 +68,12 @@ public class JokeApiBuild extends Project {
         final var kotlin = version(1, 9, 22);
         scope(compile)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-stdlib", kotlin))
-                .include(dependency("org.json", "json", "20231013"))
+                .include(dependency("org.json", "json", "20240205"))
                 .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm", version(1, 4, 0)));
         scope(test)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-test-junit5", version(1, 9, 22)))
-                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 1)))
-                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 10, 1)))
+                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 2)))
+                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 10, 2)))
                 .include(dependency("com.willowtreeapps.assertk", "assertk-jvm", version(0, 28, 0)));
 
         publishOperation()
