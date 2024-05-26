@@ -2,20 +2,8 @@
 <project version="4">
   <component name="EntryPointsManager">
     <pattern value="net.thauvin.erik.JokeApiBuild" method="jacoco" />
-  </component>
-  <component name="PDMPlugin">
-    <option name="customRuleSets">
-      <list>
-        <option value="K:\java\semver\config\pmd.xml" />
-        <option value="$PROJECT_DIR$/../../java/bld-generated-version/config/pmd.xml" />
-        <option value="$PROJECT_DIR$/../../java/bld-pitest/config/pmd.xml" />
-        <option value="$PROJECT_DIR$/../../java/bld-jacoco-report/config/pmd.xml" />
-        <option value="$PROJECT_DIR$/../../java/bld-checkstyle/config/pmd.xml" />
-        <option value="$PROJECT_DIR$/../../java/bld-exec/config/pmd.xml" />
-        <option value="$PROJECT_DIR$/../../java/bld-testng/config/pmd.xml" />
-      </list>
-    </option>
-    <option name="skipTestSources" value="false" />
+    <pattern value="net.thauvin.erik.JokeApiBuild" method="detekt" />
+    <pattern value="net.thauvin.erik.JokeApiBuild" method="detektBaseline" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build" />

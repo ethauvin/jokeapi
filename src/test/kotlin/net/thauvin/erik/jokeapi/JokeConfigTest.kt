@@ -154,8 +154,8 @@ internal class JokeConfigTest {
         }.build()
         assertThat(config, "config").all {
             prop(JokeConfig::categories).isEqualTo(categories)
-            prop(JokeConfig::language).isEqualTo(language)
-            prop(JokeConfig::flags).isEqualTo(flags)
+            prop(JokeConfig::lang).isEqualTo(language)
+            prop(JokeConfig::blacklistFlags).isEqualTo(flags)
             prop(JokeConfig::type).isEqualTo(type)
             prop(JokeConfig::format).isEqualTo(format)
             prop(JokeConfig::contains).isEqualTo(search)

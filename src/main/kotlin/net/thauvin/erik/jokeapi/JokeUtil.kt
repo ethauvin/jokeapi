@@ -42,6 +42,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.logging.Level
 
+/**
+ * Fetch a URL.
+ */
 internal fun fetchUrl(url: String, auth: String = ""): String {
     if (JokeApi.logger.isLoggable(Level.FINE)) {
         JokeApi.logger.fine(url)

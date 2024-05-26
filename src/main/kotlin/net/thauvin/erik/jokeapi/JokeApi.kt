@@ -101,8 +101,8 @@ object JokeApi {
     fun getRawJokes(config: JokeConfig): String {
         return rawJokes(
             categories = config.categories,
-            lang = config.language,
-            blacklistFlags = config.flags,
+            lang = config.lang,
+            blacklistFlags = config.blacklistFlags,
             type = config.type,
             format = config.format,
             contains = config.contains,
@@ -124,8 +124,8 @@ object JokeApi {
     fun joke(config: JokeConfig = JokeConfig.Builder().build()): Joke {
         return joke(
             categories = config.categories,
-            lang = config.language,
-            blacklistFlags = config.flags,
+            lang = config.lang,
+            blacklistFlags = config.blacklistFlags,
             type = config.type,
             contains = config.contains,
             idRange = config.idRange,
@@ -145,8 +145,8 @@ object JokeApi {
     fun jokes(config: JokeConfig): Array<Joke> {
         return jokes(
             categories = config.categories,
-            lang = config.language,
-            blacklistFlags = config.flags,
+            lang = config.lang,
+            blacklistFlags = config.blacklistFlags,
             type = config.type,
             contains = config.contains,
             idRange = config.idRange,
@@ -164,6 +164,32 @@ object JokeApi {
  *
  * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
  *
+ * @param categories JokeAPI has a first, coarse filter that just categorizes the jokes depending on what the joke is
+ * about or who the joke is directed at. A joke about programming will be in the [Category.PROGRAMMING] category, dark
+ * humor will be in the [Category.DARK] category and so on. If you want jokes from all categories, you can instead use
+ * [Category.ANY], which will make JokeAPI randomly choose a category.
+ * @param lang There are two types of languages; system languages and joke languages. Both are separate from each other.
+ * All system messages like errors can have a certain system language, while jokes can only have a joke language.
+ * It is possible, that system languages don't yet exist for your language while jokes already do.
+ * If no suitable system language is found, JokeAPI will default to English.
+ * @param blacklistFlags Blacklist Flags (or just "Flags") are a more fine layer of filtering. Multiple flags can be
+ * set on each joke, and they tell you something about the offensiveness of each joke.
+ * @param type Each joke comes with one of two types: [Type.SINGLE] or [Type.TWOPART]. If a joke is of type
+ * [Type.TWOPART], it has a setup string and a delivery string, which are both part of the joke. They are separated
+ * because you might want to present the users the delivery after a timeout or in a different section of the UI.
+ * A joke of type [Type.SINGLE] only has a single string, which is the entire joke.
+ * @param contains If the search string filter is used, only jokes that contain the specified string will be returned.
+ * @param idRange If this filter is used, you will only get jokes that are within the provided range of IDs.
+ * You don't necessarily need to provide an ID range though, a single ID will work just fine as well.
+ * For example, an ID range of 0-9 will mean you will only get one of the first 10 jokes, while an ID range of 5 will
+ * mean you will only get the 6th joke.
+ * @param safe Safe Mode. If enabled, JokeAPI will try its best to serve only jokes that are considered safe for
+ * everyone. Unsafe jokes are those who can be considered explicit in any way, either through the used language, its
+ * references or its [flags][blacklistFlags]. Jokes from the category [Category.DARK] are also generally marked as
+ * unsafe.
+ * @param auth JokeAPI has a way of whitelisting certain clients. This is achieved through an API token.
+ * At the moment, you will only receive one of these tokens temporarily if something breaks or if you are a business
+ * and need more than 120 requests per minute.
  * @param splitNewLine Split newline within [Type.SINGLE] joke.
  */
 fun joke(
@@ -201,7 +227,35 @@ fun joke(
  *
  * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
  *
- * @param amount The required amount of jokes to return.
+ * @param amount This filter allows you to set a certain amount of jokes to receive in a single call. Setting the
+ * filter to an invalid number will result in the API defaulting to serving a single joke. Setting it to a number
+ * larger than 10 will make JokeAPI default to the maximum (10).
+ * @param categories JokeAPI has a first, coarse filter that just categorizes the jokes depending on what the joke is
+ * about or who the joke is directed at. A joke about programming will be in the [Category.PROGRAMMING] category, dark
+ * humor will be in the [Category.DARK] category and so on. If you want jokes from all categories, you can instead use
+ * [Category.ANY], which will make JokeAPI randomly choose a category.
+ * @param lang There are two types of languages; system languages and joke languages. Both are separate from each other.
+ * All system messages like errors can have a certain system language, while jokes can only have a joke language.
+ * It is possible, that system languages don't yet exist for your language while jokes already do.
+ * If no suitable system language is found, JokeAPI will default to English.
+ * @param blacklistFlags Blacklist Flags (or just "Flags") are a more fine layer of filtering. Multiple flags can be
+ * set on each joke, and they tell you something about the offensiveness of each joke.
+ * @param type Each joke comes with one of two types: [Type.SINGLE] or [Type.TWOPART]. If a joke is of type
+ * [Type.TWOPART], it has a setup string and a delivery string, which are both part of the joke. They are separated
+ * because you might want to present the users the delivery after a timeout or in a different section of the UI.
+ * A joke of type [Type.SINGLE] only has a single string, which is the entire joke.
+ * @param contains If the search string filter is used, only jokes that contain the specified string will be returned.
+ * @param idRange If this filter is used, you will only get jokes that are within the provided range of IDs.
+ * You don't necessarily need to provide an ID range though, a single ID will work just fine as well.
+ * For example, an ID range of 0-9 will mean you will only get one of the first 10 jokes, while an ID range of 5 will
+ * mean you will only get the 6th joke.
+ * @param safe Safe Mode. If enabled, JokeAPI will try its best to serve only jokes that are considered safe for
+ * everyone. Unsafe jokes are those who can be considered explicit in any way, either through the used language, its
+ * references or its [flags][blacklistFlags]. Jokes from the category [Category.DARK] are also generally marked as
+ * unsafe.
+ * @param auth JokeAPI has a way of whitelisting certain clients. This is achieved through an API token.
+ * At the moment, you will only receive one of these tokens temporarily if something breaks or if you are a business
+ * and need more than 120 requests per minute.
  * @param splitNewLine Split newline within [Type.SINGLE] joke.
  */
 fun jokes(
@@ -244,7 +298,40 @@ fun jokes(
 /**
  * Returns one or more jokes.
  *
- * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+ * See the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+ *
+ * @param categories JokeAPI has a first, coarse filter that just categorizes the jokes depending on what the joke is
+ * about or who the joke is directed at. A joke about programming will be in the [Category.PROGRAMMING] category, dark
+ * humor will be in the [Category.DARK] category and so on. If you want jokes from all categories, you can instead use
+ * [Category.ANY], which will make JokeAPI randomly choose a category.
+ * @param lang There are two types of languages; system languages and joke languages. Both are separate from each other.
+ * All system messages like errors can have a certain system language, while jokes can only have a joke language.
+ * It is possible, that system languages don't yet exist for your language while jokes already do.
+ * If no suitable system language is found, JokeAPI will default to English.
+ * @param blacklistFlags Blacklist Flags (or just "Flags") are a more fine layer of filtering. Multiple flags can be
+ * set on each joke, and they tell you something about the offensiveness of each joke.
+ * @param type Each joke comes with one of two types: [Type.SINGLE] or [Type.TWOPART]. If a joke is of type
+ * [Type.TWOPART], it has a setup string and a delivery string, which are both part of the joke. They are separated
+ * because you might want to present the users the delivery after a timeout or in a different section of the UI.
+ * A joke of type [Type.SINGLE] only has a single string, which is the entire joke.
+ * @param contains If the search string filter is used, only jokes that contain the specified string will be returned.
+ * @param format  Response Formats (or just "Formats") are a way to get your data in a different file format.
+ * Maybe your environment or language doesn't support JSON natively. In that case, JokeAPI is able to convert the
+ * JSON-formatted joke to a different format for you.
+ * @param idRange If this filter is used, you will only get jokes that are within the provided range of IDs.
+ * You don't necessarily need to provide an ID range though, a single ID will work just fine as well.
+ * For example, an ID range of 0-9 will mean you will only get one of the first 10 jokes, while an ID range of 5 will
+ * mean you will only get the 6th joke.
+ * @param amount This filter allows you to set a certain amount of jokes to receive in a single call. Setting the
+ * filter to an invalid number will result in the API defaulting to serving a single joke. Setting it to a number
+ * larger than 10 will make JokeAPI default to the maximum (10).
+ * @param safe Safe Mode. If enabled, JokeAPI will try its best to serve only jokes that are considered safe for
+ * everyone. Unsafe jokes are those who can be considered explicit in any way, either through the used language, its
+ * references or its [flags][blacklistFlags]. Jokes from the category [Category.DARK] are also generally marked as
+ * unsafe.
+ * @param auth JokeAPI has a way of whitelisting certain clients. This is achieved through an API token.
+ * At the moment, you will only receive one of these tokens temporarily if something breaks or if you are a business
+ * and need more than 120 requests per minute.
  */
 fun rawJokes(
     categories: Set<Category> = setOf(Category.ANY),
