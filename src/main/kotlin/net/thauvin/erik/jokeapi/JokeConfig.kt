@@ -39,32 +39,18 @@ import net.thauvin.erik.jokeapi.models.*
  *
  * Use the [Builder] to create a new configuration.
  */
-class JokeConfig(
-    var categories: Set<Category> = setOf(Category.ANY),
-    var lang: Language = Language.EN,
-    var blacklistFlags: Set<Flag> = emptySet(),
-    var type: Type = Type.ALL,
-    var format: Format = Format.JSON,
-    var contains: String = "",
-    var idRange: IdRange = IdRange(),
-    var amount: Int = 1,
-    var safe: Boolean = false,
-    var splitNewLine: Boolean = false,
-    var auth: String = ""
-) {
-    constructor(builder: Builder) : this() {
-        categories = builder.categories
-        lang = builder.lang
-        blacklistFlags = builder.blacklistFlags
-        type = builder.type
-        format = builder.format
-        contains = "${builder.safe}:${builder.splitNewLine}"
-        idRange = builder.idRange
-        amount = builder.amount
-        safe = builder.safe
-        splitNewLine = builder.splitNewLine
-        auth = builder.auth
-    }
+class JokeConfig private constructor(builder: Builder) {
+    val categories = builder.categories
+    val lang = builder.lang
+    val blacklistFlags = builder.blacklistFlags
+    val type = builder.type
+    val format = builder.format
+    val contains = builder.contains
+    val idRange = builder.idRange
+    val amount = builder.amount
+    val safe = builder.safe
+    val splitNewLine = builder.splitNewLine
+    val auth = builder.auth
 
     /**
      * [Builds][build] a new configuration.
@@ -164,7 +150,7 @@ class JokeConfig(
         fun auth(auth: String): Builder = apply { this.auth = auth }
 
         /**
-         * Builds a new comment configuration.
+         * Builds a new configuration.
          */
         fun build() = JokeConfig(this)
     }
