@@ -35,8 +35,8 @@ import rife.bld.BuildCommand;
 import rife.bld.Project;
 import rife.bld.extension.CompileKotlinOperation;
 import rife.bld.extension.DetektOperation;
+import rife.bld.extension.DokkaOperation;
 import rife.bld.extension.JacocoReportOperation;
-import rife.bld.extension.dokka.DokkaOperation;
 import rife.bld.extension.dokka.LoggingLevel;
 import rife.bld.extension.dokka.OutputFormat;
 import rife.bld.operations.exceptions.ExitStatusException;
@@ -74,8 +74,8 @@ public class JokeApiBuild extends Project {
                 .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm", version(1, 5, 0)));
         scope(test)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-test-junit5", kotlin))
-                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 2)))
-                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 10, 2)))
+                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 3)))
+                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 10, 3)))
                 .include(dependency("com.willowtreeapps.assertk", "assertk-jvm", version(0, 28, 1)));
 
         publishOperation()
@@ -118,7 +118,7 @@ public class JokeApiBuild extends Project {
 
     @BuildCommand(summary = "Compiles the Kotlin project")
     @Override
-    public void compile() throws IOException {
+    public void compile() throws Exception {
         new CompileKotlinOperation()
                 .fromProject(this)
                 .execute();
@@ -141,7 +141,7 @@ public class JokeApiBuild extends Project {
     }
 
     @BuildCommand(summary = "Generates JaCoCo Reports")
-    public void jacoco() throws IOException {
+    public void jacoco() throws Exception {
         new JacocoReportOperation()
                 .fromProject(this)
                 .sourceFiles(srcMainKotlin)

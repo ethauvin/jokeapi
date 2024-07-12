@@ -2,6 +2,9 @@ name: bld-ci
 
 on: [push, pull_request, workflow_dispatch]
 
+env:
+  KOTLIN_HOME: /usr/share/kotlinc
+
 jobs:
   build-bld-project:
     runs-on: ubuntu-latest
@@ -12,6 +15,7 @@ jobs:
     strategy:
       matrix:
         java-version: [17, 21, 22]
+        kotlin-version: [1.9.24, 2.0.0]
 
     steps:
       - name: Checkout source repository
