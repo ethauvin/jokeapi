@@ -1,6 +1,6 @@
 name: bld-ci
 
-on: [ push, pull_request, workflow_dispatch ]
+on: [push, pull_request, workflow_dispatch]
 
 env:
   COVERAGE_JDK: "21"
@@ -13,8 +13,8 @@ jobs:
 
     strategy:
       matrix:
-        java-version: [ 17, 21, 22 ]
-        kotlin-version: [ 1.9.24, 2.0.0 ]
+        java-version: [17, 21, 22]
+        kotlin-version: [1.9.24, 2.0.20]
 
     steps:
       - name: Checkout source repository
@@ -33,7 +33,6 @@ jobs:
 
       - name: Compile source
         run: ./bld compile
-
 
       - name: Run tests
         run: ./bld jacoco
