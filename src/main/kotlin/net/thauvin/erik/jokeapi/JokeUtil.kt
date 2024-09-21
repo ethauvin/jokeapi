@@ -1,7 +1,7 @@
 /*
  * JokeUtil.kt
  *
- * Copyright 2022-2023 Erik C. Thauvin (erik@thauvin.net)
+ * Copyright 2022-2024 Erik C. Thauvin (erik@thauvin.net)
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -52,7 +52,7 @@ internal fun fetchUrl(url: String, auth: String = ""): String {
 
     val connection = URL(url).openConnection() as HttpURLConnection
     connection.setRequestProperty(
-        "User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"
+        "User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
     )
     if (auth.isNotEmpty()) {
         connection.setRequestProperty("Authentication", auth)
