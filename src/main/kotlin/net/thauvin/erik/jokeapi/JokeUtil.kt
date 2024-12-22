@@ -51,21 +51,25 @@ internal fun fetchUrl(url: String, auth: String = ""): String {
     }
 
     val connection = URL(url).openConnection() as HttpURLConnection
-    connection.setRequestProperty(
-        "User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
-    )
-    if (auth.isNotEmpty()) {
-        connection.setRequestProperty("Authentication", auth)
-    }
-
-    if (connection.responseCode in 200..399) {
-        val body = connection.inputStream.bufferedReader().use { it.readText() }
-        if (JokeApi.logger.isLoggable(Level.FINE)) {
-            JokeApi.logger.fine(body)
+    try {
+        connection.setRequestProperty(
+            "User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
+        )
+        if (auth.isNotEmpty()) {
+            connection.setRequestProperty("Authentication", auth)
         }
-        return body
-    } else {
-        throw httpError(connection.responseCode)
+
+        if (connection.responseCode in 200..399) {
+            val body = connection.inputStream.bufferedReader().use { it.readText() }
+            if (JokeApi.logger.isLoggable(Level.FINE)) {
+                JokeApi.logger.fine(body)
+            }
+            return body
+        } else {
+            throw httpError(connection.responseCode)
+        }
+    } finally {
+        connection.disconnect()
     }
 }
 
