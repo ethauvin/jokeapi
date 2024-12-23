@@ -59,15 +59,15 @@ internal fun fetchUrl(url: String, auth: String = ""): String {
             connection.setRequestProperty("Authentication", auth)
         }
 
-        if (connection.responseCode in 200..399) {
-            val body = connection.inputStream.bufferedReader().use { it.readText() }
-            if (JokeApi.logger.isLoggable(Level.FINE)) {
-                JokeApi.logger.fine(body)
-            }
-            return body
-        } else {
+        val stream = if (connection.responseCode in 200..399) connection.inputStream else connection.errorStream
+        val body = stream.bufferedReader().use { it.readText() }
+        if (body.isBlank()) {
             throw httpError(connection.responseCode)
         }
+        if (JokeApi.logger.isLoggable(Level.FINE)) {
+            JokeApi.logger.fine(body)
+        }
+        return body
     } finally {
         connection.disconnect()
     }

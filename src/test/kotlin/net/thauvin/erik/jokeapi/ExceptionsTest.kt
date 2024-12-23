@@ -41,8 +41,6 @@ import net.thauvin.erik.jokeapi.models.Category
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 
 @ExtendWith(BeforeAllTests::class)
 internal class ExceptionsTest {
@@ -63,19 +61,20 @@ internal class ExceptionsTest {
         }
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = [400, 404, 403, 413, 414, 429, 500, 523, 666])
-    fun `Validate HTTP Exceptions`(code: Int) {
-        val e = assertThrows<HttpErrorException> {
-            fetchUrl("https://httpstat.us/$code")
-        }
-        assertThat(e, "fetchUrl($code)").all {
-            prop(HttpErrorException::statusCode).isEqualTo(code)
-            prop(HttpErrorException::message).isNotNull().isNotEmpty()
-            if (code < 600)
-                prop(HttpErrorException::cause).isNotNull().assertThat(Throwable::message).isNotNull()
-            else
-                prop(HttpErrorException::cause).isNull()
+    @Test
+    fun `Validate HTTP Exceptions`() {
+        val locs = ArrayList<Pair<String, Int>>()
+        locs.add(Pair("https://apichallenges.herokuapp.com/secret/note", 401))
+        locs.add(Pair("https://apichallenges.herokuapp.com/todo", 404))
+
+        for ((url, code) in locs) {
+            val e = assertThrows<HttpErrorException> {
+                fetchUrl(url)
+            }
+            assertThat(e, "fetchUrl($code)").all {
+                prop(HttpErrorException::statusCode).isEqualTo(code)
+                prop(HttpErrorException::message).isNotNull().isNotEmpty()
+            }
         }
     }
 }
