@@ -16,7 +16,7 @@ A simple library to retrieve jokes from [Sv443's JokeAPI](https://v2.jokeapi.dev
 ## Examples (TL;DR)
 
 ```kotlin
-import net.thauvin.erik.jokeapi.getJoke
+import net.thauvin.erik.jokeapi.joke
 
 val joke = joke()
 val safe = joke(safe = true)
@@ -124,8 +124,9 @@ You can also retrieve one or more raw (unprocessed) jokes in all [supported form
 
 For example for YAML:
 ```kotlin
-var joke = getRawJokes(format = Format.YAML, idRange = IdRange(22))
-println(joke)
+var jokes = getRawJokes(format = Format.YAML, idRange = IdRange(22))
+println(jokes.data)
+```
 ```
 ```yaml
 error: false
@@ -158,7 +159,7 @@ val lang = JokeApi.apiCall(
     path = "french",
     params = mapOf(Parameter.FORMAT to Format.YAML.value)
 )
-println(lang)
+println(lang.data)
 ```
 ```yaml
 error: false

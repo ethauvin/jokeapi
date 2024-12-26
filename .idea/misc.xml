@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
+    <entry_points version="2.0">
+      <entry_point TYPE="field" FQNAME="net.thauvin.erik.jokeapi.models.Category SPOOKY" />
+    </entry_points>
     <pattern value="net.thauvin.erik.JokeApiBuild" method="jacoco" />
     <pattern value="net.thauvin.erik.JokeApiBuild" method="detekt" />
     <pattern value="net.thauvin.erik.JokeApiBuild" method="detektBaseline" />
+    <pattern value="net.thauvin.erik.jokeapi.models.Category" />
+    <pattern value="net.thauvin.erik.jokeapi.models.Category" method="Category" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build" />

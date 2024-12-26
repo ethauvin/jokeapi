@@ -34,6 +34,7 @@ package net.thauvin.erik.jokeapi
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.doesNotContain
+import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import assertk.assertions.startsWith
 import net.thauvin.erik.jokeapi.models.Format
@@ -47,7 +48,8 @@ internal class GetRawJokesTest {
     @Test
     fun `Get Raw Joke with TXT`() {
         val response = rawJokes(format = Format.TXT)
-        assertThat(response, "rawJoke(txt)").all {
+        assertThat(response.code).isEqualTo(200)
+        assertThat(response.data, "rawJoke(data)").all {
             isNotEmpty()
             doesNotContain("Error")
         }
@@ -56,24 +58,28 @@ internal class GetRawJokesTest {
     @Test
     fun `Get Raw Joke with XML`() {
         val response = rawJokes(format = Format.XML)
-        assertThat(response, "rawJoke(xml)").startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
+        assertThat(response.code).isEqualTo(200)
+        assertThat(response.data, "rawJoke(xml)").startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
     }
 
     @Test
     fun `Get Raw Joke with YAML`() {
         val response = rawJokes(format = Format.YAML)
-        assertThat(response, "rawJoke(yaml)").startsWith("error: false")
+        assertThat(response.code).isEqualTo(200)
+        assertThat(response.data, "rawJoke(yaml)").startsWith("error: false")
     }
 
     @Test
     fun `Get Raw Jokes`() {
         val response = rawJokes(amount = 2)
-        assertContains(response, "\"amount\": 2", false, "rawJoke(2)")
+        assertThat(response.code).isEqualTo(200)
+        assertContains(response.data, "\"amount\": 2", false, "rawJoke(2)")
     }
 
     @Test
     fun `Get Raw Invalid Jokes`() {
         val response = rawJokes(contains = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
-        assertContains(response, "\"error\": true", false, "getRawJokes(foo)")
+        assertThat(response.code).isEqualTo(400)
+        assertContains(response.data, "\"error\": true", false, "getRawJokes(foo)")
     }
 }

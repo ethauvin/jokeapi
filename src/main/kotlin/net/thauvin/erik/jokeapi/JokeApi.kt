@@ -54,7 +54,7 @@ object JokeApi {
     /**
      * Makes a direct API call.
      *
-     * Sse the [JokeAPI Documentation](https://jokeapi.dev/#endpoints) for more details.
+     * See the [JokeAPI Documentation](https://jokeapi.dev/#endpoints) for more details.
      */
     @JvmStatic
     @JvmOverloads
@@ -64,7 +64,7 @@ object JokeApi {
         path: String = "",
         params: Map<String, String> = emptyMap(),
         auth: String = ""
-    ): String {
+    ): JokeResponse {
         val urlBuilder = StringBuilder("$API_URL$endPoint")
 
         if (path.isNotEmpty()) {
@@ -98,7 +98,7 @@ object JokeApi {
      */
     @JvmStatic
     @Throws(HttpErrorException::class)
-    fun getRawJokes(config: JokeConfig): String {
+    fun getRawJokes(config: JokeConfig): JokeResponse {
         return rawJokes(
             categories = config.categories,
             lang = config.lang,
@@ -213,7 +213,7 @@ fun joke(
             idRange = idRange,
             safe = safe,
             auth = auth
-        )
+        ).data
     )
     if (json.getBoolean("error")) {
         throw parseError(json)
@@ -281,7 +281,7 @@ fun jokes(
             amount = amount,
             safe = safe,
             auth = auth
-        )
+        ).data
     )
     if (json.getBoolean("error")) {
         throw parseError(json)
@@ -333,6 +333,7 @@ fun jokes(
  * At the moment, you will only receive one of these tokens temporarily if something breaks or if you are a business
  * and need more than 120 requests per minute.
  */
+@Throws(HttpErrorException::class)
 fun rawJokes(
     categories: Set<Category> = setOf(Category.ANY),
     lang: Language = Language.EN,
@@ -344,7 +345,7 @@ fun rawJokes(
     amount: Int = 1,
     safe: Boolean = false,
     auth: String = ""
-): String {
+): JokeResponse {
     val params = mutableMapOf<String, String>()
 
     // Categories

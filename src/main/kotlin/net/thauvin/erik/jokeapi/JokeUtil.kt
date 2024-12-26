@@ -45,7 +45,7 @@ import java.util.logging.Level
 /**
  * Fetch a URL.
  */
-internal fun fetchUrl(url: String, auth: String = ""): String {
+internal fun fetchUrl(url: String, auth: String = ""): JokeResponse {
     if (JokeApi.logger.isLoggable(Level.FINE)) {
         JokeApi.logger.fine(url)
     }
@@ -63,11 +63,10 @@ internal fun fetchUrl(url: String, auth: String = ""): String {
         val body = stream.bufferedReader().use { it.readText() }
         if (body.isBlank()) {
             throw httpError(connection.responseCode)
-        }
-        if (JokeApi.logger.isLoggable(Level.FINE)) {
+        } else if (JokeApi.logger.isLoggable(Level.FINE)) {
             JokeApi.logger.fine(body)
         }
-        return body
+        return JokeResponse(connection.responseCode, body)
     } finally {
         connection.disconnect()
     }

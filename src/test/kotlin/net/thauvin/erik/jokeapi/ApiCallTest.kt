@@ -32,6 +32,7 @@
 package net.thauvin.erik.jokeapi
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
 import assertk.assertions.startsWith
 import net.thauvin.erik.jokeapi.JokeApi.apiCall
@@ -51,8 +52,9 @@ internal class ApiCallTest {
     fun `Get Flags`() {
         // See https://v2.jokeapi.dev/#flags-endpoint
         val response = apiCall(endPoint = "flags")
-        val json = JSONObject(response)
-        assertAll("Validate JSON",
+        val json = JSONObject(response.data)
+        assertAll(
+            "Validate JSON",
             { assertFalse(json.getBoolean("error"), "apiCall(flags).error") },
             { assertThat(json.getJSONArray("flags").length(), "apiCall(flags).flags").isGreaterThan(0) },
             { assertThat(json.getLong("timestamp"), "apiCall(flags).timestamp").isGreaterThan(0) })
@@ -65,14 +67,16 @@ internal class ApiCallTest {
             endPoint = "langcode", path = "french",
             params = mapOf(Parameter.FORMAT to Format.YAML.value)
         )
-        assertContains(lang, "code: \"fr\"", false, "apiCall(langcode, french, yaml)")
+        assertThat(lang.code).isEqualTo(200)
+        assertContains(lang.data, "code: \"fr\"", false, "apiCall(langcode, french, yaml)")
     }
 
     @Test
     fun `Get Ping Response`() {
         // See https://v2.jokeapi.dev/#ping-endpoint
         val ping = apiCall(endPoint = "ping", params = mapOf(Parameter.FORMAT to Format.TXT.value))
-        assertThat(ping, "apiCall(ping, txt)").startsWith("Pong!")
+        assertThat(ping.code).isEqualTo(200)
+        assertThat(ping.data).startsWith("Pong!")
     }
 
     @Test
@@ -82,6 +86,7 @@ internal class ApiCallTest {
             endPoint = "languages",
             params = mapOf(Parameter.FORMAT to Format.XML.value, Parameter.LANG to Language.FR.value)
         )
-        assertThat(lang).startsWith("<?xml version='1.0'?>")
+        assertThat(lang.code).isEqualTo(200)
+        assertThat(lang.data).startsWith("<?xml version='1.0'?>")
     }
 }

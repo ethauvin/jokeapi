@@ -34,6 +34,7 @@ package net.thauvin.erik.jokeapi.models
 /**
  * The available [URL Parameters](https://jokeapi.dev/#url-parameters).
  */
+@Suppress("unused")
 object Parameter {
     const val AMOUNT = "amount"
     const val CONTAINS = "contains"

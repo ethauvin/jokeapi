@@ -1,5 +1,5 @@
 /*
- * JokeUtilTest.kt
+ * JokeResponse.kt
  *
  * Copyright 2022-2024 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -28,35 +28,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package net.thauvin.erik.jokeapi.models
 
-package net.thauvin.erik.jokeapi
-
-import assertk.assertThat
-import assertk.assertions.contains
-import assertk.assertions.isEqualTo
-import org.json.JSONException
-import org.json.JSONObject
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
-
-@ExtendWith(BeforeAllTests::class)
-internal class JokeUtilTest {
-    @Test
-    fun `Invalid JSON Error`() {
-        assertThrows<JSONException> { parseError(JSONObject("{}")) }
-    }
-
-    @Test
-    fun `Invalid JSON Joke`() {
-        assertThrows<JSONException> { parseJoke(JSONObject("{}"), false) }
-    }
-
-    @Test
-    fun `Validate Authentication Header`() {
-        val token = "AUTH-TOKEN"
-        val response = fetchUrl("https://postman-echo.com/get", token)
-        assertThat(response.code).isEqualTo(200)
-        assertThat(response.data, "body").contains("\"authentication\": \"$token\"")
-    }
-}
+/**
+ * The Joke API response.
+ *
+ * @property code The HTTP status code.
+ * @property data The response text.
+ */
+data class JokeResponse(val code: Int, val data: String)
