@@ -95,10 +95,10 @@ joke.getJoke().forEach(System.out::println);
 To use with [bld](https://rife2.com/bld), include the following dependency in your build file:
 
 ```java
-repositories = List.of(MAVEN_CENTRAL);
+repositories = List.of(MAVEN_CENTRAL, SONATYPE_SNAPSHOTS_LEGACY);
 
 scope(compile)
-    .include(dependency("net.thauvin.erik:jokeapi:0.9.1"));
+    .include(dependency("net.thauvin.erik", "jokeapi", "1.0.0-SNAPSHOT"));
 ```
 Be sure to use the [bld Kotlin extension](https://github.com/rife2/bld-kotlin) in your project.
 
@@ -112,7 +112,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.thauvin.erik:jokeapi:0.9.1")
+    implementation("net.thauvin.erik:jokeapi:1.0.0-SNAPSHOT")
 }
 ```
 
