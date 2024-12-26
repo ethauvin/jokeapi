@@ -103,7 +103,7 @@ internal class JokeConfigTest {
             safe(true)
         }.build()
         val jokes = getRawJokes(config)
-        assertThat(jokes.code).isEqualTo(200)
+        assertThat(jokes.statusCode).isEqualTo(200)
         assertContains(jokes.data, "----------------------------------------------", false, "config.amount(2)")
     }
 

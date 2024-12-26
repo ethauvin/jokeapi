@@ -67,7 +67,7 @@ internal class ApiCallTest {
             endPoint = "langcode", path = "french",
             params = mapOf(Parameter.FORMAT to Format.YAML.value)
         )
-        assertThat(lang.code).isEqualTo(200)
+        assertThat(lang.statusCode).isEqualTo(200)
         assertContains(lang.data, "code: \"fr\"", false, "apiCall(langcode, french, yaml)")
     }
 
@@ -75,7 +75,7 @@ internal class ApiCallTest {
     fun `Get Ping Response`() {
         // See https://v2.jokeapi.dev/#ping-endpoint
         val ping = apiCall(endPoint = "ping", params = mapOf(Parameter.FORMAT to Format.TXT.value))
-        assertThat(ping.code).isEqualTo(200)
+        assertThat(ping.statusCode).isEqualTo(200)
         assertThat(ping.data).startsWith("Pong!")
     }
 
@@ -86,7 +86,7 @@ internal class ApiCallTest {
             endPoint = "languages",
             params = mapOf(Parameter.FORMAT to Format.XML.value, Parameter.LANG to Language.FR.value)
         )
-        assertThat(lang.code).isEqualTo(200)
+        assertThat(lang.statusCode).isEqualTo(200)
         assertThat(lang.data).startsWith("<?xml version='1.0'?>")
     }
 }

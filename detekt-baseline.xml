@@ -22,6 +22,7 @@
     <ID>WildcardImport:GetJokeTest.kt$import assertk.assertions.*</ID>
     <ID>WildcardImport:GetJokeTest.kt$import net.thauvin.erik.jokeapi.models.*</ID>
     <ID>WildcardImport:GetJokesTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetRawJokesTest.kt$import assertk.assertions.*</ID>
     <ID>WildcardImport:JokeApi.kt$import net.thauvin.erik.jokeapi.models.*</ID>
     <ID>WildcardImport:JokeConfig.kt$import net.thauvin.erik.jokeapi.models.*</ID>
     <ID>WildcardImport:JokeConfigTest.kt$import assertk.assertions.*</ID>

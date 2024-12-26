@@ -56,7 +56,7 @@ internal class JokeUtilTest {
     fun `Validate Authentication Header`() {
         val token = "AUTH-TOKEN"
         val response = fetchUrl("https://postman-echo.com/get", token)
-        assertThat(response.code).isEqualTo(200)
+        assertThat(response.statusCode).isEqualTo(200)
         assertThat(response.data, "body").contains("\"authentication\": \"$token\"")
     }
 }

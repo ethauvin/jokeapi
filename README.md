@@ -154,13 +154,16 @@ A generic `apiCall()` function is available to access other [JokeAPI endpoints](
 For example to retrieve the French [language code](https://v2.jokeapi.dev/#langcode-endpoint):
 
 ```kotlin
-val lang = JokeApi.apiCall(
+val response = JokeApi.apiCall(
     endPoint = "langcode",
     path = "french",
     params = mapOf(Parameter.FORMAT to Format.YAML.value)
 )
-println(lang.data)
+if (response.statusCode == 200) {
+    println(response.data)
+}
 ```
+
 ```yaml
 error: false
 code: "fr"

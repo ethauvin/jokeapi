@@ -33,7 +33,7 @@ package net.thauvin.erik.jokeapi.models
 /**
  * The Joke API response.
  *
- * @property code The HTTP status code.
- * @property data The response text.
+ * @property statusCode The HTTP status code.
+ * @property data The response body text.
  */
-data class JokeResponse(val code: Int, val data: String)
+data class JokeResponse(val statusCode: Int, val data: String)
