@@ -74,8 +74,8 @@ public class JokeApiBuild extends Project {
                 .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm", version(1, 6, 0)));
         scope(test)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-test-junit5", kotlin))
-                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 11, 4)))
-                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 11, 4)))
+                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 12, 1)))
+                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 12, 1)))
                 .include(dependency("com.willowtreeapps.assertk", "assertk-jvm", version(0, 28, 1)));
 
         publishOperation()
