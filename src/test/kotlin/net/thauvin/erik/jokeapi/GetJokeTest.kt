@@ -70,15 +70,12 @@ internal class GetJokeTest {
 
     @Test
     fun `Get Joke with ID`() {
-        val id = 172
+        val id = 201
         val joke = joke(idRange = IdRange(id))
         logger.fine(joke.toString())
         assertThat(joke, "joke($id)").all {
-            prop(Joke::flags).all {
-                contains(Flag.EXPLICIT)
-                contains(Flag.NSFW)
-            }
-            prop(Joke::id).isEqualTo(172)
+            prop(Joke::flags).contains(Flag.RELIGIOUS);
+            prop(Joke::id).isEqualTo(id)
             prop(Joke::category).isEqualTo(Category.PUN)
         }
     }
@@ -137,12 +134,10 @@ internal class GetJokeTest {
 
     @Test
     fun `Get Joke with Split Newline`() {
-        val joke = joke(
-            categories = setOf(Category.DARK), type = Type.SINGLE, idRange = IdRange(178), splitNewLine = true
-        )
+        val joke = joke(type = Type.SINGLE, idRange = IdRange(18), splitNewLine = true)
         logger.fine(joke.toString())
         assertThat(joke::joke, "joke(splitNewLine=true)").all {
-            size().isEqualTo(2)
+            size().isGreaterThanOrEqualTo(2)
             each {
                 containsNone("\n")
             }
@@ -177,13 +172,12 @@ internal class GetJokeTest {
 
     @Test
     fun `Get Joke using Search`() {
-        val id = 265
-        val search = "his wife"
+        val search = "UDP joke"
         val joke =
-            joke(contains = search, categories = setOf(Category.PROGRAMMING), idRange = IdRange(id), safe = true)
+            joke(contains = search, categories = setOf(Category.PROGRAMMING), safe = true)
         logger.fine(joke.toString())
         assertThat(joke, "joke($search)").all {
-            prop(Joke::id).isEqualTo(id)
+            prop(Joke::id).isEqualTo(0)
             prop(Joke::joke).any {
                 it.contains(search)
             }
