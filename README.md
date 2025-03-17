@@ -127,7 +127,7 @@ For example for YAML:
 var jokes = getRawJokes(format = Format.YAML, idRange = IdRange(22))
 println(jokes.data)
 ```
-```
+
 ```yaml
 error: false
 category: "Programming"
@@ -143,8 +143,8 @@ flags:
 id: 22
 safe: true
 lang: "en"
-
 ```
+
 - View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokesTest.kt#L46)...
 
 ## Extending
