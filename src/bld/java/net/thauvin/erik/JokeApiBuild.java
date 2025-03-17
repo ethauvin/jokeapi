@@ -60,7 +60,7 @@ public class JokeApiBuild extends Project {
     public JokeApiBuild() {
         pkg = "net.thauvin.erik";
         name = "jokeapi";
-        version = version(1, 0, 0, "SNAPSHOT");
+        version = version(1, 0, 0);
 
         javaRelease = 11;
         downloadSources = true;
