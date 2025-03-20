@@ -39,6 +39,7 @@ import net.thauvin.erik.jokeapi.models.*
 import org.json.JSONObject
 import java.io.IOException
 import java.net.HttpURLConnection
+import java.net.URI
 import java.net.URL
 import java.util.logging.Level
 
@@ -50,7 +51,7 @@ internal fun fetchUrl(url: String, auth: String = ""): JokeResponse {
         JokeApi.logger.fine(url)
     }
 
-    val connection = URL(url).openConnection() as HttpURLConnection
+    val connection = URI(url).toURL().openConnection() as HttpURLConnection
     try {
         connection.setRequestProperty(
             "User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
