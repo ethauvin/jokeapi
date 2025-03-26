@@ -50,6 +50,9 @@ import rife.tools.exceptions.FileUtilsErrorException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static rife.bld.dependencies.Repository.*;
 import static rife.bld.dependencies.Scope.compile;
@@ -116,16 +119,25 @@ public class JokeApiBuild extends Project {
     }
 
     public static void main(String[] args) {
+        // Enable detailed logging for the extensions
+        var level = Level.ALL;
+        var logger = Logger.getLogger("rife.bld.extension");
+        var consoleHandler = new ConsoleHandler();
+
+        consoleHandler.setLevel(level);
+        logger.addHandler(consoleHandler);
+        logger.setLevel(level);
+        logger.setUseParentHandlers(false);
+
         new JokeApiBuild().start(args);
     }
 
     @BuildCommand(summary = "Compiles the Kotlin project")
     @Override
     public void compile() throws Exception {
-        var options = new CompileOptions().jvmOptions("--enable-native-access=ALL-UNNAMED");
         new CompileKotlinOperation()
                 .fromProject(this)
-                .compileOptions(options)
+                .compileOptions(new CompileOptions().verbose(true))
                 .execute();
     }
 
