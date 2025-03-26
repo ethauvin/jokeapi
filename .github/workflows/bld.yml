@@ -1,20 +1,20 @@
 name: bld-ci
 
-on: [push, pull_request, workflow_dispatch]
+on: [ push, pull_request, workflow_dispatch ]
 
 env:
   COVERAGE_JDK: "21"
-  COVERAGE_KOTLIN: "2.0.0"
-  KOTLIN_HOME: /usr/share/kotlinc
+  COVERAGE_KOTLIN: "2.1.20"
 
 jobs:
   build-bld-project:
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        java-version: [17, 21, 24]
-        kotlin-version: [1.9.25, 2.1.20]
+        java-version: [ 17, 21, 24 ]
+        kotlin-version: [ 1.9.25, 2.0.21, 2.1.20 ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout source repository
@@ -39,11 +39,13 @@ jobs:
 
       - name: Remove pom.xml
         if: success() && matrix.java-version == env.COVERAGE_JDK && matrix.kotlin-version == env.COVERAGE_KOTLIN
+          && matrix.os == 'unbuntu-latest'
         run: rm -rf pom.xml
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         if: success() && matrix.java-version == env.COVERAGE_JDK && matrix.kotlin-version == env.COVERAGE_KOTLIN
+          && matrix.os == 'unbuntu-latest'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
