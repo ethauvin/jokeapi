@@ -156,7 +156,7 @@ internal fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
         jokes.add(json.getString(("delivery")))
     } else {
         if (splitNewLine) {
-            jokes.addAll(json.getString("joke").split("\n"))
+            jokes.addAll(json.getString("joke").split("\n").filter { it.isNotBlank() })
         } else {
             jokes.add(json.getString("joke"))
         }
