@@ -1,5 +1,5 @@
 /*
- * JokeUtilTest.kt
+ * GetJokesTests.kt
  *
  * Copyright 2022-2025 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -31,32 +31,46 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.all
 import assertk.assertThat
-import assertk.assertions.contains
-import assertk.assertions.isEqualTo
-import org.json.JSONException
-import org.json.JSONObject
+import assertk.assertions.*
+import net.thauvin.erik.jokeapi.models.Joke
+import net.thauvin.erik.jokeapi.models.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(BeforeAllTests::class)
-internal class JokeUtilTest {
+@ExtendWith(BeforeAll::class)
+internal class GetJokesTests {
     @Test
-    fun `Invalid JSON Error`() {
-        assertThrows<JSONException> { parseError(JSONObject("{}")) }
+    fun `Get Multiple Jokes`() {
+        val amount = 2
+        val jokes = jokes(amount = amount, safe = true, lang = Language.FR)
+        assertThat(jokes, "jokes").all {
+            size().isEqualTo(amount)
+            each {
+                it.prop(Joke::id).isGreaterThanOrEqualTo(0)
+                it.prop(Joke::safe).isTrue()
+                it.prop(Joke::lang).isEqualTo(Language.FR)
+            }
+        }
     }
 
     @Test
-    fun `Invalid JSON Joke`() {
-        assertThrows<JSONException> { parseJoke(JSONObject("{}"), false) }
+    fun `Get Jokes with Invalid Amount`() {
+        val e = assertThrows<IllegalArgumentException> { jokes(amount = -1) }
+        assertThat(e::message).isNotNull().contains("-1")
     }
 
     @Test
-    fun `Validate Authentication Header`() {
-        val token = "AUTH-TOKEN"
-        val response = fetchUrl("https://postman-echo.com/get", token)
-        assertThat(response.statusCode).isEqualTo(200)
-        assertThat(response.data, "body").contains("\"authentication\": \"$token\"")
+    fun `Get One Joke as Multiple`() {
+        val jokes = jokes(amount = 1, safe = true)
+        assertThat(jokes, "jokes").all {
+            size().isEqualTo(1)
+            index(0).all {
+                prop(Joke::id).isGreaterThanOrEqualTo(0)
+                prop(Joke::safe).isTrue()
+            }
+        }
     }
 }

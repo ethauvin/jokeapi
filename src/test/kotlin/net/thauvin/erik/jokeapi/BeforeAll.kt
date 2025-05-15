@@ -1,5 +1,5 @@
 /*
- * BeforeAllTests.kt
+ * BeforeAll.kt
  *
  * Copyright 2022-2025 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -33,14 +33,20 @@ package net.thauvin.erik.jokeapi
 
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.ExtensionContext
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
-class BeforeAllTests : BeforeAllCallback {
+
+class BeforeAll : BeforeAllCallback {
+    private val isFirstTime: AtomicBoolean = AtomicBoolean(true)
+
     override fun beforeAll(context: ExtensionContext?) {
-        with(JokeApi.logger) {
-            addHandler(ConsoleHandler().apply { level = Level.FINE })
-            level = Level.FINE
+        if (isFirstTime.getAndSet(false)) {
+            with(JokeApi.logger) {
+                addHandler(ConsoleHandler().apply { level = Level.FINE })
+                level = Level.FINE
+            }
         }
     }
 }

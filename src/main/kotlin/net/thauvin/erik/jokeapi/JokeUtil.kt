@@ -73,7 +73,7 @@ internal fun fetchUrl(url: String, auth: String = ""): JokeResponse {
     }
 }
 
-private fun httpError(responseCode: Int): HttpErrorException {
+internal fun httpError(responseCode: Int): HttpErrorException {
     val httpException: HttpErrorException
     when (responseCode) {
         400 -> httpException = HttpErrorException(
@@ -90,11 +90,13 @@ private fun httpError(responseCode: Int): HttpErrorException {
         )
 
         404 -> httpException = HttpErrorException(
-            responseCode, "Not Found", IOException("The URL you have requested couldn't be found.")
+            responseCode, "Not Found",
+            IOException("The URL you have requested couldn't be found.")
         )
 
         413 -> httpException = HttpErrorException(
-            responseCode, "URI Too Long", IOException("The URL exceeds the maximum length of 250 characters.")
+            responseCode, "URI Too Long",
+            IOException("The URL exceeds the maximum length of 250 characters.")
         )
 
         414 -> httpException = HttpErrorException(
@@ -126,7 +128,6 @@ private fun httpError(responseCode: Int): HttpErrorException {
 
         else -> httpException = HttpErrorException(responseCode, "Unknown HTTP Error")
     }
-
     return httpException
 }
 

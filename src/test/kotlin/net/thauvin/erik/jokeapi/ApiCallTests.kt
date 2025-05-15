@@ -1,5 +1,5 @@
 /*
- * ApiCallTest.kt
+ * ApiCallTests.kt
  *
  * Copyright 2022-2025 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -46,8 +46,8 @@ import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertContains
 
-@ExtendWith(BeforeAllTests::class)
-internal class ApiCallTest {
+@ExtendWith(BeforeAll::class)
+internal class ApiCallTests {
     @Test
     fun `Get Flags`() {
         // See https://v2.jokeapi.dev/#flags-endpoint
@@ -68,7 +68,10 @@ internal class ApiCallTest {
             params = mapOf(Parameter.FORMAT to Format.YAML.value)
         )
         assertThat(lang.statusCode).isEqualTo(200)
-        assertContains(lang.data, "code: \"fr\"", false, "apiCall(langcode, french, yaml)")
+        assertContains(
+            lang.data, "code: \"fr\"", false,
+            "apiCall(langcode, french, yaml)"
+        )
     }
 
     @Test

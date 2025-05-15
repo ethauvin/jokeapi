@@ -1,5 +1,5 @@
 /*
- * GetJokeTest.kt
+ * GetJokeTests.kt
  *
  * Copyright 2022-2025 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -41,8 +41,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(BeforeAllTests::class)
-internal class GetJokeTest {
+@ExtendWith(BeforeAll::class)
+internal class GetJokeTests {
     @Test
     fun `Get Joke`() {
         val joke = joke()
@@ -58,14 +58,15 @@ internal class GetJokeTest {
     @Test
     fun `Get Joke without Blacklist Flags`() {
         val joke = joke(blacklistFlags = setOf(Flag.ALL))
-        assertThat(joke::flags).isEmpty()
+        assertThat(joke).prop(Joke::flags).isEmpty()
     }
 
     @Test
     fun `Get Joke without any Blacklist Flags`() {
         val allFlags = Flag.entries.filter { it != Flag.ALL }.toSet()
         val joke = joke(blacklistFlags = allFlags)
-        assertThat(joke::flags).isEmpty()
+
+        assertThat(joke).prop(Joke::flags).isEmpty()
     }
 
     @Test
@@ -74,7 +75,7 @@ internal class GetJokeTest {
         val joke = joke(idRange = IdRange(id))
         logger.fine(joke.toString())
         assertThat(joke, "joke($id)").all {
-            prop(Joke::flags).contains(Flag.RELIGIOUS);
+            prop(Joke::flags).contains(Flag.RELIGIOUS)
             prop(Joke::id).isEqualTo(id)
             prop(Joke::category).isEqualTo(Category.PUN)
         }
@@ -85,7 +86,7 @@ internal class GetJokeTest {
         val idRange = IdRange(1, 100)
         val joke = joke(idRange = idRange)
         logger.fine(joke.toString())
-        assertThat(joke::id).isBetween(idRange.start, idRange.end)
+        assertThat(joke).prop(Joke::id).isBetween(idRange.start, idRange.end)
     }
 
     @Test
@@ -108,10 +109,8 @@ internal class GetJokeTest {
     fun `Get Joke with two Categories`() {
         val joke = joke(categories = setOf(Category.PROGRAMMING, Category.MISC))
         logger.fine(joke.toString())
-        assertThat(joke.category, "joke(${Category.PROGRAMMING},${Category.MISC})").isIn(
-            Category.PROGRAMMING,
-            Category.MISC
-        )
+        assertThat(joke, "joke(${Category.PROGRAMMING},${Category.MISC})").prop(Joke::category)
+            .isIn(Category.PROGRAMMING, Category.MISC)
     }
 
     @Test
@@ -136,7 +135,7 @@ internal class GetJokeTest {
     fun `Get Joke with Split Newline`() {
         val joke = joke(type = Type.SINGLE, idRange = IdRange(18), splitNewLine = true)
         logger.fine(joke.toString())
-        assertThat(joke::joke, "joke(splitNewLine=true)").all {
+        assertThat(joke, "joke(splitNewLine=true)").prop(Joke::joke).all {
             size().isGreaterThanOrEqualTo(2)
             each {
                 containsNone("\n")
@@ -148,16 +147,14 @@ internal class GetJokeTest {
     fun `Get Safe Joke`() {
         val joke = joke(safe = true)
         logger.fine(joke.toString())
-        assertThat(joke, "joke(safe)").all {
-            prop(Joke::safe).isTrue()
-        }
+        assertThat(joke, "joke(safe)").prop(Joke::safe).isTrue()
     }
 
     @Test
     fun `Get Single Joke`() {
         val joke = joke(type = Type.SINGLE)
         logger.fine(joke.toString())
-        assertThat(joke::type).assertThat(Type.SINGLE)
+        assertThat(joke).prop(Joke::type).assertThat(Type.SINGLE)
     }
 
     @Test

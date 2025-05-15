@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>LongParameterList:JokeApi.kt$( amount: Int, categories: Set&lt;Category&gt; = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag&gt; = emptySet(), type: Type = Type.ALL, contains: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, auth: String = "", splitNewLine: Boolean = false )</ID>
     <ID>LongParameterList:JokeApi.kt$( categories: Set&lt;Category&gt; = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag&gt; = emptySet(), type: Type = Type.ALL, contains: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, auth: String = "", splitNewLine: Boolean = false )</ID>
@@ -18,15 +18,17 @@
     <ID>MagicNumber:JokeUtil.kt$500</ID>
     <ID>MagicNumber:JokeUtil.kt$523</ID>
     <ID>TooManyFunctions:JokeConfig.kt$JokeConfig$Builder</ID>
-    <ID>WildcardImport:ExceptionsTest.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:GetJokeTest.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:GetJokeTest.kt$import net.thauvin.erik.jokeapi.models.*</ID>
-    <ID>WildcardImport:GetJokesTest.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:GetRawJokesTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:ExceptionsTests.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetJokeTests.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetJokeTests.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:GetJokesTests.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetRawJokesTests.kt$import assertk.assertions.*</ID>
     <ID>WildcardImport:JokeApi.kt$import net.thauvin.erik.jokeapi.models.*</ID>
     <ID>WildcardImport:JokeConfig.kt$import net.thauvin.erik.jokeapi.models.*</ID>
-    <ID>WildcardImport:JokeConfigTest.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:JokeConfigTest.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:JokeConfigTests.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:JokeConfigTests.kt$import net.thauvin.erik.jokeapi.models.*</ID>
     <ID>WildcardImport:JokeUtil.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:JokeUtilTests.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:JokeUtilTests.kt$import net.thauvin.erik.jokeapi.models.*</ID>
   </CurrentIssues>
 </SmellBaseline>

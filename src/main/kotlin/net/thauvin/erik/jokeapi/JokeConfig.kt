@@ -31,7 +31,6 @@
 
 package net.thauvin.erik.jokeapi
 
-import net.thauvin.erik.jokeapi.JokeConfig.Builder
 import net.thauvin.erik.jokeapi.models.*
 
 /**

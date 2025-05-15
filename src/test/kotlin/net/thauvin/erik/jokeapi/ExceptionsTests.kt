@@ -1,5 +1,5 @@
 /*
- * GetRawJokesTest.kt
+ * ExceptionsTests.kt
  *
  * Copyright 2022-2025 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -34,59 +34,47 @@ package net.thauvin.erik.jokeapi
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.*
-import net.thauvin.erik.jokeapi.models.Format
-import net.thauvin.erik.jokeapi.models.IdRange
-import net.thauvin.erik.jokeapi.models.JokeResponse
+import net.thauvin.erik.jokeapi.JokeApi.logger
+import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
+import net.thauvin.erik.jokeapi.exceptions.JokeException
+import net.thauvin.erik.jokeapi.models.Category
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(BeforeAllTests::class)
-internal class GetRawJokesTest {
+@ExtendWith(BeforeAll::class)
+internal class ExceptionsTests {
     @Test
-    fun `Get Raw Joke with TXT`() {
-        val response = rawJokes(format = Format.TXT)
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(200)
-            prop("data", JokeResponse::data).all {
-                isNotEmpty()
-                doesNotContain("Error")
+    fun `Validate Joke Exception`() {
+        val e = assertThrows<JokeException> {
+            joke(categories = setOf(Category.CHRISTMAS), contains = "foo")
+        }
+        logger.fine(e.debug())
+        assertThat(e, "joke(${Category.CHRISTMAS},foo)").all {
+            prop(JokeException::code).isEqualTo(106)
+            prop(JokeException::internalError).isFalse()
+            prop(JokeException::message).isEqualTo("No matching joke found")
+            prop(JokeException::causedBy).size().isEqualTo(1)
+            prop(JokeException::causedBy).index(0).startsWith("No jokes")
+            prop(JokeException::additionalInfo).isNotEmpty()
+            prop(JokeException::timestamp).isGreaterThan(0)
+        }
+    }
+
+    @Test
+    fun `Validate HTTP Exceptions`() {
+        val locs = ArrayList<Pair<String, Int>>()
+        locs.add(Pair("https://apichallenges.herokuapp.com/secret/note", 401))
+        locs.add(Pair("https://apichallenges.herokuapp.com/todo", 404))
+
+        for ((url, code) in locs) {
+            val e = assertThrows<HttpErrorException> {
+                fetchUrl(url)
             }
-        }
-    }
-
-    @Test
-    fun `Get Raw Joke with XML`() {
-        val response = rawJokes(format = Format.XML)
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(200)
-            prop("data", JokeResponse::data).startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
-        }
-    }
-
-    @Test
-    fun `Get Raw Joke with YAML`() {
-        val response = rawJokes(format = Format.YAML)
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(200)
-            prop("data", JokeResponse::data).startsWith("error: false")
-        }
-    }
-
-    @Test
-    fun `Get Raw Jokes`() {
-        val response = rawJokes(amount = 2)
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(200)
-            prop("data", JokeResponse::data).isNotEmpty()
-        }
-    }
-
-    @Test
-    fun `Get Raw Invalid Jokes`() {
-        val response = rawJokes(contains = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(400)
-            prop("data", JokeResponse::data).contains("\"error\": true")
+            assertThat(e, "fetchUrl($code)").all {
+                prop(HttpErrorException::statusCode).isEqualTo(code)
+                prop(HttpErrorException::message).isNotNull().isNotEmpty()
+            }
         }
     }
 }

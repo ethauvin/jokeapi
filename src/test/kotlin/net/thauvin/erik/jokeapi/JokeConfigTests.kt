@@ -1,5 +1,5 @@
 /*
- * JokeConfigTest.kt
+ * JokeConfigTests.kt
  *
  * Copyright 2022-2025 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -43,8 +43,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertContains
 
-@ExtendWith(BeforeAllTests::class)
-internal class JokeConfigTest {
+@ExtendWith(BeforeAll::class)
+internal class JokeConfigTests {
     @Test
     fun `Get Joke with Default Builder`() {
         val joke = joke()
@@ -104,7 +104,10 @@ internal class JokeConfigTest {
         }.build()
         val jokes = getRawJokes(config)
         assertThat(jokes.statusCode).isEqualTo(200)
-        assertContains(jokes.data, "----------------------------------------------", false, "config.amount(2)")
+        assertContains(
+            jokes.data, "----------------------------------------------",
+            false, "config.amount(2)"
+        )
     }
 
     @Test
