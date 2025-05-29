@@ -38,97 +38,113 @@ import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.*
 import org.json.JSONObject
 import java.io.IOException
+import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URI
 import java.util.logging.Level
+
+private const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
+
+private fun createConnection(url: String, auth: String): HttpURLConnection {
+    return (URI(url).toURL().openConnection() as HttpURLConnection).apply {
+        setRequestProperty("User-Agent", USER_AGENT)
+        if (auth.isNotEmpty()) {
+            setRequestProperty("Authentication", auth)
+        }
+    }
+}
 
 /**
  * Fetch a URL.
  */
 internal fun fetchUrl(url: String, auth: String = ""): JokeResponse {
-    if (JokeApi.logger.isLoggable(Level.FINE)) {
-        JokeApi.logger.fine(url)
-    }
+    logDebug { url }
 
-    val connection = URI(url).toURL().openConnection() as HttpURLConnection
+    val connection: HttpURLConnection = createConnection(url, auth)
+
     try {
-        connection.setRequestProperty(
-            "User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
-        )
-        if (auth.isNotEmpty()) {
-            connection.setRequestProperty("Authentication", auth)
-        }
+        val responseCode = connection.responseCode
+        val isSuccess = responseCode in 200..399
 
-        val isSuccess = connection.responseCode in 200..399
-        val stream = if (isSuccess) connection.inputStream else connection.errorStream
-        val body = stream.bufferedReader().use { it.readText() }
-        if (!isSuccess && (body.isBlank() || connection.contentType.contains("text/html"))) {
-            throw httpError(connection.responseCode)
-        } else if (JokeApi.logger.isLoggable(Level.FINE)) {
-            JokeApi.logger.fine(body)
+        return connection.let { conn ->
+            conn.getResponseStream(isSuccess)
+                ?.let { stream -> processResponse(stream, conn, isSuccess) }
+                ?: throw httpError(responseCode)
         }
-        return JokeResponse(connection.responseCode, body)
     } finally {
         connection.disconnect()
     }
 }
 
+/**
+ * Generates an `HttpErrorException` based on the provided HTTP response code.
+ */
 internal fun httpError(responseCode: Int): HttpErrorException {
-    val httpException: HttpErrorException
-    when (responseCode) {
-        400 -> httpException = HttpErrorException(
+    return when (responseCode) {
+        400 -> HttpErrorException(
             responseCode, "Bad Request", IOException(
                 "The request you have sent to JokeAPI is formatted incorrectly and cannot be processed."
             )
         )
 
-        403 -> httpException = HttpErrorException(
+        403 -> HttpErrorException(
             responseCode, "Forbidden", IOException(
                 "You have been added to the blacklist due to malicious behavior and are not allowed"
                         + " to send requests to JokeAPI anymore."
             )
         )
 
-        404 -> httpException = HttpErrorException(
+        404 -> HttpErrorException(
             responseCode, "Not Found",
             IOException("The URL you have requested couldn't be found.")
         )
 
-        413 -> httpException = HttpErrorException(
+        413 -> HttpErrorException(
             responseCode, "URI Too Long",
             IOException("The URL exceeds the maximum length of 250 characters.")
         )
 
-        414 -> httpException = HttpErrorException(
+        414 -> HttpErrorException(
             responseCode,
             "Payload Too Large",
             IOException("The payload data sent to the server exceeds the maximum size of 5120 bytes.")
         )
 
-        429 -> httpException = HttpErrorException(
+        429 -> HttpErrorException(
             responseCode, "Too Many Requests", IOException(
                 "You have exceeded the limit of 120 requests per minute and have to wait a bit"
                         + " until you are allowed to send requests again."
             )
         )
 
-        500 -> httpException = HttpErrorException(
+        500 -> HttpErrorException(
             responseCode, "Internal Server Error", IOException(
                 "There was a general internal error within JokeAPI. You can get more info from"
                         + " the properties in the response text."
             )
         )
 
-        523 -> httpException = HttpErrorException(
+        523 -> HttpErrorException(
             responseCode, "Origin Unreachable", IOException(
                 "The server is temporarily offline due to maintenance or a dynamic IP update."
                         + " Please be patient in this case."
             )
         )
 
-        else -> httpException = HttpErrorException(responseCode, "Unknown HTTP Error")
+        else -> HttpErrorException(responseCode, "Unknown HTTP Error")
     }
-    return httpException
+}
+
+private fun HttpURLConnection.getResponseStream(isSuccess: Boolean): InputStream? =
+    if (isSuccess) inputStream else errorStream
+
+private fun isInvalidErrorResponse(body: String, connection: HttpURLConnection): Boolean =
+    body.isBlank() || connection.contentType?.contains("text/html") == true
+
+private inline fun logDebug(message: () -> String) {
+    if (JokeApi.logger.isLoggable(Level.FINE)) {
+        JokeApi.logger.fine(message())
+    }
 }
 
 /**
@@ -178,5 +194,17 @@ internal fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
         id = json.getInt("id"),
         lang = Language.valueOf(json.getString(Parameter.LANG).uppercase())
     )
+}
+
+private fun processResponse(stream: InputStream, connection: HttpURLConnection, isSuccess: Boolean): JokeResponse {
+    val responseBody = stream.bufferedReader().use { it.readText() }
+
+    if (!isSuccess && isInvalidErrorResponse(responseBody, connection)) {
+        throw httpError(connection.responseCode)
+    }
+
+    logDebug { "Response body ->\n$responseBody" }
+
+    return JokeResponse(connection.responseCode, responseBody)
 }
 

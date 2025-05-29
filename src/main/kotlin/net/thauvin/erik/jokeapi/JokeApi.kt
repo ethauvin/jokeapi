@@ -76,17 +76,14 @@ object JokeApi {
 
         if (params.isNotEmpty()) {
             urlBuilder.append('?')
-            val it = params.iterator()
-            while (it.hasNext()) {
-                val param = it.next()
-                urlBuilder.append(param.key)
-                if (param.value.isNotEmpty()) {
-                    urlBuilder.append("=").append(UrlEncoderUtil.encode(param.value))
-                }
-                if (it.hasNext()) {
-                    urlBuilder.append("&")
+            params.entries.joinTo(urlBuilder, "&") { (key, value) ->
+                if (value.isEmpty()) {
+                    key
+                } else {
+                    "$key=${UrlEncoderUtil.encode(value)}"
                 }
             }
+
         }
         return fetchUrl(urlBuilder.toString(), auth)
     }
