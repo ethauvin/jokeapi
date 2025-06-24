@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertContains
 
-@ExtendWith(BeforeAll::class)
+@ExtendWith(BeforeAllTests::class)
 internal class JokeConfigTests {
     @Test
     fun `Get Joke with Default Builder`() {

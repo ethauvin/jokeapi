@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(BeforeAll::class)
+@ExtendWith(BeforeAllTests::class)
 internal class GetJokeTests {
     @Test
     fun `Get Joke`() {

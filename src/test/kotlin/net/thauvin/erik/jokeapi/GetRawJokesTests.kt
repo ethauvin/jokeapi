@@ -40,7 +40,7 @@ import net.thauvin.erik.jokeapi.models.JokeResponse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(BeforeAll::class)
+@ExtendWith(BeforeAllTests::class)
 internal class GetRawJokesTests {
     @Test
     fun `Get Raw Joke with TXT`() {
