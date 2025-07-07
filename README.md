@@ -1,9 +1,9 @@
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://opensource.org/licenses/BSD-3-Clause)
 [![Kotlin](https://img.shields.io/badge/kotlin-2.2.0-7f52ff)](https://kotlinlang.org/)
-[![bld](https://img.shields.io/badge/2.2.1-FA9052?label=bld&labelColor=2392FF)](https://rife2.com/bld)
+[![bld](https://img.shields.io/badge/2.3.0-FA9052?label=bld&labelColor=2392FF)](https://rife2.com/bld)
 [![Release](https://img.shields.io/github/release/ethauvin/jokeapi.svg)](https://github.com/ethauvin/jokeapi/releases/latest)
 [![Maven Central](https://img.shields.io/maven-central/v/net.thauvin.erik/jokeapi?color=blue)](https://central.sonatype.com/artifact/net.thauvin.erik/jokeapi)
-[![Nexus Snapshot](https://img.shields.io/nexus/s/net.thauvin.erik/jokeapi?label=snapshot&server=https%3A%2F%2Foss.sonatype.org%2F)](https://oss.sonatype.org/content/repositories/snapshots/net/thauvin/erik/jokeapi/)
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fnet%2Fthauvin%2Ferik%2Fjokeapi%2Fmaven-metadata.xml&label=snapshot)](https://github.com/ethauvin/jokeapi/packages/2260868/versions)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ethauvin_jokeapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=ethauvin_jokeapi)
 [![GitHub CI](https://github.com/ethauvin/jokeapi/actions/workflows/bld.yml/badge.svg)](https://github.com/ethauvin/jokeapi/actions/workflows/bld.yml)
@@ -95,7 +95,7 @@ joke.getJoke().forEach(System.out::println);
 To use with [bld](https://rife2.com/bld), include the following dependency in your build file:
 
 ```java
-repositories = List.of(MAVEN_CENTRAL, SONATYPE_SNAPSHOTS_LEGACY);
+repositories = List.of(MAVEN_CENTRAL, CENTRAL_SNAPSHOTS);
 
 scope(compile)
     .include(dependency("net.thauvin.erik", "jokeapi", "1.0.0"));
@@ -108,7 +108,7 @@ To use with [Gradle](https://gradle.org/), include the following dependency in y
 ```gradle
 repositories {
     mavenCentral()
-    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") } // only needed for SNAPSHOT
+    maven { url = uri("https://central.sonatype.com/repository/maven-snapshots/") } // only needed for SNAPSHOT
 }
 
 dependencies {

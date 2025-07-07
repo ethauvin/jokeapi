@@ -85,10 +85,10 @@ public class JokeApiBuild extends Project {
                 .include(dependency("com.willowtreeapps.assertk", "assertk-jvm", version(0, 28, 1)));
 
         publishOperation()
-                .repository(version.isSnapshot() ? repository(SONATYPE_SNAPSHOTS_LEGACY.location())
-                        .withCredentials(property("sonatype.user"), property("sonatype.password"))
-                        : repository(SONATYPE_RELEASES_LEGACY.location())
-                        .withCredentials(property("sonatype.user"), property("sonatype.password")))
+                .repository(version.isSnapshot() ? repository(CENTRAL_SNAPSHOTS.location())
+                        .withCredentials(property("central.user"), property("central.password"))
+                        : repository(CENTRAL_RELEASES.location())
+                        .withCredentials(property("central.user"), property("central.password")))
                 .repository(repository("github"))
                 .info()
                 .groupId(pkg)
