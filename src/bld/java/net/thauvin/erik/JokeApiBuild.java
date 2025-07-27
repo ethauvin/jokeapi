@@ -65,7 +65,7 @@ public class JokeApiBuild extends Project {
         name = "jokeapi";
         version = version(1, 0, 1, "SNAPSHOT");
 
-        javaRelease = 11;
+        javaRelease = 17;
 
         autoDownloadPurge = true;
         downloadSources = true;
