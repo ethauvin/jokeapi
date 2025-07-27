@@ -44,6 +44,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
 @ExtendWith(BeforeAllTests::class)
 internal class JokeUtilTests {
@@ -58,30 +60,29 @@ internal class JokeUtilTests {
     }
 
     @Test
-    fun `Validate Authentication Header`() {
+    fun `Validate Authorization Header`() {
         val token = "AUTH-TOKEN"
         val response = fetchUrl("https://postman-echo.com/get", token)
         assertThat(response.statusCode).isEqualTo(200)
-        assertThat(response.data, "body").contains("\"authentication\":\"$token\"")
+        assertThat(response.data, "body").contains("\"authorization\": \"$token\"")
     }
 
-    @Test
-    fun `HTTP Error Tests`() {
-        listOf(
-            400 to "Bad Request",
-            403 to "Forbidden",
-            404 to "Not Found",
-            413 to "URI Too Long",
-            414 to "Payload Too Large",
-            429 to "Too Many Requests",
-            500 to "Internal Server Error",
-            523 to "Origin Unreachable",
-            999 to "Unknown HTTP Error"
-        ).forEach { (code, message) ->
-            val exception = assertThrows<HttpErrorException> { throw httpError(code) }
-            assertThat(exception.statusCode).isEqualTo(code)
-            assertThat(exception.message).isEqualTo(message)
-        }
+    @ParameterizedTest
+    @CsvSource(
+        "400, Bad Request",
+        "403, Forbidden",
+        "404, Not Found",
+        "413, URI Too Long",
+        "414, Payload Too Large",
+        "429, Too Many Requests",
+        "500, Internal Server Error",
+        "523, Origin Unreachable",
+        "999, Unknown HTTP Error"
+    )
+    fun `HTTP Error Tests`(code: Int, msg: String) {
+        val exception = assertThrows<HttpErrorException> { throw httpError(code) }
+        assertThat(exception.statusCode).isEqualTo(code)
+        assertThat(exception.message).isEqualTo(msg)
     }
 
     @Nested

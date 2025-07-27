@@ -44,7 +44,6 @@ class HttpErrorException @JvmOverloads constructor(
     cause: Throwable? = null
 ) : IOException(message, cause) {
     companion object {
-        @Suppress("unused")
         private const val serialVersionUID = 1L
     }
 }

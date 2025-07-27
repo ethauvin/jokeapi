@@ -38,20 +38,34 @@ import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.*
 import org.json.JSONObject
 import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
 import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.time.Duration
 import java.util.logging.Level
+
 
 private const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
 
-private fun createConnection(url: String, auth: String): HttpURLConnection {
-    return (URI(url).toURL().openConnection() as HttpURLConnection).apply {
-        setRequestProperty("User-Agent", USER_AGENT)
-        if (auth.isNotEmpty()) {
-            setRequestProperty("Authentication", auth)
-        }
+private val httpClient = HttpClient.newBuilder()
+    .connectTimeout(Duration.ofSeconds(30))
+    .followRedirects(HttpClient.Redirect.NORMAL)
+    .build()
+
+
+private fun createRequest(url: String, auth: String): HttpRequest {
+    val builder = HttpRequest.newBuilder()
+        .uri(URI.create(url))
+        .timeout(Duration.ofSeconds(60))
+        .header("User-Agent", USER_AGENT)
+        .GET()
+
+    if (auth.isNotEmpty()) {
+        builder.header("Authorization", auth)
     }
+
+    return builder.build()
 }
 
 /**
@@ -60,20 +74,10 @@ private fun createConnection(url: String, auth: String): HttpURLConnection {
 internal fun fetchUrl(url: String, auth: String = ""): JokeResponse {
     logDebug { url }
 
-    val connection: HttpURLConnection = createConnection(url, auth)
+    val request = createRequest(url, auth)
 
-    try {
-        val responseCode = connection.responseCode
-        val isSuccess = responseCode in 200..399
-
-        return connection.let { conn ->
-            conn.getResponseStream(isSuccess)
-                ?.let { stream -> processResponse(stream, conn, isSuccess) }
-                ?: throw httpError(responseCode)
-        }
-    } finally {
-        connection.disconnect()
-    }
+    val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+    return processResponse(response)
 }
 
 /**
@@ -135,11 +139,10 @@ internal fun httpError(responseCode: Int): HttpErrorException {
     }
 }
 
-private fun HttpURLConnection.getResponseStream(isSuccess: Boolean): InputStream? =
-    if (isSuccess) inputStream else errorStream
-
-private fun isInvalidErrorResponse(body: String, connection: HttpURLConnection): Boolean =
-    body.isBlank() || connection.contentType?.contains("text/html") == true
+private fun isInvalidErrorResponse(body: String, response: HttpResponse<String>): Boolean {
+    val contentType = response.headers().firstValue("content-type").orElse("")
+    return body.isBlank() || contentType.contains("text/html", ignoreCase = true)
+}
 
 private inline fun logDebug(message: () -> String) {
     if (JokeApi.logger.isLoggable(Level.FINE)) {
@@ -196,15 +199,17 @@ internal fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
     )
 }
 
-private fun processResponse(stream: InputStream, connection: HttpURLConnection, isSuccess: Boolean): JokeResponse {
-    val responseBody = stream.bufferedReader().use { it.readText() }
+private fun processResponse(response: HttpResponse<String>): JokeResponse {
+    val responseCode = response.statusCode()
+    val responseBody = response.body()
+    val isSuccess = responseCode in 200..399
 
-    if (!isSuccess && isInvalidErrorResponse(responseBody, connection)) {
-        throw httpError(connection.responseCode)
+    if (!isSuccess && isInvalidErrorResponse(responseBody, response)) {
+        throw httpError(responseCode)
     }
 
     logDebug { "Response body ->\n$responseBody" }
 
-    return JokeResponse(connection.responseCode, responseBody)
+    return JokeResponse(responseCode, responseBody)
 }
 
