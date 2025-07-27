@@ -98,7 +98,7 @@ To use with [bld](https://rife2.com/bld), include the following dependency in yo
 repositories = List.of(MAVEN_CENTRAL, CENTRAL_SNAPSHOTS);
 
 scope(compile)
-    .include(dependency("net.thauvin.erik", "jokeapi", "1.0.0"));
+    .include(dependency("net.thauvin.erik", "jokeapi", "1.0.1"));
 ```
 Be sure to use the [bld Kotlin extension](https://github.com/rife2/bld-kotlin) in your project.
 
@@ -112,7 +112,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.thauvin.erik:jokeapi:1.0.0")
+    implementation("net.thauvin.erik:jokeapi:1.0.1")
 }
 ```
 
