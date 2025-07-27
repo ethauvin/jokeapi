@@ -79,9 +79,9 @@ public class JokeApiBuild extends Project {
                 .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm", version(1, 6, 0)));
         scope(test)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-test-junit5", kotlin))
-                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 13, 3)))
-                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 13, 3)))
-                .include(dependency("org.junit.platform", "junit-platform-launcher", version(1, 13, 3)))
+                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 13, 4)))
+                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 13, 4)))
+                .include(dependency("org.junit.platform", "junit-platform-launcher", version(1, 13, 4)))
                 .include(dependency("com.willowtreeapps.assertk", "assertk-jvm", version(0, 28, 1)));
 
         publishOperation()
@@ -157,13 +157,6 @@ public class JokeApiBuild extends Project {
                 .execute();
     }
 
-
-    @BuildCommand(value = "pom-root", summary = "Generates the POM file in the root directory")
-    public void pomRoot() throws FileUtilsErrorException {
-        PomBuilder.generateInto(publishOperation().fromProject(this).info(), dependencies(),
-                new File(workDirectory, "pom.xml"));
-    }
-
     @BuildCommand(summary = "Generates JaCoCo Reports")
     public void jacoco() throws Exception {
         var op = new JacocoReportOperation().fromProject(this);
@@ -181,6 +174,12 @@ public class JokeApiBuild extends Project {
         if (ex != null) {
             throw ex;
         }
+    }
+
+    @BuildCommand(value = "pom-root", summary = "Generates the POM file in the root directory")
+    public void pomRoot() throws FileUtilsErrorException {
+        PomBuilder.generateInto(publishOperation().fromProject(this).info(), dependencies(),
+                new File(workDirectory, "pom.xml"));
     }
 
     private void renderWithXunitViewer() throws Exception {
