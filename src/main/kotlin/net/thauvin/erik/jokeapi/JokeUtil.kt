@@ -56,7 +56,7 @@ private val httpClient = HttpClient.newBuilder()
 
 private fun createRequest(url: String, auth: String): HttpRequest {
     val builder = HttpRequest.newBuilder()
-        .uri(URI.create(url))
+        .uri(URI(url))
         .timeout(Duration.ofSeconds(60))
         .header("User-Agent", USER_AGENT)
         .GET()
@@ -123,8 +123,7 @@ internal fun httpError(responseCode: Int): HttpErrorException {
 
         500 -> HttpErrorException(
             responseCode, "Internal Server Error", IOException(
-                "There was a general internal error within JokeAPI. You can get more info from"
-                        + " the properties in the response text."
+                "There was a general internal error within JokeAPI."
             )
         )
 

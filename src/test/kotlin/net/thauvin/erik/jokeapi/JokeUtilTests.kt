@@ -44,11 +44,20 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.RegisterExtension
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import rife.bld.extension.testing.LoggingExtension
 
-@ExtendWith(BeforeAllTests::class)
+@ExtendWith(LoggingExtension::class)
 internal class JokeUtilTests {
+    companion object {
+        @Suppress("unused")
+        @JvmField
+        @RegisterExtension
+        val extension: LoggingExtension = LoggingExtension(JokeApi.logger)
+    }
+
     @Test
     fun `Invalid JSON Error`() {
         assertThrows<JSONException> { parseError(JSONObject("{}")) }

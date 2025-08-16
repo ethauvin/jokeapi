@@ -44,10 +44,19 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.RegisterExtension
+import rife.bld.extension.testing.LoggingExtension
 import kotlin.test.assertContains
 
-@ExtendWith(BeforeAllTests::class)
+@ExtendWith(LoggingExtension::class)
 internal class ApiCallTests {
+    companion object {
+        @Suppress("unused")
+        @JvmField
+        @RegisterExtension
+        val extension: LoggingExtension = LoggingExtension(JokeApi.logger)
+    }
+
     @Test
     fun `Get Flags`() {
         // See https://v2.jokeapi.dev/#flags-endpoint

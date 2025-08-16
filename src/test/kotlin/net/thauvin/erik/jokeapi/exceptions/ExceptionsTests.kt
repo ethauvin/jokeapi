@@ -29,29 +29,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.exceptions
 
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.*
-import net.thauvin.erik.jokeapi.JokeApi.logger
-import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
-import net.thauvin.erik.jokeapi.exceptions.JokeException
+import net.thauvin.erik.jokeapi.JokeApi
+import net.thauvin.erik.jokeapi.fetchUrl
+import net.thauvin.erik.jokeapi.joke
 import net.thauvin.erik.jokeapi.models.Category
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.RegisterExtension
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import rife.bld.extension.testing.LoggingExtension
 
-@ExtendWith(BeforeAllTests::class)
+@ExtendWith(LoggingExtension::class)
 internal class ExceptionsTests {
+    companion object {
+        @Suppress("unused")
+        @JvmField
+        @RegisterExtension
+        val extension: LoggingExtension = LoggingExtension(JokeApi.logger)
+    }
+
     @Test
     fun `Validate Joke Exception`() {
         val e = assertThrows<JokeException> {
             joke(categories = setOf(Category.CHRISTMAS), contains = "foo")
         }
-        logger.fine(e.debug())
+        JokeApi.logger.fine(e.debug())
         assertThat(e, "joke(${Category.CHRISTMAS},foo)").all {
             prop(JokeException::code).isEqualTo(106)
             prop(JokeException::internalError).isFalse()

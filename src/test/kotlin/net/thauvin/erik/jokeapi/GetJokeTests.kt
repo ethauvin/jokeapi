@@ -40,9 +40,18 @@ import net.thauvin.erik.jokeapi.models.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.RegisterExtension
+import rife.bld.extension.testing.LoggingExtension
 
-@ExtendWith(BeforeAllTests::class)
+@ExtendWith(LoggingExtension::class)
 internal class GetJokeTests {
+    companion object {
+        @Suppress("unused")
+        @JvmField
+        @RegisterExtension
+        val extension: LoggingExtension = LoggingExtension(logger)
+    }
+
     @Test
     fun `Get Joke`() {
         val joke = joke()

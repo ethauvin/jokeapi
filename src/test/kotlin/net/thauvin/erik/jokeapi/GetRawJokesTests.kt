@@ -39,9 +39,18 @@ import net.thauvin.erik.jokeapi.models.IdRange
 import net.thauvin.erik.jokeapi.models.JokeResponse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.RegisterExtension
+import rife.bld.extension.testing.LoggingExtension
 
-@ExtendWith(BeforeAllTests::class)
+@ExtendWith(LoggingExtension::class)
 internal class GetRawJokesTests {
+    companion object {
+        @Suppress("unused")
+        @JvmField
+        @RegisterExtension
+        val extension: LoggingExtension = LoggingExtension(JokeApi.logger)
+    }
+
     @Test
     fun `Get Raw Joke with TXT`() {
         val response = rawJokes(format = Format.TXT)
