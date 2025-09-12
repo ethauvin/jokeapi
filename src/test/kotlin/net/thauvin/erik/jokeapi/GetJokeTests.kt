@@ -49,7 +49,7 @@ internal class GetJokeTests {
         @Suppress("unused")
         @JvmField
         @RegisterExtension
-        val extension: LoggingExtension = LoggingExtension(logger)
+        val loggingExtension = LoggingExtension(logger)
     }
 
     @Test

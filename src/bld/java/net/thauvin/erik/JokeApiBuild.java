@@ -76,15 +76,20 @@ public class JokeApiBuild extends Project {
         scope(compile)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-stdlib", kotlin))
                 .include(dependency("org.json", "json", "20250517"))
-                .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm", version(1, 6, 0)));
+                .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm",
+                        version(1, 6, 0)));
         scope(test)
                 .include(dependency("com.uwyn.rife2", "bld-extensions-testing-helpers",
-                        version(0, 9, 0, "SNAPSHOT")))
+                        version(0, 9, 3, "SNAPSHOT")))
                 .include(dependency("org.jetbrains.kotlin", "kotlin-test-junit5", kotlin))
-                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 13, 4)))
-                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 13, 4)))
-                .include(dependency("org.junit.platform", "junit-platform-launcher", version(1, 13, 4)))
-                .include(dependency("com.willowtreeapps.assertk", "assertk-jvm", version(0, 28, 1)));
+                .include(dependency("org.junit.jupiter", "junit-jupiter",
+                        version(5, 13, 4)))
+                .include(dependency("org.junit.platform", "junit-platform-console-standalone",
+                        version(1, 13, 4)))
+                .include(dependency("org.junit.platform", "junit-platform-launcher",
+                        version(1, 13, 4)))
+                .include(dependency("com.willowtreeapps.assertk", "assertk-jvm",
+                        version(0, 28, 1)));
 
         publishOperation()
                 .repository(version.isSnapshot() ? repository(CENTRAL_SNAPSHOTS.location())

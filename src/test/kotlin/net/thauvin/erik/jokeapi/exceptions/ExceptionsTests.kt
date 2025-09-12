@@ -52,7 +52,7 @@ internal class ExceptionsTests {
         @Suppress("unused")
         @JvmField
         @RegisterExtension
-        val extension: LoggingExtension = LoggingExtension(JokeApi.logger)
+        val loggingExtension = LoggingExtension(JokeApi.logger)
     }
 
     @Test
