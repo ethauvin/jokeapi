@@ -31,7 +31,9 @@
 
 package net.thauvin.erik.jokeapi
 
+import assertk.all
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
 import assertk.assertions.startsWith
@@ -46,7 +48,6 @@ import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
 import rife.bld.extension.testing.LoggingExtension
-import kotlin.test.assertContains
 
 @ExtendWith(LoggingExtension::class)
 internal class ApiCallTests {
@@ -77,10 +78,10 @@ internal class ApiCallTests {
             params = mapOf(Parameter.FORMAT to Format.YAML.value)
         )
         assertThat(lang.statusCode).isEqualTo(200)
-        assertContains(
-            lang.data, "code: \"fr\"", false,
-            "apiCall(langcode, french, yaml)"
-        )
+        assertThat(lang.data).all {
+            contains("error: false")
+            contains("code: \"fr\"")
+        }
     }
 
     @Test

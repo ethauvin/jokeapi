@@ -73,7 +73,7 @@ internal class JokeUtilTests {
         val token = "AUTH-TOKEN"
         val response = fetchUrl("https://postman-echo.com/get", token)
         assertThat(response.statusCode).isEqualTo(200)
-        assertThat(response.data, "body").contains("\"authorization\": \"$token\"")
+        assertThat(response.data, "body").contains("\"authorization\":\"$token\"")
     }
 
     @ParameterizedTest

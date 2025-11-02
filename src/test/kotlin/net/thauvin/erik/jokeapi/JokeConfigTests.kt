@@ -43,7 +43,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
 import rife.bld.extension.testing.LoggingExtension
-import kotlin.test.assertContains
 
 @ExtendWith(LoggingExtension::class)
 internal class JokeConfigTests {
@@ -113,10 +112,7 @@ internal class JokeConfigTests {
         }.build()
         val jokes = getRawJokes(config)
         assertThat(jokes.statusCode).isEqualTo(200)
-        assertContains(
-            jokes.data, "----------------------------------------------",
-            false, "config.amount(2)"
-        )
+        assertThat(jokes.data).contains("----------------------------------------------")
     }
 
     @Test
