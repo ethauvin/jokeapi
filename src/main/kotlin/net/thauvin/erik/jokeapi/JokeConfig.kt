@@ -31,6 +31,7 @@
 
 package net.thauvin.erik.jokeapi
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import net.thauvin.erik.jokeapi.models.*
 
 /**
@@ -38,26 +39,71 @@ import net.thauvin.erik.jokeapi.models.*
  *
  * Use the [Builder] to create a new configuration.
  */
+@SuppressFBWarnings("EI_EXPOSE_REP")
 class JokeConfig private constructor(builder: Builder) {
-    val categories = builder.categories
-    val lang = builder.lang
-    val blacklistFlags = builder.blacklistFlags
-    val type = builder.type
-    val format = builder.format
-    val contains = builder.contains
-    val idRange = builder.idRange
-    val amount = builder.amount
-    val safe = builder.safe
-    val splitNewLine = builder.splitNewLine
-    val auth = builder.auth
+    /**
+     * Categories of jokes to retrieve.
+     */
+    val categories: Set<Category> = builder.categories.toSet() // Defensive copy
+
+    /**
+     * Language for jokes.
+     */
+    val lang: Language = builder.lang
+
+    /**
+     * Blacklist flags to exclude certain jokes.
+     */
+    val blacklistFlags: Set<Flag> = builder.blacklistFlags.toSet() // Defensive copy
+
+    /**
+     * Joke type: SINGLE or TWOPART.
+     */
+    val type: Type = builder.type
+
+    /**
+     * Response format.
+     */
+    val format: Format = builder.format
+
+    /**
+     * Filter jokes containing this string.
+     */
+    val contains: String = builder.contains
+
+    /**
+     * ID range for jokes.
+     */
+    val idRange: IdRange = builder.idRange.copy() // Defensive copy
+
+    /**
+     * Number of jokes to retrieve.
+     */
+    val amount: Int = builder.amount
+
+    /**
+     * Safe mode: filter explicit jokes.
+     */
+    val safe: Boolean = builder.safe
+
+    /**
+     * Split newlines for SINGLE jokes.
+     */
+    val splitNewLine: Boolean = builder.splitNewLine
+
+    /**
+     * Optional API authentication token.
+     */
+    val auth: String = builder.auth
 
     /**
      * [Builds][build] a new configuration.
      *
-     * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
+     * See the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
      *
      * @param splitNewLine Split newline within [Type.SINGLE] joke.
      */
+    @SuppressFBWarnings("USBR_UNNECESSARY_STORE_BEFORE_RETURN")
     data class Builder(
         var categories: Set<Category> = setOf(Category.ANY),
         var lang: Language = Language.EN,
@@ -77,21 +123,25 @@ class JokeConfig private constructor(builder: Builder) {
          * category, dark humor will be in the [Category.DARK] category and so on. If you want jokes from all
          * categories, you can instead use [Category.ANY], which will make JokeAPI randomly choose a category.
          */
-        fun categories(categories: Set<Category>): Builder = apply { this.categories = categories }
+        fun categories(categories: Set<Category>): Builder = apply {
+            this.categories = categories.toSet() // Defensive copy
+        }
 
         /**
-         * There are two types of languages; system languages and joke languages. Both are separate from each other.
+         * There are two types of languages; system languages and joke languages. Both are separated from each other.
          * All system messages like errors can have a certain system language, while jokes can only have a joke
-         * language. It is possible, that system languages don't yet exist for your language while jokes already do.
+         * language. It is possible that system languages don't yet exist for your language while jokes already do.
          * If no suitable system language is found, JokeAPI will default to English.
          */
         fun lang(language: Language): Builder = apply { lang = language }
 
         /**
-         * Blacklist Flags (or just "Flags") are a more fine layer of filtering. Multiple flags can be
+         * Blacklist Flags (or just "Flags") are a finer layer of filtering. Multiple flags can be
          * set on each joke, and they tell you something about the offensiveness of each joke.
          */
-        fun blacklistFlags(flags: Set<Flag>): Builder = apply { blacklistFlags = flags }
+        fun blacklistFlags(flags: Set<Flag>): Builder = apply {
+            this.blacklistFlags = flags.toSet() // Defensive copy
+        }
 
         /**
          * Each joke comes with one of two types: [Type.SINGLE] or [Type.TWOPART]. If a joke is of type
@@ -115,14 +165,16 @@ class JokeConfig private constructor(builder: Builder) {
 
         /**
          * If this filter is used, you will only get jokes that are within the provided range of IDs.
-         * You don't necessarily need to provide an ID range though, a single ID will work just fine as well.
+         * You don't necessarily need to provide an ID range, though, a single ID will work just fine as well.
          * For example, an ID range of 0-9 will mean you will only get one of the first 10 jokes, while an ID range
          * of 5 will mean you will only get the 6th joke.
          */
-        fun idRange(idRange: IdRange): Builder = apply { this.idRange = idRange }
+        fun idRange(idRange: IdRange): Builder = apply {
+            this.idRange = idRange.copy() // Defensive copy
+        }
 
         /**
-         * This filter allows you to set a certain amount of jokes to receive in a single call. Setting the
+         * This filter allows you to set a certain number of jokes (amount) to receive in a single call. Setting the
          * filter to an invalid number will result in the API defaulting to serving a single joke. Setting it to a
          * number larger than 10 will make JokeAPI default to the maximum (10).
          */
@@ -139,7 +191,9 @@ class JokeConfig private constructor(builder: Builder) {
         /**
          * Split newline within [Type.SINGLE] joke.
          */
-        fun splitNewLine(splitNewLine: Boolean): Builder = apply { this.splitNewLine = splitNewLine }
+        fun splitNewLine(splitNewLine: Boolean): Builder = apply {
+            this.splitNewLine = splitNewLine
+        }
 
         /**
          * JokeAPI has a way of whitelisting certain clients. This is achieved through an API token.
@@ -151,6 +205,6 @@ class JokeConfig private constructor(builder: Builder) {
         /**
          * Builds a new configuration.
          */
-        fun build() = JokeConfig(this)
+        fun build(): JokeConfig = JokeConfig(this)
     }
 }

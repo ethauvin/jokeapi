@@ -51,8 +51,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static rife.bld.dependencies.Repository.*;
-import static rife.bld.dependencies.Scope.compile;
-import static rife.bld.dependencies.Scope.test;
+import static rife.bld.dependencies.Scope.*;
 
 public class JokeApiBuild extends Project {
     static final String TEST_RESULTS_DIR = "build/test-results/test/";
@@ -77,6 +76,9 @@ public class JokeApiBuild extends Project {
                 .include(dependency("org.json", "json", "20250517"))
                 .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm",
                         version(1, 6, 0)));
+        scope(provided)
+                .include(dependency("com.github.spotbugs", "spotbugs-annotations",
+                        version(4, 9, 8)));
         scope(test)
                 .include(dependency("com.uwyn.rife2", "bld-extensions-testing-helpers",
                         version(0, 9, 4)))
@@ -121,63 +123,12 @@ public class JokeApiBuild extends Project {
         jarSourcesOperation().sourceDirectories(srcMainKotlin);
     }
 
-    public static void main(String[] args) {
-        // Enable detailed logging for the extensions
-        var level = Level.ALL;
-        var logger = Logger.getLogger("rife.bld.extension");
-        var consoleHandler = new ConsoleHandler();
-
-        consoleHandler.setLevel(level);
-        logger.addHandler(consoleHandler);
-        logger.setLevel(level);
-        logger.setUseParentHandlers(false);
-
-        new JokeApiBuild().start(args);
-    }
-
     @BuildCommand(summary = "Compiles the Kotlin project")
     @Override
     public void compile() throws Exception {
         var op = new CompileKotlinOperation().fromProject(this);
         op.compileOptions().languageVersion("1.9").verbose(true);
         op.execute();
-    }
-
-    @BuildCommand(summary = "Checks source with Detekt")
-    public void detekt() throws ExitStatusException, IOException, InterruptedException {
-        new DetektOperation()
-                .fromProject(this)
-                .execute();
-    }
-
-    @BuildCommand(value = "detekt-baseline", summary = "Creates the Detekt baseline")
-    public void detektBaseline() throws ExitStatusException, IOException, InterruptedException {
-        new DetektOperation()
-                .fromProject(this)
-                .baseline("detekt-baseline.xml")
-                .createBaseline(true)
-                .execute();
-    }
-
-    @BuildCommand(summary = "Generates JaCoCo Reports")
-    public void jacoco() throws Exception {
-        var op = new JacocoReportOperation().fromProject(this);
-        op.testToolOptions("--reports-dir=" + TEST_RESULTS_DIR);
-        op.execute();
-    }
-
-    @BuildCommand(value = "pom-root", summary = "Generates the POM file in the root directory")
-    public void pomRoot() throws FileUtilsErrorException {
-        PomBuilder.generateInto(publishOperation().fromProject(this).info(), dependencies(),
-                new File(workDirectory, "pom.xml"));
-    }
-
-    @BuildCommand(summary = "Runs the JUnit reporter")
-    public void reporter() throws Exception {
-        new JUnitReporterOperation()
-                .fromProject(this)
-                .failOnSummary(true)
-                .execute();
     }
 
     @Override
@@ -209,5 +160,57 @@ public class JokeApiBuild extends Project {
     public void publishLocal() throws Exception {
         super.publishLocal();
         pomRoot();
+    }
+
+    public static void main(String[] args) {
+        // Enable detailed logging for the extensions
+        var level = Level.ALL;
+        var logger = Logger.getLogger("rife.bld.extension");
+        var consoleHandler = new ConsoleHandler();
+
+        consoleHandler.setLevel(level);
+        logger.addHandler(consoleHandler);
+        logger.setLevel(level);
+        logger.setUseParentHandlers(false);
+
+        new JokeApiBuild().start(args);
+    }
+
+    @BuildCommand(summary = "Checks source with Detekt")
+    public void detekt() throws ExitStatusException, IOException, InterruptedException {
+        new DetektOperation()
+                .fromProject(this)
+                .execute();
+    }
+
+    @BuildCommand(value = "detekt-baseline", summary = "Creates the Detekt baseline")
+    public void detektBaseline() throws ExitStatusException, IOException, InterruptedException {
+        new DetektOperation()
+                .fromProject(this)
+                .baseline("detekt-baseline.xml")
+                .createBaseline(true)
+                .execute();
+    }
+
+    @BuildCommand(summary = "Generates JaCoCo Reports")
+    public void jacoco() throws Exception {
+        var op = new JacocoReportOperation().fromProject(this);
+        op.testToolOptions("--reports-dir=" + TEST_RESULTS_DIR);
+        op.execute();
+    }
+
+    @BuildCommand(value = "pom-root", summary = "Generates the POM file in the root directory")
+    public void pomRoot() throws FileUtilsErrorException {
+        PomBuilder.generateInto(publishOperation().fromProject(this).info(), dependencies(),
+                new File("pom.xml"));
+    }
+
+    @BuildCommand(summary = "Runs SpotBugs on this project")
+    public void spotbugs() throws Exception {
+        new SpotBugsOperation()
+                .fromProject(this)
+                .home("/opt/spotbugs")
+                .sourcePath(srcMainKotlin)
+                .execute();
     }
 }

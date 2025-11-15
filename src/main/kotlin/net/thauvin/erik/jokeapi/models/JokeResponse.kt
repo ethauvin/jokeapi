@@ -30,10 +30,13 @@
  */
 package net.thauvin.erik.jokeapi.models
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+
 /**
  * The Joke API response.
  *
  * @property statusCode The HTTP status code.
  * @property data The response body text.
  */
+@SuppressFBWarnings("USBR_UNNECESSARY_STORE_BEFORE_RETURN")
 data class JokeResponse(val statusCode: Int, val data: String)

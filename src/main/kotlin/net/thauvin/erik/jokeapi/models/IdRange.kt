@@ -31,7 +31,10 @@
 
 package net.thauvin.erik.jokeapi.models
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+
 /**
  * Specifies a joke [ID or range of IDs](https://jokeapi.dev/#idrange-param).
  */
+@SuppressFBWarnings("USBR_UNNECESSARY_STORE_BEFORE_RETURN")
 data class IdRange(val start: Int = -1, val end: Int = -1)

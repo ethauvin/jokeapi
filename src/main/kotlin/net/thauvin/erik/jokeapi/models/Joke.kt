@@ -31,15 +31,22 @@
 
 package net.thauvin.erik.jokeapi.models
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+
 /**
  * Stores a joke's data.
  */
-data class Joke(
+@SuppressFBWarnings("EI_EXPOSE_REP")
+class Joke(
     val category: Category,
     val type: Type,
-    val joke: List<String>,
-    val flags: Set<Flag>,
+    joke: Collection<String>,
+    flags: Collection<Flag>,
     val id: Int,
     val safe: Boolean,
     val lang: Language
-)
+) {
+    val joke: List<String> = joke.toList()
+    val flags: Set<Flag> = flags.toSet()
+}
+

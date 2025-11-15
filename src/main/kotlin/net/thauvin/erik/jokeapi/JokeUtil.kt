@@ -33,6 +33,7 @@
 
 package net.thauvin.erik.jokeapi
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
 import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.*
@@ -44,6 +45,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
 import java.util.logging.Level
+import java.util.logging.Logger
 
 
 private const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
@@ -53,6 +55,7 @@ private val httpClient = HttpClient.newBuilder()
     .followRedirects(HttpClient.Redirect.NORMAL)
     .build()
 
+val logger: Logger by lazy { Logger.getLogger("net.thauvin.erik.jokeapi.JokeUtil") }
 
 private fun createRequest(url: String, auth: String): HttpRequest {
     val builder = HttpRequest.newBuilder()
@@ -72,7 +75,9 @@ private fun createRequest(url: String, auth: String): HttpRequest {
  * Fetch a URL.
  */
 internal fun fetchUrl(url: String, auth: String = ""): JokeResponse {
-    logDebug { url }
+    if (logger.isLoggable(Level.FINE)) {
+        logger.fine(url)
+    }
 
     val request = createRequest(url, auth)
 
@@ -83,6 +88,7 @@ internal fun fetchUrl(url: String, auth: String = ""): JokeResponse {
 /**
  * Generates an `HttpErrorException` based on the provided HTTP response code.
  */
+@SuppressFBWarnings("CE_CLASS_ENVY")
 internal fun httpError(responseCode: Int): HttpErrorException {
     return when (responseCode) {
         400 -> HttpErrorException(
@@ -143,12 +149,6 @@ private fun isInvalidErrorResponse(body: String, response: HttpResponse<String>)
     return body.isBlank() || contentType.contains("text/html", ignoreCase = true)
 }
 
-private inline fun logDebug(message: () -> String) {
-    if (JokeApi.logger.isLoggable(Level.FINE)) {
-        JokeApi.logger.fine(message())
-    }
-}
-
 /**
  * Parse Error.
  */
@@ -168,6 +168,7 @@ internal fun parseError(json: JSONObject): JokeException {
 /**
  * Parse Joke.
  */
+@SuppressFBWarnings("BC_BAD_CAST_TO_ABSTRACT_COLLECTION")
 internal fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
     val jokes = mutableListOf<String>()
     if (json.has("setup")) {
@@ -207,8 +208,9 @@ private fun processResponse(response: HttpResponse<String>): JokeResponse {
         throw httpError(responseCode)
     }
 
-    logDebug { "Response body ->\n$responseBody" }
+    if (logger.isLoggable(Level.FINE)) {
+        logger.fine("Response body ->\n$responseBody")
+    }
 
     return JokeResponse(responseCode, responseBody)
 }
-

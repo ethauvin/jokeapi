@@ -31,8 +31,7 @@
 
 package net.thauvin.erik.jokeapi
 
-import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
-import net.thauvin.erik.jokeapi.exceptions.JokeException
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import net.thauvin.erik.jokeapi.models.*
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
 import org.json.JSONObject
@@ -42,6 +41,7 @@ import java.util.stream.Collectors
 /**
  * Implements the [Sv443's JokeAPI](https://jokeapi.dev/).
  */
+@SuppressFBWarnings("CE_CLASS_ENVY")
 object JokeApi {
     private const val API_URL = "https://v2.jokeapi.dev/"
 
@@ -58,7 +58,6 @@ object JokeApi {
      */
     @JvmStatic
     @JvmOverloads
-    @Throws(HttpErrorException::class)
     fun apiCall(
         endPoint: String,
         path: String = "",
@@ -94,7 +93,7 @@ object JokeApi {
      * See the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
      */
     @JvmStatic
-    @Throws(HttpErrorException::class)
+    @SuppressFBWarnings("CE_CLASS_ENVY")
     fun getRawJokes(config: JokeConfig): JokeResponse {
         return rawJokes(
             categories = config.categories,
@@ -117,7 +116,6 @@ object JokeApi {
      */
     @JvmStatic
     @JvmOverloads
-    @Throws(HttpErrorException::class, JokeException::class)
     fun joke(config: JokeConfig = JokeConfig.Builder().build()): Joke {
         return joke(
             categories = config.categories,
@@ -138,7 +136,6 @@ object JokeApi {
      * Sse the [JokeAPI Documentation](https://jokeapi.dev/#joke-endpoint) for more details.
      */
     @JvmStatic
-    @Throws(HttpErrorException::class, JokeException::class)
     fun jokes(config: JokeConfig): Array<Joke> {
         return jokes(
             categories = config.categories,
@@ -189,6 +186,7 @@ object JokeApi {
  * and need more than 120 requests per minute.
  * @param splitNewLine Split newline within [Type.SINGLE] joke.
  */
+@SuppressFBWarnings("FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY")
 fun joke(
     categories: Set<Category> = setOf(Category.ANY),
     lang: Language = Language.EN,
@@ -330,7 +328,6 @@ fun jokes(
  * At the moment, you will only receive one of these tokens temporarily if something breaks or if you are a business
  * and need more than 120 requests per minute.
  */
-@Throws(HttpErrorException::class)
 fun rawJokes(
     categories: Set<Category> = setOf(Category.ANY),
     lang: Language = Language.EN,

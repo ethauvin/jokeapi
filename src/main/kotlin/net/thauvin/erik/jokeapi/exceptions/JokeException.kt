@@ -31,20 +31,25 @@
 
 package net.thauvin.erik.jokeapi.exceptions
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+
 /**
  * Signals that an error has occurred.
  *
  * Sse the [JokeAPI Documentation](https://jokeapi.dev/#errors) for more details.
  */
+@SuppressFBWarnings("EI_EXPOSE_REP")
 class JokeException @JvmOverloads constructor(
     val internalError: Boolean,
     val code: Int,
     message: String,
-    val causedBy: List<String>,
+    causedBy: Collection<String>,
     val additionalInfo: String,
     val timestamp: Long,
     cause: Throwable? = null
 ) : RuntimeException(message, cause) {
+    val causedBy: List<String> = causedBy.toList()
+
     companion object {
         @JvmStatic
         private val serialVersionUID = 1L
