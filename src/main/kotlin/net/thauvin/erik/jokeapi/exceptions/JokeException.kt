@@ -43,7 +43,7 @@ class JokeException @JvmOverloads constructor(
     val internalError: Boolean,
     val code: Int,
     message: String,
-    causedBy: Collection<String>,
+    causedBy: List<String>,
     val additionalInfo: String,
     val timestamp: Long,
     cause: Throwable? = null

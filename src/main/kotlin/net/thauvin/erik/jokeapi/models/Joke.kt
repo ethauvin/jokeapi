@@ -40,8 +40,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 class Joke(
     val category: Category,
     val type: Type,
-    joke: Collection<String>,
-    flags: Collection<Flag>,
+    joke: List<String>,
+    flags: Set<Flag>,
     val id: Int,
     val safe: Boolean,
     val lang: Language
