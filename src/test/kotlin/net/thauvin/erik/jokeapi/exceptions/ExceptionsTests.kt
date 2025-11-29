@@ -74,8 +74,8 @@ internal class ExceptionsTests {
 
     @ParameterizedTest
     @CsvSource(
-        "https://httpbin.org/status/401, 401",
-        "https://httpbin.org/status/404, 404"
+        "https://httpbin.dev/status/401, 401",
+        "https://httpbin.dev/status/404, 404"
     )
     fun `Validate HTTP Exceptions`(url: String, expectedCode: Int) {
         val e = assertThrows<HttpErrorException> {
