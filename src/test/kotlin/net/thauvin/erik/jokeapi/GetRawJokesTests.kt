@@ -45,7 +45,6 @@ import rife.bld.extension.testing.LoggingExtension
 @ExtendWith(LoggingExtension::class)
 internal class GetRawJokesTests {
     companion object {
-        @Suppress("unused")
         @JvmField
         @RegisterExtension
         val loggingExtension = LoggingExtension(JokeApi.logger)
