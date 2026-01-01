@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Source Code" pattern="file[bld]:*.java/||file[app]:src/main/kotlin//*.kt||file[app]:src/test/kotlin//*.kt" />
+</component>
