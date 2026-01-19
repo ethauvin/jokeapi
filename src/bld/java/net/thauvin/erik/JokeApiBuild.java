@@ -36,6 +36,7 @@ import rife.bld.Project;
 import rife.bld.extension.*;
 import rife.bld.extension.dokka.LoggingLevel;
 import rife.bld.extension.dokka.OutputFormat;
+import rife.bld.extension.tools.IOUtils;
 import rife.bld.operations.exceptions.ExitStatusException;
 import rife.bld.publish.PomBuilder;
 import rife.bld.publish.PublishDeveloper;
@@ -54,8 +55,9 @@ import static rife.bld.dependencies.Repository.*;
 import static rife.bld.dependencies.Scope.*;
 
 public class JokeApiBuild extends Project {
-    static final String TEST_RESULTS_DIR = "build/test-results/test/";
+
     final File srcMainKotlin = new File(srcMainDirectory(), "kotlin");
+    final File testResultsDirectory = IOUtils.resolveFile(buildDirectory(), "test-results", "test");
 
     public JokeApiBuild() {
         pkg = "net.thauvin.erik";
@@ -81,7 +83,7 @@ public class JokeApiBuild extends Project {
                         version(4, 9, 8)));
         scope(test)
                 .include(dependency("com.uwyn.rife2", "bld-extensions-testing-helpers",
-                        version(0, 9, 5)))
+                        version(0, 9, 6, "SNAPSHOT")))
                 .include(dependency("org.junit.jupiter", "junit-jupiter", junit))
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", junit))
                 .include(dependency("org.junit.platform", "junit-platform-launcher", junit))
@@ -134,7 +136,7 @@ public class JokeApiBuild extends Project {
     @Override
     public void test() throws Exception {
         var op = testOperation().fromProject(this);
-        op.testToolOptions().reportsDir(new File(TEST_RESULTS_DIR));
+        op.testToolOptions().reportsDir(testResultsDirectory);
         op.execute();
     }
 
@@ -195,7 +197,7 @@ public class JokeApiBuild extends Project {
     @BuildCommand(summary = "Generates JaCoCo Reports")
     public void jacoco() throws Exception {
         var op = new JacocoReportOperation().fromProject(this);
-        op.testToolOptions("--reports-dir=" + TEST_RESULTS_DIR);
+        op.testToolOptions("--reports-dir=" + testResultsDirectory.getAbsolutePath());
         op.execute();
     }
 
