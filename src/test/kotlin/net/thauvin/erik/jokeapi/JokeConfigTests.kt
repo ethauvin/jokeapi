@@ -88,7 +88,7 @@ internal class JokeConfigTests {
     fun `Get joke with Builder and Split Newline`() {
         val id = 5
         val config = JokeConfig.Builder().apply {
-            categories(setOf(Category.PROGRAMMING))
+            categories(Category.PROGRAMMING)
             idRange(IdRange(id))
             splitNewLine(true)
         }.build()
@@ -150,7 +150,7 @@ internal class JokeConfigTests {
         val config = JokeConfig.Builder().apply {
             categories(categories)
             lang(language)
-            blacklistFlags(flags)
+            blacklistFlags(Flag.POLITICAL, Flag.RELIGIOUS)
             type(type)
             format(format)
             contains(search)

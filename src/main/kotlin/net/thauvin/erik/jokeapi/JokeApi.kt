@@ -36,7 +36,6 @@ import net.thauvin.erik.jokeapi.models.*
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
 import org.json.JSONObject
 import java.util.logging.Logger
-import java.util.stream.Collectors
 
 /**
  * Implements the [Sv443's JokeAPI](https://jokeapi.dev/).
@@ -62,12 +61,12 @@ object JokeApi {
         endPoint: String,
         path: String = "",
         params: Map<String, String> = emptyMap(),
-        auth: String = ""
+        auth: String? = null
     ): JokeResponse {
         val urlBuilder = StringBuilder("$API_URL$endPoint")
 
         if (path.isNotEmpty()) {
-            if (!urlBuilder.endsWith(('/'))) {
+            if (!urlBuilder.endsWith('/')) {
                 urlBuilder.append('/')
             }
             urlBuilder.append(path)
@@ -76,14 +75,10 @@ object JokeApi {
         if (params.isNotEmpty()) {
             urlBuilder.append('?')
             params.entries.joinTo(urlBuilder, "&") { (key, value) ->
-                if (value.isEmpty()) {
-                    key
-                } else {
-                    "$key=${UrlEncoderUtil.encode(value)}"
-                }
+                if (value.isEmpty()) key else "$key=${UrlEncoderUtil.encode(value)}"
             }
-
         }
+
         return fetchUrl(urlBuilder.toString(), auth)
     }
 
@@ -152,7 +147,6 @@ object JokeApi {
     }
 }
 
-
 /**
  * Returns a [Joke] instance.
  *
@@ -192,10 +186,10 @@ fun joke(
     lang: Language = Language.EN,
     blacklistFlags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
-    contains: String = "",
+    contains: String? = null,
     idRange: IdRange = IdRange(),
     safe: Boolean = false,
-    auth: String = "",
+    auth: String? = null,
     splitNewLine: Boolean = false
 ): Joke {
     val json = JSONObject(
@@ -210,11 +204,12 @@ fun joke(
             auth = auth
         ).data
     )
+
     if (json.getBoolean("error")) {
         throw parseError(json)
-    } else {
-        return parseJoke(json, splitNewLine)
     }
+
+    return parseJoke(json, splitNewLine)
 }
 
 /**
@@ -259,10 +254,10 @@ fun jokes(
     lang: Language = Language.EN,
     blacklistFlags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
-    contains: String = "",
+    contains: String? = null,
     idRange: IdRange = IdRange(),
     safe: Boolean = false,
-    auth: String = "",
+    auth: String? = null,
     splitNewLine: Boolean = false
 ): Array<Joke> {
     val json = JSONObject(
@@ -278,15 +273,16 @@ fun jokes(
             auth = auth
         ).data
     )
+
     if (json.getBoolean("error")) {
         throw parseError(json)
+    }
+
+    return if (json.has("amount")) {
+        val jokes = json.getJSONArray("jokes")
+        Array(jokes.length()) { i -> parseJoke(jokes.getJSONObject(i), splitNewLine) }
     } else {
-        return if (json.has("amount")) {
-            val jokes = json.getJSONArray("jokes")
-            Array(jokes.length()) { i -> parseJoke(jokes.getJSONObject(i), splitNewLine) }
-        } else {
-            arrayOf(parseJoke(json, splitNewLine))
-        }
+        arrayOf(parseJoke(json, splitNewLine))
     }
 }
 
@@ -334,33 +330,31 @@ fun rawJokes(
     blacklistFlags: Set<Flag> = emptySet(),
     type: Type = Type.ALL,
     format: Format = Format.JSON,
-    contains: String = "",
+    contains: String? = null,
     idRange: IdRange = IdRange(),
     amount: Int = 1,
     safe: Boolean = false,
-    auth: String = ""
+    auth: String? = null
 ): JokeResponse {
     val params = mutableMapOf<String, String>()
 
-    // Categories
     val path = if (categories.isEmpty() || categories.contains(Category.ANY)) {
         Category.ANY.value
     } else {
-        categories.stream().map(Category::value).collect(Collectors.joining(","))
+        categories.joinToString(",") { it.value }
     }
 
-    // Language
     if (lang != Language.EN) {
         params[Parameter.LANG] = lang.value
     }
 
-    // Flags
     if (blacklistFlags.isNotEmpty()) {
-        if (blacklistFlags.contains(Flag.ALL)) {
-            params[Parameter.FLAGS] = Flag.ALL.value
-        } else {
-            params[Parameter.FLAGS] = blacklistFlags.stream().map(Flag::value).collect(Collectors.joining(","))
-        }
+        params[Parameter.FLAGS] =
+            if (blacklistFlags.contains(Flag.ALL)) {
+                Flag.ALL.value
+            } else {
+                blacklistFlags.joinToString(",") { it.value }
+            }
     }
 
     // Type
@@ -374,18 +368,19 @@ fun rawJokes(
     }
 
     // Contains
-    if (contains.isNotBlank()) {
-        params[Parameter.CONTAINS] = contains
+    if (!contains.isNullOrBlank()) {
+        params[Parameter.CONTAINS] = UrlEncoderUtil.encode(contains)
     }
 
     // Range
     if (idRange.start >= 0) {
-        if (idRange.end == -1 || idRange.start == idRange.end) {
-            params[Parameter.RANGE] = idRange.start.toString()
-        } else {
-            require(idRange.end > idRange.start) { "Invalid ID Range: ${idRange.start}, ${idRange.end}" }
-            params[Parameter.RANGE] = "${idRange.start}-${idRange.end}"
-        }
+        params[Parameter.RANGE] =
+            if (idRange.end == -1 || idRange.start == idRange.end) {
+                idRange.start.toString()
+            } else {
+                require(idRange.end > idRange.start) { "Invalid ID Range: ${idRange.start}, ${idRange.end}" }
+                "${idRange.start}-${idRange.end}"
+            }
     }
 
     // Amount

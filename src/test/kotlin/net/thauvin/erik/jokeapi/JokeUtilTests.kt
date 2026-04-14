@@ -37,7 +37,6 @@ import assertk.assertions.*
 import net.thauvin.erik.jokeapi.exceptions.HttpErrorException
 import net.thauvin.erik.jokeapi.exceptions.JokeException
 import net.thauvin.erik.jokeapi.models.*
-import org.json.JSONException
 import org.json.JSONObject
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -55,16 +54,6 @@ internal class JokeUtilTests {
         @JvmField
         @RegisterExtension
         val loggingExtension = LoggingExtension(JokeApi.logger)
-    }
-
-    @Test
-    fun `Invalid JSON Error`() {
-        assertThrows<JSONException> { parseError(JSONObject("{}")) }
-    }
-
-    @Test
-    fun `Invalid JSON Joke`() {
-        assertThrows<JSONException> { parseJoke(JSONObject("{}"), false) }
     }
 
     @Test

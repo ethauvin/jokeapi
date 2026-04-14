@@ -47,8 +47,6 @@ import java.time.Duration
 import java.util.logging.Level
 import java.util.logging.Logger
 
-private const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
-
 private val httpClient = HttpClient.newBuilder()
     .connectTimeout(Duration.ofSeconds(30))
     .followRedirects(HttpClient.Redirect.NORMAL)
@@ -56,87 +54,102 @@ private val httpClient = HttpClient.newBuilder()
 
 val logger: Logger by lazy { Logger.getLogger("net.thauvin.erik.jokeapi.JokeUtil") }
 
-private fun createRequest(url: String, auth: String): HttpRequest {
+private fun createRequest(url: String, auth: String = ""): HttpRequest {
     val builder = HttpRequest.newBuilder()
-        .uri(URI(url))
-        .timeout(Duration.ofSeconds(60))
-        .header("User-Agent", USER_AGENT)
+        .uri(URI.create(url))
         .GET()
 
-    if (auth.isNotEmpty()) {
+    if (auth.isNotBlank()) {
         builder.header("Authorization", auth)
     }
 
     return builder.build()
 }
 
+
 /**
- * Fetch a URL.
+ * Fetches a URL and returns the raw JokeAPI response.
+ *
+ * The request is executed synchronously. Network errors and invalid responses
+ * are converted into domain-specific exceptions.
  */
-internal fun fetchUrl(url: String, auth: String = ""): JokeResponse {
+@SuppressFBWarnings("EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS")
+internal fun fetchUrl(url: String, auth: String? = null): JokeResponse {
     if (logger.isLoggable(Level.FINE)) {
         logger.fine(url)
     }
 
-    val request = createRequest(url, auth)
+    val request = createRequest(url, auth ?: "")
 
-    val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+    val response = try {
+        httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+    } catch (e: IOException) {
+        throw JokeException(
+            internalError = true,
+            code = -1,
+            message = "Network error while contacting JokeAPI.",
+            causedBy = listOf(e.message ?: "Unknown network error"),
+            additionalInfo = "",
+            timestamp = System.currentTimeMillis(),
+            cause = e
+        )
+    }
+
     return processResponse(response)
 }
 
 /**
- * Generates an `HttpErrorException` based on the provided HTTP response code.
+ * Creates an [HttpErrorException] describing the HTTP error returned by JokeAPI.
  */
 @SuppressFBWarnings("CE_CLASS_ENVY")
 internal fun httpError(responseCode: Int): HttpErrorException {
     return when (responseCode) {
         400 -> HttpErrorException(
-            responseCode, "Bad Request", IOException(
-                "The request you have sent to JokeAPI is formatted incorrectly and cannot be processed."
-            )
+            responseCode,
+            "Bad Request",
+            IOException("The request is formatted incorrectly and cannot be processed.")
         )
 
         403 -> HttpErrorException(
-            responseCode, "Forbidden", IOException(
-                "You have been added to the blacklist due to malicious behavior and are not allowed"
-                        + " to send requests to JokeAPI anymore."
-            )
+            responseCode,
+            "Forbidden",
+            IOException("You have been blacklisted due to malicious behavior.")
         )
 
         404 -> HttpErrorException(
-            responseCode, "Not Found",
-            IOException("The URL you have requested couldn't be found.")
+            responseCode,
+            "Not Found",
+            IOException("The requested URL could not be found.")
         )
 
         413 -> HttpErrorException(
-            responseCode, "URI Too Long",
-            IOException("The URL exceeds the maximum length of 250 characters.")
+            responseCode,
+            "URI Too Long",
+            IOException("The URL exceeds the maximum allowed length.")
         )
 
         414 -> HttpErrorException(
             responseCode,
             "Payload Too Large",
-            IOException("The payload data sent to the server exceeds the maximum size of 5120 bytes.")
+            IOException("The payload exceeds the maximum allowed size.")
         )
 
         429 -> HttpErrorException(
-            responseCode, "Too Many Requests", IOException(
-                "You have exceeded the limit of 120 requests per minute and have to wait a bit"
-                        + " until you are allowed to send requests again."
-            )
+            responseCode,
+            "Too Many Requests",
+            IOException("You have exceeded the rate limit of 120 requests per minute.")
         )
 
         500 -> HttpErrorException(
-            responseCode, "Internal Server Error", IOException(
-                "There was a general internal error within JokeAPI."
-            )
+            responseCode,
+            "Internal Server Error",
+            IOException("A general internal error occurred within JokeAPI.")
         )
 
         523 -> HttpErrorException(
-            responseCode, "Origin Unreachable", IOException(
-                "The server is temporarily offline due to maintenance or a dynamic IP update."
-                        + " Please be patient in this case."
-            )
+            responseCode,
+            "Origin Unreachable",
+            IOException("The server is temporarily offline or unreachable.")
         )
 
         else -> HttpErrorException(responseCode, "Unknown HTTP Error")
@@ -144,72 +157,107 @@ internal fun httpError(responseCode: Int): HttpErrorException {
 }
 
 private fun isInvalidErrorResponse(body: String, response: HttpResponse<String>): Boolean {
-    val contentType = response.headers().firstValue("content-type").orElse("")
-    return body.isBlank() || contentType.contains("text/html", ignoreCase = true)
+    val contentType = response.headers()
+        .firstValue("content-type")
+        .orElse(null) // convert Optional<String> → String?
+        ?.lowercase() // safe call
+        ?: "" // fallback
+
+    if (body.isBlank()) return true
+    if ("text/html" in contentType) return true
+    if (!contentType.contains("application/json")) return true
+
+    return false
 }
 
 /**
- * Parse Error.
+ * Parses a JokeAPI error response into a `JokeException`.
  */
 internal fun parseError(json: JSONObject): JokeException {
-    val causedBy = json.getJSONArray("causedBy")
-    val causes = List<String>(causedBy.length()) { i -> causedBy.getString(i) }
+    val causedByArray = json.optJSONArray("causedBy")
+    val causes = if (causedByArray != null) {
+        List(causedByArray.length()) { i -> causedByArray.optString(i) }
+    } else {
+        emptyList()
+    }
+
     return JokeException(
-        internalError = json.getBoolean("internalError"),
-        code = json.getInt("code"),
-        message = json.getString("message"),
+        internalError = json.optBoolean("internalError", false),
+        code = json.optInt("code", -1),
+        message = json.optString("message", "Unknown error"),
         causedBy = causes,
-        additionalInfo = json.getString("additionalInfo"),
-        timestamp = json.getLong("timestamp")
+        additionalInfo = json.optString("additionalInfo", ""),
+        timestamp = json.optLong("timestamp", System.currentTimeMillis())
     )
 }
 
 /**
- * Parse Joke.
+ * Parses a JokeAPI joke response into a `Joke` instance.
+ *
+ * JokeAPI may return either a single-line joke or a two-part joke. Newlines
+ * may optionally be split into separate parts.
  */
 @SuppressFBWarnings("BC_BAD_CAST_TO_ABSTRACT_COLLECTION")
 internal fun parseJoke(json: JSONObject, splitNewLine: Boolean): Joke {
     val jokes = mutableListOf<String>()
+
     if (json.has("setup")) {
-        jokes.add(json.getString("setup"))
-        jokes.add(json.getString(("delivery")))
+        jokes.add(json.optString("setup"))
+        jokes.add(json.optString("delivery"))
     } else {
+        val raw = json.optString("joke", "")
         if (splitNewLine) {
-            jokes.addAll(json.getString("joke").split("\n").filter { it.isNotBlank() })
+            jokes.addAll(raw.split("\n").filter { it.isNotBlank() })
         } else {
-            jokes.add(json.getString("joke"))
+            jokes.add(raw)
         }
     }
-    val enabledFlags = mutableSetOf<Flag>()
-    val jsonFlags = json.getJSONObject("flags")
-    Flag.entries.filter { it != Flag.ALL }.forEach {
-        if (jsonFlags.has(it.value) && jsonFlags.getBoolean(it.value)) {
-            enabledFlags.add(it)
-        }
-    }
+
+    val jsonFlags = json.optJSONObject("flags") ?: JSONObject()
+    val enabledFlags = Flag.entries
+        .filter { it != Flag.ALL && jsonFlags.optBoolean(it.value, false) }
+        .toSet()
+
+    val categoryRaw = json.optString("category")
+    val typeRaw = json.optString(Parameter.TYPE)
+    val langRaw = json.optString(Parameter.LANG)
+
+    val category = Category.entries.firstOrNull {
+        it.name.equals(categoryRaw, ignoreCase = true)
+    } ?: Category.ANY
+
+    val type = Type.entries.firstOrNull {
+        it.name.equals(typeRaw, ignoreCase = true)
+    } ?: Type.SINGLE
+
+    val lang = Language.entries.firstOrNull {
+        it.name.equals(langRaw, ignoreCase = true)
+    } ?: Language.EN
+
     return Joke(
-        category = Category.valueOf(json.getString("category").uppercase()),
-        type = Type.valueOf(json.getString(Parameter.TYPE).uppercase()),
+        category = category,
+        type = type,
         joke = jokes,
         flags = enabledFlags,
-        safe = json.getBoolean("safe"),
-        id = json.getInt("id"),
-        lang = Language.valueOf(json.getString(Parameter.LANG).uppercase())
+        safe = json.optBoolean("safe", false),
+        id = json.optInt("id", -1),
+        lang = lang
     )
 }
 
 private fun processResponse(response: HttpResponse<String>): JokeResponse {
     val responseCode = response.statusCode()
-    val responseBody = response.body()
+    val body = response.body()
+
     val isSuccess = responseCode in 200..399
 
-    if (!isSuccess && isInvalidErrorResponse(responseBody, response)) {
+    if (!isSuccess && isInvalidErrorResponse(body, response)) {
         throw httpError(responseCode)
     }
 
     if (logger.isLoggable(Level.FINE)) {
-        logger.fine("Response body ->\n$responseBody")
+        logger.fine("Response body ->\n$body")
     }
 
-    return JokeResponse(responseCode, responseBody)
+    return JokeResponse(responseCode, body)
 }

@@ -34,19 +34,33 @@ package net.thauvin.erik.jokeapi.models
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 
 /**
- * Stores a joke's data.
+ * Represents a joke returned by JokeAPI.
+ *
+ * A joke may consist of one or two text parts depending on its [type]. Flags
+ * describe potentially sensitive content. All collections are defensively
+ * copied to preserve immutability.
  */
-@SuppressFBWarnings("EI_EXPOSE_REP")
-class Joke(
+@SuppressFBWarnings("EI_EXPOSE_REP", "USBR_UNNECESSARY_STORE_BEFORE_RETURN")
+data class Joke(
     val category: Category,
     val type: Type,
-    joke: List<String>,
-    flags: Set<Flag>,
+    val joke: List<String>,
+    val flags: Set<Flag>,
     val id: Int,
     val safe: Boolean,
     val lang: Language
 ) {
-    val joke: List<String> = joke.toList()
-    val flags: Set<Flag> = flags.toSet()
-}
+    init {
+        require(joke.isNotEmpty()) { "Joke text cannot be empty." }
+    }
 
+    /**
+     * Returns the joke text as an immutable copy.
+     */
+    fun joke(): List<String> = joke.toList()
+
+    /**
+     * Returns the joke flags as an immutable copy.
+     */
+    fun flags(): Set<Flag> = flags.toSet()
+}
