@@ -71,7 +71,7 @@ public class JokeApiBuild extends Project {
 
         repositories = List.of(MAVEN_LOCAL, MAVEN_CENTRAL, RIFE2_RELEASES);
 
-        final var kotlin = version(2, 3, 10);
+        final var kotlin = version(2, 3, 20);
         var junit = version(6, 0, 3);
         scope(compile)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-stdlib", kotlin))
@@ -88,7 +88,8 @@ public class JokeApiBuild extends Project {
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", junit))
                 .include(dependency("org.junit.platform", "junit-platform-launcher", junit))
                 .include(dependency("com.willowtreeapps.assertk", "assertk-jvm",
-                        version(0, 28, 1)));
+                        version(0, 28, 1))
+                        .exclude("org.jetbrains.kotlin", "kotlin-stdlib"));
 
         publishOperation()
                 .repository(version.isSnapshot() ? repository(CENTRAL_SNAPSHOTS.location())
@@ -129,7 +130,7 @@ public class JokeApiBuild extends Project {
     @Override
     public void compile() throws Exception {
         var op = new CompileKotlinOperation().fromProject(this);
-        op.compileOptions().languageVersion("1.9").verbose(true);
+        op.compileOptions().languageVersion("2.1").verbose(true);
         op.execute();
     }
 
