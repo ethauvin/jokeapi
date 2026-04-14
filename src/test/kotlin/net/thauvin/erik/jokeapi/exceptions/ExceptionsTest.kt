@@ -1,5 +1,5 @@
 /*
- * GetJokesTests.kt
+ * ExceptionsTests.kt
  *
  * Copyright 2022-2026 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -29,21 +29,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.thauvin.erik.jokeapi
+package net.thauvin.erik.jokeapi.exceptions
 
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.*
-import net.thauvin.erik.jokeapi.models.Joke
-import net.thauvin.erik.jokeapi.models.Language
+import net.thauvin.erik.jokeapi.JokeApi
+import net.thauvin.erik.jokeapi.fetchUrl
+import net.thauvin.erik.jokeapi.joke
+import net.thauvin.erik.jokeapi.models.Category
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import rife.bld.extension.testing.LoggingExtension
 
 @ExtendWith(LoggingExtension::class)
-internal class GetJokesTests {
+internal class ExceptionsTest {
     companion object {
         @JvmField
         @RegisterExtension
@@ -51,34 +55,34 @@ internal class GetJokesTests {
     }
 
     @Test
-    fun `Get Multiple Jokes`() {
-        val amount = 2
-        val jokes = jokes(amount = amount, safe = true, lang = Language.FR)
-        assertThat(jokes, "jokes").all {
-            size().isEqualTo(amount)
-            each {
-                it.prop(Joke::id).isGreaterThanOrEqualTo(0)
-                it.prop(Joke::safe).isTrue()
-                it.prop(Joke::lang).isEqualTo(Language.FR)
-            }
+    fun `Validate Joke Exception`() {
+        val e = assertThrows<JokeException> {
+            joke(categories = setOf(Category.CHRISTMAS), contains = "foo")
+        }
+        JokeApi.logger.fine(e.debug())
+        assertThat(e, "joke(${Category.CHRISTMAS},foo)").all {
+            prop(JokeException::code).isEqualTo(106)
+            prop(JokeException::internalError).isFalse()
+            prop(JokeException::message).isEqualTo("No matching joke found")
+            prop(JokeException::causedBy).size().isEqualTo(1)
+            prop(JokeException::causedBy).index(0).startsWith("No jokes")
+            prop(JokeException::additionalInfo).isNotEmpty()
+            prop(JokeException::timestamp).isGreaterThan(0)
         }
     }
 
-    @Test
-    fun `Get Jokes with Invalid Amount`() {
-        val e = assertThrows<IllegalArgumentException> { jokes(amount = -1) }
-        assertThat(e::message).isNotNull().contains("-1")
-    }
-
-    @Test
-    fun `Get One Joke as Multiple`() {
-        val jokes = jokes(amount = 1, safe = true)
-        assertThat(jokes, "jokes").all {
-            size().isEqualTo(1)
-            index(0).all {
-                prop(Joke::id).isGreaterThanOrEqualTo(0)
-                prop(Joke::safe).isTrue()
-            }
+    @ParameterizedTest
+    @CsvSource(
+        "https://httpbin.dev/status/401, 401",
+        "https://httpbin.dev/status/404, 404"
+    )
+    fun `Validate HTTP Exceptions`(url: String, expectedCode: Int) {
+        val e = assertThrows<HttpErrorException> {
+            fetchUrl(url)
+        }
+        assertThat(e, "fetchUrl($expectedCode)").all {
+            prop(HttpErrorException::statusCode).isEqualTo(expectedCode)
+            prop(HttpErrorException::message).isNotNull().isNotEmpty()
         }
     }
 }

@@ -45,7 +45,7 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import rife.bld.extension.testing.LoggingExtension
 
 @ExtendWith(LoggingExtension::class)
-internal class JokeConfigTests {
+internal class JokeConfigTest {
     companion object {
         @JvmField
         @RegisterExtension

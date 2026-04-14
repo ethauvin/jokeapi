@@ -1,5 +1,5 @@
 /*
- * GetRawJokesTests.kt
+ * ApiCallTests.kt
  *
  * Copyright 2022-2026 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -33,17 +33,24 @@ package net.thauvin.erik.jokeapi
 
 import assertk.all
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.contains
+import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThan
+import assertk.assertions.startsWith
+import net.thauvin.erik.jokeapi.JokeApi.apiCall
 import net.thauvin.erik.jokeapi.models.Format
-import net.thauvin.erik.jokeapi.models.IdRange
-import net.thauvin.erik.jokeapi.models.JokeResponse
+import net.thauvin.erik.jokeapi.models.Language
+import net.thauvin.erik.jokeapi.models.Parameter
+import org.json.JSONObject
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
 import rife.bld.extension.testing.LoggingExtension
 
 @ExtendWith(LoggingExtension::class)
-internal class GetRawJokesTests {
+internal class ApiCallTest {
     companion object {
         @JvmField
         @RegisterExtension
@@ -51,51 +58,47 @@ internal class GetRawJokesTests {
     }
 
     @Test
-    fun `Get Raw Joke with TXT`() {
-        val response = rawJokes(format = Format.TXT)
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(200)
-            prop("data", JokeResponse::data).all {
-                isNotEmpty()
-                doesNotContain("Error")
-            }
+    fun `Get Flags`() {
+        // See https://v2.jokeapi.dev/#flags-endpoint
+        val response = apiCall(endPoint = "flags")
+        val json = JSONObject(response.data)
+        assertAll(
+            "Validate JSON",
+            { assertFalse(json.getBoolean("error"), "apiCall(flags).error") },
+            { assertThat(json.getJSONArray("flags").length(), "apiCall(flags).flags").isGreaterThan(0) },
+            { assertThat(json.getLong("timestamp"), "apiCall(flags).timestamp").isGreaterThan(0) })
+    }
+
+    @Test
+    fun `Get Language Code`() {
+        // See https://v2.jokeapi.dev/#langcode-endpoint
+        val lang = apiCall(
+            endPoint = "langcode", path = "french",
+            params = mapOf(Parameter.FORMAT to Format.YAML.value)
+        )
+        assertThat(lang.statusCode).isEqualTo(200)
+        assertThat(lang.data).all {
+            contains("error: false")
+            contains("code: \"fr\"")
         }
     }
 
     @Test
-    fun `Get Raw Joke with XML`() {
-        val response = rawJokes(format = Format.XML)
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(200)
-            prop("data", JokeResponse::data)
-                .startsWith("<?xml version='1.0'?>\n<data>\n    <error>false</error>")
-        }
+    fun `Get Ping Response`() {
+        // See https://v2.jokeapi.dev/#ping-endpoint
+        val ping = apiCall(endPoint = "ping", params = mapOf(Parameter.FORMAT to Format.TXT.value))
+        assertThat(ping.statusCode).isEqualTo(200)
+        assertThat(ping.data).startsWith("Pong!")
     }
 
     @Test
-    fun `Get Raw Joke with YAML`() {
-        val response = rawJokes(format = Format.YAML)
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(200)
-            prop("data", JokeResponse::data).startsWith("error: false")
-        }
-    }
-
-    @Test
-    fun `Get Raw Jokes`() {
-        val response = rawJokes(amount = 2)
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(200)
-            prop("data", JokeResponse::data).isNotEmpty()
-        }
-    }
-
-    @Test
-    fun `Get Raw Invalid Jokes`() {
-        val response = rawJokes(contains = "foo", safe = true, amount = 2, idRange = IdRange(160, 161))
-        assertThat(response).all {
-            prop("statusCode", JokeResponse::statusCode).isEqualTo(400)
-            prop("data", JokeResponse::data).contains("\"error\": true")
-        }
+    fun `Get Supported Language`() {
+        // See  https://v2.jokeapi.dev/languages
+        val lang = apiCall(
+            endPoint = "languages",
+            params = mapOf(Parameter.FORMAT to Format.XML.value, Parameter.LANG to Language.FR.value)
+        )
+        assertThat(lang.statusCode).isEqualTo(200)
+        assertThat(lang.data).startsWith("<?xml version='1.0'?>")
     }
 }

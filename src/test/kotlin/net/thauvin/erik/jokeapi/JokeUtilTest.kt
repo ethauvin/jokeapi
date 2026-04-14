@@ -49,7 +49,7 @@ import org.junit.jupiter.params.provider.CsvSource
 import rife.bld.extension.testing.LoggingExtension
 
 @ExtendWith(LoggingExtension::class)
-internal class JokeUtilTests {
+internal class JokeUtilTest {
     companion object {
         @JvmField
         @RegisterExtension

@@ -1,5 +1,5 @@
 /*
- * ApiCallTests.kt
+ * GetJokesTests.kt
  *
  * Copyright 2022-2026 Erik C. Thauvin (erik@thauvin.net)
  *
@@ -33,24 +33,17 @@ package net.thauvin.erik.jokeapi
 
 import assertk.all
 import assertk.assertThat
-import assertk.assertions.contains
-import assertk.assertions.isEqualTo
-import assertk.assertions.isGreaterThan
-import assertk.assertions.startsWith
-import net.thauvin.erik.jokeapi.JokeApi.apiCall
-import net.thauvin.erik.jokeapi.models.Format
+import assertk.assertions.*
+import net.thauvin.erik.jokeapi.models.Joke
 import net.thauvin.erik.jokeapi.models.Language
-import net.thauvin.erik.jokeapi.models.Parameter
-import org.json.JSONObject
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
 import rife.bld.extension.testing.LoggingExtension
 
 @ExtendWith(LoggingExtension::class)
-internal class ApiCallTests {
+internal class GetJokesTest {
     companion object {
         @JvmField
         @RegisterExtension
@@ -58,47 +51,34 @@ internal class ApiCallTests {
     }
 
     @Test
-    fun `Get Flags`() {
-        // See https://v2.jokeapi.dev/#flags-endpoint
-        val response = apiCall(endPoint = "flags")
-        val json = JSONObject(response.data)
-        assertAll(
-            "Validate JSON",
-            { assertFalse(json.getBoolean("error"), "apiCall(flags).error") },
-            { assertThat(json.getJSONArray("flags").length(), "apiCall(flags).flags").isGreaterThan(0) },
-            { assertThat(json.getLong("timestamp"), "apiCall(flags).timestamp").isGreaterThan(0) })
-    }
-
-    @Test
-    fun `Get Language Code`() {
-        // See https://v2.jokeapi.dev/#langcode-endpoint
-        val lang = apiCall(
-            endPoint = "langcode", path = "french",
-            params = mapOf(Parameter.FORMAT to Format.YAML.value)
-        )
-        assertThat(lang.statusCode).isEqualTo(200)
-        assertThat(lang.data).all {
-            contains("error: false")
-            contains("code: \"fr\"")
+    fun `Get Multiple Jokes`() {
+        val amount = 2
+        val jokes = jokes(amount = amount, safe = true, lang = Language.FR)
+        assertThat(jokes, "jokes").all {
+            size().isEqualTo(amount)
+            each {
+                it.prop(Joke::id).isGreaterThanOrEqualTo(0)
+                it.prop(Joke::safe).isTrue()
+                it.prop(Joke::lang).isEqualTo(Language.FR)
+            }
         }
     }
 
     @Test
-    fun `Get Ping Response`() {
-        // See https://v2.jokeapi.dev/#ping-endpoint
-        val ping = apiCall(endPoint = "ping", params = mapOf(Parameter.FORMAT to Format.TXT.value))
-        assertThat(ping.statusCode).isEqualTo(200)
-        assertThat(ping.data).startsWith("Pong!")
+    fun `Get Jokes with Invalid Amount`() {
+        val e = assertThrows<IllegalArgumentException> { jokes(amount = -1) }
+        assertThat(e::message).isNotNull().contains("-1")
     }
 
     @Test
-    fun `Get Supported Language`() {
-        // See  https://v2.jokeapi.dev/languages
-        val lang = apiCall(
-            endPoint = "languages",
-            params = mapOf(Parameter.FORMAT to Format.XML.value, Parameter.LANG to Language.FR.value)
-        )
-        assertThat(lang.statusCode).isEqualTo(200)
-        assertThat(lang.data).startsWith("<?xml version='1.0'?>")
+    fun `Get One Joke as Multiple`() {
+        val jokes = jokes(amount = 1, safe = true)
+        assertThat(jokes, "jokes").all {
+            size().isEqualTo(1)
+            index(0).all {
+                prop(Joke::id).isGreaterThanOrEqualTo(0)
+                prop(Joke::safe).isTrue()
+            }
+        }
     }
 }

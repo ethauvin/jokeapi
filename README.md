@@ -168,7 +168,7 @@ if (response.statusCode == 200) {
 error: false
 code: "fr"
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt#L48)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt)...
 
 ## Contributing
 
