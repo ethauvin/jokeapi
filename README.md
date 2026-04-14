@@ -37,7 +37,7 @@ data class Joke(
     val lang: Language
 )
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt#L64)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokeTest.kt#L31)...
 
 To retrieve multiple jokes:
 
@@ -49,7 +49,7 @@ frenchJokes.forEach {
 }
 ```
 
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokesTest.kt#L52)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetJokesTest.kt#L31)...
 
 
 If an error occurs, a `JokeException` is thrown, matching the [JokeAPI errors](https://sv443.net/jokeapi/v2/#errors):
@@ -66,7 +66,8 @@ class JokeException(
 ) : Exception(message, cause)
 ```
 
-If an HTTP error occurs an `HttpErrorException` is thrown, with its message and cause matching the [JokeAPI status codes](https://sv443.net/jokeapi/v2/#status-codes):
+If an HTTP error occurs an `HttpErrorException` is thrown, with its message and cause matching the
+[JokeAPI status codes](https://sv443.net/jokeapi/v2/#status-codes):
 
 ```kotlin
 class HttpErrorException(
@@ -75,7 +76,7 @@ class HttpErrorException(
     cause: Throwable? = null
 ) : IOException(message, cause)
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ExceptionsTest.kt#L57)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/exceptions/ExceptionsTest.kt#L31)...
 
 ## Java
 
@@ -145,7 +146,7 @@ safe: true
 lang: "en"
 ```
 
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokesTest.kt#L46)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/GetRawJokesTest.kt#L31)...
 
 ## Extending
 
@@ -168,7 +169,7 @@ if (response.statusCode == 200) {
 error: false
 code: "fr"
 ```
-- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt)...
+- View more [examples](https://github.com/ethauvin/jokeapi/blob/master/src/test/kotlin/net/thauvin/erik/jokeapi/ApiCallTest.kt#L31)...
 
 ## Contributing
 
