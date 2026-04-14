@@ -28,11 +28,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package net.thauvin.erik.jokeapi.models
 
 /**
- * The supported [categories](https://jokeapi.dev/#categories), use [ANY] for all.
+ * The supported [categories](https://jokeapi.dev/#categories).
+ *
+ * Use [ANY] to include all categories.
  */
 enum class Category(val value: String) {
     ANY("Any"),
@@ -41,5 +42,5 @@ enum class Category(val value: String) {
     MISC("Misc"),
     PROGRAMMING("Programming"),
     PUN("Pun"),
-    SPOOKY("Spooky")
+    SPOOKY("Spooky");
 }

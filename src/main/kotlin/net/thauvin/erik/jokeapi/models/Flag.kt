@@ -32,7 +32,9 @@
 package net.thauvin.erik.jokeapi.models
 
 /**
- * The supported [blacklist flags](https://jokeapi.dev/#flags-param), use [ALL] to prevent all.
+ * The supported [blacklist flags](https://jokeapi.dev/#flags-param).
+ *
+ * Use [ALL] to prevent all.
  */
 enum class Flag(val value: String) {
     EXPLICIT("explicit"),
