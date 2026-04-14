@@ -208,6 +208,14 @@ public class JokeApiBuild extends Project {
                 new File("pom.xml"));
     }
 
+    @BuildCommand(summary = "Runs the JUnit reporter")
+    public void reporter() throws Exception {
+        new JUnitReporterOperation()
+                .fromProject(this)
+                .failOnSummary(true)
+                .execute();
+    }
+
     @BuildCommand(summary = "Runs SpotBugs on this project")
     public void spotbugs() throws Exception {
         new SpotBugsOperation()

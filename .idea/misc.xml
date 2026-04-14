@@ -6,6 +6,7 @@
     <pattern value="net.thauvin.erik.JokeApiBuild" method="jacoco" />
     <pattern value="net.thauvin.erik.JokeApiBuild" />
     <pattern value="net.thauvin.erik.JokeApiBuild" method="spotbugs" />
+    <pattern value="net.thauvin.erik.JokeApiBuild" method="reporter" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build" />
