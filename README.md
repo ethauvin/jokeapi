@@ -1,5 +1,5 @@
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://opensource.org/licenses/BSD-3-Clause)
-[![Kotlin](https://img.shields.io/badge/kotlin-2.3.20-7f52ff)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.4.10-7f52ff)](https://kotlinlang.org/)
 [![bld](https://img.shields.io/badge/2.3.0-FA9052?label=bld&labelColor=2392FF)](https://rife2.com/bld)
 [![Release](https://img.shields.io/github/release/ethauvin/jokeapi.svg)](https://github.com/ethauvin/jokeapi/releases/latest)
 [![Maven Central](https://img.shields.io/maven-central/v/net.thauvin.erik/jokeapi?color=blue)](https://central.sonatype.com/artifact/net.thauvin.erik/jokeapi)
@@ -123,7 +123,7 @@ Instructions for using with Maven, Ivy, etc. can be found on [Maven Central](htt
 
 You can also retrieve one or more raw (unprocessed) jokes in all [supported formats](https://jokeapi.dev/#format-param).
 
-For example for YAML:
+For example, for YAML:
 ```kotlin
 var jokes = getRawJokes(format = Format.YAML, idRange = IdRange(22))
 println(jokes.data)
@@ -152,7 +152,7 @@ lang: "en"
 
 A generic `apiCall()` function is available to access other [JokeAPI endpoints](https://v2.jokeapi.dev/#endpoints). 
 
-For example to retrieve the French [language code](https://v2.jokeapi.dev/#langcode-endpoint):
+For example, to retrieve the French [language code](https://v2.jokeapi.dev/#langcode-endpoint):
 
 ```kotlin
 val response = JokeApi.apiCall(
