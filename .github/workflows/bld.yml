@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 env:
   COVERAGE_JDK: "21"
-  KOTLIN_VERSION: "2.3.20"
+  KOTLIN_VERSION: "2.4.10"
 
 jobs:
   build-bld-project:
@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout source repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -32,11 +32,16 @@ jobs:
         with:
           version: ${{ env.KOTLIN_VERSION }}
 
-      - name: Download dependencies
-        run: ./bld download
+      - name: Cache bld dependencies
+        id: cache-bld
+        uses: actions/cache@v6
+        with:
+          path: lib
+            lib
+          key: ${{ runner.os }}-bld-java${{ matrix.java-version }}-lib
 
       - name: Compile source
-        run: ./bld compile
+        run: ./bld clean compile
 
       - name: Run tests
         id: tests
@@ -44,7 +49,7 @@ jobs:
 
       - name: Run reporter
         if: always() && steps.tests.outcome == 'failure'
-        run: ./bld reporter --all
+        run: ./bld --offline reporter --all
 
       - name: Remove pom.xml
         if: success() && matrix.java-version == env.COVERAGE_JDK && matrix.os == 'ubuntu-latest'
@@ -55,7 +60,7 @@ jobs:
         run: printf "\nsonar.java.jdkHome=${{ env.JAVA_HOME }}\n" >> sonar-project.properties
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v7.1.0
+        uses: SonarSource/sonarqube-scan-action@v8.2.1
         if: success() && matrix.java-version == env.COVERAGE_JDK && matrix.os == 'ubuntu-latest'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
