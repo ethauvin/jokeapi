@@ -2,11 +2,11 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>LongParameterList:Joke.kt$Joke$( val category: Category, val type: Type, joke: List&lt;String&gt;, flags: Set&lt;Flag&gt;, val id: Int, val safe: Boolean, val lang: Language )</ID>
-    <ID>LongParameterList:JokeApi.kt$( amount: Int, categories: Set&lt;Category&gt; = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag&gt; = emptySet(), type: Type = Type.ALL, contains: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, auth: String = "", splitNewLine: Boolean = false )</ID>
-    <ID>LongParameterList:JokeApi.kt$( categories: Set&lt;Category&gt; = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag&gt; = emptySet(), type: Type = Type.ALL, contains: String = "", idRange: IdRange = IdRange(), safe: Boolean = false, auth: String = "", splitNewLine: Boolean = false )</ID>
-    <ID>LongParameterList:JokeApi.kt$( categories: Set&lt;Category&gt; = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag&gt; = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, contains: String = "", idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, auth: String = "" )</ID>
+    <ID>LongParameterList:JokeApi.kt$( amount: Int, categories: Set&lt;Category&gt; = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag&gt; = emptySet(), type: Type = Type.ALL, contains: String? = null, idRange: IdRange = IdRange(), safe: Boolean = false, auth: String? = null, splitNewLine: Boolean = false )</ID>
+    <ID>LongParameterList:JokeApi.kt$( categories: Set&lt;Category&gt; = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag&gt; = emptySet(), type: Type = Type.ALL, contains: String? = null, idRange: IdRange = IdRange(), safe: Boolean = false, auth: String? = null, splitNewLine: Boolean = false )</ID>
+    <ID>LongParameterList:JokeApi.kt$( categories: Set&lt;Category&gt; = setOf(Category.ANY), lang: Language = Language.EN, blacklistFlags: Set&lt;Flag&gt; = emptySet(), type: Type = Type.ALL, format: Format = Format.JSON, contains: String? = null, idRange: IdRange = IdRange(), amount: Int = 1, safe: Boolean = false, auth: String? = null )</ID>
     <ID>LongParameterList:JokeException.kt$JokeException$( val internalError: Boolean, val code: Int, message: String, causedBy: List&lt;String&gt;, val additionalInfo: String, val timestamp: Long, cause: Throwable? = null )</ID>
+    <ID>MagicNumber:JokeConfig.kt$JokeConfig.Builder$10</ID>
     <ID>MagicNumber:JokeUtil.kt$200</ID>
     <ID>MagicNumber:JokeUtil.kt$30</ID>
     <ID>MagicNumber:JokeUtil.kt$399</ID>
@@ -18,20 +18,20 @@
     <ID>MagicNumber:JokeUtil.kt$429</ID>
     <ID>MagicNumber:JokeUtil.kt$500</ID>
     <ID>MagicNumber:JokeUtil.kt$523</ID>
-    <ID>MagicNumber:JokeUtil.kt$60</ID>
-    <ID>MemberNameEqualsClassName:Joke.kt$Joke$val joke: List&lt;String&gt; = joke.toList()</ID>
+    <ID>MemberNameEqualsClassName:Joke.kt$Joke$fun joke(): List&lt;String&gt;</ID>
+    <ID>ReturnCount:JokeUtil.kt$private fun isInvalidErrorResponse(body: String, response: HttpResponse&lt;String&gt;): Boolean</ID>
     <ID>TooManyFunctions:JokeConfig.kt$JokeConfig$Builder</ID>
-    <ID>WildcardImport:ExceptionsTests.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:GetJokeTests.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:GetJokeTests.kt$import net.thauvin.erik.jokeapi.models.*</ID>
-    <ID>WildcardImport:GetJokesTests.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:GetRawJokesTests.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:ExceptionsTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetJokeTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetJokeTest.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:GetJokesTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:GetRawJokesTest.kt$import assertk.assertions.*</ID>
     <ID>WildcardImport:JokeApi.kt$import net.thauvin.erik.jokeapi.models.*</ID>
     <ID>WildcardImport:JokeConfig.kt$import net.thauvin.erik.jokeapi.models.*</ID>
-    <ID>WildcardImport:JokeConfigTests.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:JokeConfigTests.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:JokeConfigTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:JokeConfigTest.kt$import net.thauvin.erik.jokeapi.models.*</ID>
     <ID>WildcardImport:JokeUtil.kt$import net.thauvin.erik.jokeapi.models.*</ID>
-    <ID>WildcardImport:JokeUtilTests.kt$import assertk.assertions.*</ID>
-    <ID>WildcardImport:JokeUtilTests.kt$import net.thauvin.erik.jokeapi.models.*</ID>
+    <ID>WildcardImport:JokeUtilTest.kt$import assertk.assertions.*</ID>
+    <ID>WildcardImport:JokeUtilTest.kt$import net.thauvin.erik.jokeapi.models.*</ID>
   </CurrentIssues>
 </SmellBaseline>
