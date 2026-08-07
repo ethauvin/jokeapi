@@ -80,7 +80,7 @@ public class JokeApiBuild extends Project {
                         version(1, 6, 0)));
         scope(provided)
                 .include(dependency("com.github.spotbugs", "spotbugs-annotations",
-                        version(4, 9, 8)));
+                        version(4, 10, 3)));
         scope(test)
                 .include(dependency("com.uwyn.rife2", "bld-extensions-testing-helpers",
                         version(1, 0, 0)))
