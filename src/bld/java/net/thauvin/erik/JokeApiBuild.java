@@ -75,7 +75,7 @@ public class JokeApiBuild extends Project {
         var junit = version(6, 1, 3);
         scope(compile)
                 .include(dependency("org.jetbrains.kotlin", "kotlin-stdlib", kotlin))
-                .include(dependency("org.json", "json", "20251224"))
+                .include(dependency("org.json", "json", "20260719"))
                 .include(dependency("net.thauvin.erik.urlencoder", "urlencoder-lib-jvm",
                         version(1, 6, 0)));
         scope(provided)
