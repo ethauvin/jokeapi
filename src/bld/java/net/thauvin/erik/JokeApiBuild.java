@@ -69,7 +69,7 @@ public class JokeApiBuild extends Project {
         autoDownloadPurge = true;
         downloadSources = true;
 
-        repositories = List.of(MAVEN_LOCAL, MAVEN_CENTRAL, RIFE2_SNAPSHOTS, RIFE2_RELEASES);
+        repositories = List.of(MAVEN_LOCAL, MAVEN_CENTRAL, RIFE2_RELEASES);
 
         final var kotlin = version(2, 4, 20);
         var junit = version(6, 1, 3);

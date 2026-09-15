@@ -44,7 +44,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import rife.bld.extension.testing.LoggingExtension
+import rife.bld.testing.LoggingExtension
 
 @ExtendWith(LoggingExtension::class)
 internal class ExceptionsTest {

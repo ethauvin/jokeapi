@@ -42,7 +42,7 @@ import net.thauvin.erik.jokeapi.models.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
-import rife.bld.extension.testing.LoggingExtension
+import rife.bld.testing.LoggingExtension
 
 @ExtendWith(LoggingExtension::class)
 internal class JokeConfigTest {
